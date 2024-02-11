@@ -1,0 +1,16 @@
+Initialization callback		//дает возможность с помощью метода дополнительно настраивать еще не созданный бин.
+Destruction callback		//последний этап в жизненном цикле бина, который дает возможность закрывать/очищать ресурсы с помощью методов, когда мы закрываем наш контекст 
+				  Вызываеться только для singlton!
+
+Реализация callback		//Реализовать вызов соответсвующих методов можно следующем образом:
+				  Initialization callback: 1) Поставить аннотацию @PostConstructor, 2)реализовав интерфейс InitializingBean, 3)С помощью xml 		
+				  Destruction callback: 1) Поставить аннотацию @PreDestroy, 2)реализовав интерфейс DisposableBean, 3)С помощью xml 
+
+
+Закрытие контекста:
+
+        try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("application.xml")) {
+            ConnectionPool connectionPool = context.getBean("connectionPool", ConnectionPool.class);
+
+            System.out.println();
+        }		

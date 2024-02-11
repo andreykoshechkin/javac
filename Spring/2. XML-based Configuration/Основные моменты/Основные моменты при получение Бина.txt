@@ -1,0 +1,43 @@
+Spring позволяет создавать несколько бинов на один и тот же класс, но в таком случае, при создании бина, нам нужно указывать и уникальный ID, чтобы в дальнейшем получать бин именно по его ID, иначе мы получим Exception.
+Так как, если у нас  будет два бина на один класс, то при получение одного из бинов, по классу(когда в метод getBean() передадим класс) мы получим exception, так как spring не поймет, какой именно бин мы хотим получить,
+то есть, мы хотим получить бин классаА, но у нас есть два бина на классА
+
+========================================================================
+В  этом случае, мы получим exception
+
+    <bean class="org.example.repository.UserRepository">
+        <constructor-arg ref="connectionPoolBean">
+
+        </constructor-arg>
+    </bean>
+
+    <bean class="org.example.repository.UserRepository">
+        <constructor-arg ref="connectionPoolBean">
+
+        </constructor-arg>
+    </bean>
+
+========================================================================
+
+В этом случае, все будет хорошо.
+  <bean id="repo1" class="org.example.repository.UserRepository">
+        <constructor-arg ref="connectionPoolBean">
+
+        </constructor-arg>
+    </bean>
+
+    <bean id="repo2" class="org.example.repository.UserRepository">
+        <constructor-arg ref="connectionPoolBean">
+
+        </constructor-arg>
+    </bean>
+
+========================================================================
+
+public class Main {
+    public static void main(String[] args) {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
+        Object bean1= context.getBean("repo1",UserRepository.class);
+        System.out.println(bean1);
+    }
+}

@@ -1,0 +1,26 @@
+По-умолчанию к maven-failsafe-plugin непривязанны никакие плагины!
+
+Интеграционные тесты так же имеею правила по названию класса, а именно:
+1) Название класса должно заканчивать на IT
+2) Название класса должно начинаться  на IT
+3) Название класса должно заканчивать на ITCase
+(для проверки мы дожлны будем создать интеграционный тест и применить один из правил что описанны выше)
+
+<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M7</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+Так как описание выше почему-то не работает, то можно прописать в терминале: 
+Для запуска интеграционн mvn failsafe:integration-test
+
+mvn test-compile failsafe:integration-test failsafe:verify

@@ -1,0 +1,17 @@
+    private void lockAccount() {
+
+
+        while (true) {
+            boolean oneLock = account1.getLock().tryLock();
+            boolean twoLock = account2.getLock().tryLock();
+            if (oneLock && twoLock) {
+                return;
+            }
+            if (oneLock) {
+                account1.getLock().unlock();
+            }
+            if (twoLock) {
+                account2.getLock().unlock();
+            }
+        }
+    }

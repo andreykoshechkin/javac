@@ -1,0 +1,57 @@
+4. Меняем QPredicate
+
+     public Predicate whereAnd() {
+        return Optional.ofNullable(ExpressionUtils.allOf(predicateList))
+                .orElseGet(()-> Expressions.asBoolean(true).isTrue());
+    }
+
+    public Predicate whereOr() {
+        return Optional.ofNullable(ExpressionUtils.anyOf(predicateList))
+                .orElseGet(()-> Expressions.asBoolean(true).isTrue());
+    }
+
+
+5. UserController
+
+
+    @GetMapping
+    private String findAll(Model model, UserFilter userFilter, Pageable pageable) {
+        Page<UserReadDto> page = userService.findAll(userFilter, pageable);
+        PageResponse<UserReadDto> pageResponse = PageResponse.of(page);
+        model.addAttribute("users", pageResponse);
+        return "user/users";
+    }
+
+6. html страница
+
+<body>
+
+<form class="filter" action="/users" th:value="${filter}">
+    <label>Firstname:
+        <input type="text" name="firstname" th:value="${filter.firstname()}">
+    </label>
+    <label>Lastname:
+        <input type="text" name="lastname" th:value="${filter.lastname()}">
+    </label>
+    <label>Birthdate:
+        <input type="date" name="birthdate" th:value="${filter.birthdate()}">
+    </label>
+    <button type="submit">Filter</button>
+
+    <div>
+        <label>Page:
+            <input type="number" name="page" th:value="${users.getMetaDate().getPage()}">
+        </label>
+        <label>Size:
+            <input type="number" name="size" th:value="${users.getMetaDate().getSize()}">
+        </label>
+    </div>
+</form>
+
+
+<div th:each="users : ${users.getContent()}" th:value="${users}">
+    <a th:href="@{'users/' + ${users.id}}" th:text="${users.username}">User</a>
+</div>
+
+</body>
+</html>

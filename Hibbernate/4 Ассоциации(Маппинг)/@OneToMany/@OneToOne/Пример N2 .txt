@@ -1,0 +1,15 @@
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Users users;
+
+    private String street;
+
+    public void addProfileByUsers(Users users){
+        users.setProfile(this);
+        this.users = users;
+    }

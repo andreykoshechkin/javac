@@ -1,0 +1,134 @@
+@ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
+public class UserServiceTest {
+
+    @Mock
+    private UsersMapper usersMapper;
+
+    @Mock
+    private UserCreateEditMapper createEditMapper;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService;
+
+    @Test
+    void findAll() {
+
+        UserEntity userEntity1 = getUserEntityFoTest(1L, "username1@gmail.com");
+        UserEntity userEntity2 = getUserEntityFoTest(3L, "username2@gmail.com");
+        UserEntity userEntity3 = getUserEntityFoTest(2L, "username3@gmail.com");
+
+        UserReadDto userDto1 = getUsersDtoFoTest(1L, "username1@gmail.com");
+        UserReadDto userDto2 = getUsersDtoFoTest(2L, "username2@gmail.com");
+        UserReadDto userDto3 = getUsersDtoFoTest(3L, "username3@gmail.com");
+
+        List<UserEntity> userEntities = List.of(userEntity1, userEntity2, userEntity3);
+
+
+        Mockito.doReturn(userEntities).when(userRepository).findAll();
+        Mockito.doReturn(userDto1).when(usersMapper).transferToDto(userEntity1);
+        Mockito.doReturn(userDto2).when(usersMapper).transferToDto(userEntity2);
+        Mockito.doReturn(userDto3).when(usersMapper).transferToDto(userEntity3);
+
+        List<UserReadDto> actualResult = userService.findAll();
+
+        Assertions.assertThat(actualResult).hasSize(1);
+    }
+
+
+    @Test
+    void findById() {
+        UserReadDto dto = getUsersDtoFoTest(1L, "admin@gmail.com");
+        UserEntity entity = getUserEntityFoTest(1L, "admin@gmail.com");
+
+        Mockito.doReturn(Optional.of(entity)).when(userRepository).findById(1L);
+        Mockito.doReturn(dto).when(usersMapper).transferToDto(entity);
+
+        Optional<UserReadDto> actualResult = userService.findById(1L);
+
+        Assertions.assertThat(actualResult).isPresent();
+        Assertions.assertThat(actualResult.get().getFirstname()).isEqualTo("test");
+    }
+
+    @Test
+    void create(){
+        UserReadDto dto = getUsersDtoFoTest(1L, "admin@gmail.com");
+        UserEntity entity = getUserEntityFoTest(1L, "admin@gmail.com");
+        UserCreateEditDto userCreateEditDto = getUserCreateEditDto(1L, "admin@gmail.com");
+
+        Mockito.doReturn(entity).when(createEditMapper).transferToEntity(userCreateEditDto);
+        Mockito.doReturn(entity).when(userRepository).save(entity);
+        Mockito.doReturn(dto).when(usersMapper).transferToDto(entity);
+
+        UserReadDto actualResult = userService.create(userCreateEditDto);
+
+        Assertions.assertThat(actualResult).isEqualTo(dto);
+        Assertions.assertThat(actualResult.getFirstname()).isEqualTo(dto.getFirstname());
+    }
+
+    @Test
+    void update() {
+        UserReadDto dto = getUsersDtoFoTest(1L, "admin@gmail.com");
+        UserEntity entity = getUserEntityFoTest(1L, "admin@gmail.com");
+        UserCreateEditDto userCreateEditDto = getUserCreateEditDto(1L, "adminUpdate@gmail.com");
+
+        Mockito.doReturn(entity).when(createEditMapper).map(userCreateEditDto, entity);
+
+
+        Optional<UserReadDto> actualResult = userService.update(1L, userCreateEditDto);
+    }
+
+
+    @Test
+    void delete(){
+
+        UserEntity entity = getUserEntityFoTest(1L, "admin@gmail.com");
+
+        Mockito.doNothing().when(userRepository).delete(entity);
+        Mockito.doReturn(Optional.of(entity)).when(userRepository).findById(1L);
+
+        boolean actualResult = userService.delete(1L);
+        boolean failResult = userService.delete(2L);
+
+        Assertions.assertThat(actualResult).isTrue();
+        Assertions.assertThat(failResult).isFalse();
+    }
+
+    public UserReadDto getUsersDtoFoTest(Long id, String username) {
+        return UserReadDto.builder()
+                .id(id)
+                .username(username)
+                .firstname("test")
+                .lastname("test")
+                .birthdate(LocalDate.now())
+                .role(Role.ADMIN.name())
+                .build();
+    }
+
+
+    public UserEntity getUserEntityFoTest(Long id, String username) {
+        return UserEntity.builder()
+                .id(id)
+                .username(username)
+                .firstname("test")
+                .lastname("test")
+                .birthdate(LocalDate.now())
+                .role(Role.ADMIN)
+                .build();
+    }
+
+
+    public UserCreateEditDto getUserCreateEditDto(Long id, String username) {
+        return UserCreateEditDto.builder()
+                .id(id)
+                .username(username)
+                .firstname("test")
+                .lastname("test")
+                .birthdate(LocalDate.now())
+                .role(Role.ADMIN)
+                .build();
+    }
+

@@ -1,0 +1,17 @@
+
+    @Test //Возвращает map где ключем является их Id
+    void usersConvertedToMapById() {
+        userService.add(IVAN, ANDREY);
+        Map<Integer, UserDto> userDtoMap = userService.getAllConvertedById();
+        assertAll(                                                          //assertAll - вызывает все ассерты, даже если один из них упал
+                () -> assertThat(userDtoMap).containsKeys(1, 2),            //Проверяем map на пользователей с id 1,2(в этом примере id является ключем)
+                () -> assertThat(userDtoMap).containsValues(IVAN, ANDREY)); //Проверяем map на пользователей по значению
+
+
+    }
+
+
+
+    public Map<Integer, UserDto> getAllConvertedById() {
+        return users.stream().collect(toMap(UserDto::getId, Function.identity()));
+    }

@@ -1,0 +1,21 @@
+@NamedEntityGraph позволяет нам получать и одну сущность и несколько, при этом не создавая дополнительных select запросов.
+Отличие от @FetchProfile в том, что @FetchProfile работает только для одной сущности
+
+Реализация: 
+Класс, который мы получам при запросе
+@NamedEntityGraph(name = "thisEmployeeGraph", attributeNodes = {
+        @NamedAttributeNode("company"),
+        @NamedAttributeNode("profiles")
+})
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "username")
+@ToString(exclude = {"company", "paymentList", "profiles"})
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Employee implements GenerationId<Long> {
+
+}
+
+

@@ -1,0 +1,21 @@
+@ModelAttribute		//Если мы устанавливаем эту аннотацию, то спринуг сам создаст аттрибут того типа какой мы указали после этой аннотации
+			  В примере ниже, мы хотим вернуть LoginDto и спринг сам привяжет LoginDto к ключу "login"
+
+@Controller
+public class LoginController {
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "user/login";
+    }
+
+    @PostMapping("/login")
+    public String login(Model model, @ModelAttribute("login") LoginDto loginDto) {
+        return "user/login";
+    }
+}
+
+
+
+@ModelAttribute — это аннотация, которая связывает параметр метода или возвращаемое значение метода с именованным атрибутом модели, 
+а затем предоставляет его веб-представлению.

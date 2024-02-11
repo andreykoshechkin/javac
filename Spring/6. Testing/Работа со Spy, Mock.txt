@@ -1,0 +1,22 @@
+1. Создаем отдельный ApplicationTestRunner
+
+@TestConfiguration
+public class ApplicationTestRunner {
+
+    @SpyBean(name = "connectionManager")
+    private  ConnectionManager connectionManager;
+}
+
+
+Сам тест:
+@IT
+@RequiredArgsConstructor
+public class CompanyServiceIT {
+
+    private final ConnectionManager connectionManager;
+
+    @Test
+    void test(){
+
+    }
+}

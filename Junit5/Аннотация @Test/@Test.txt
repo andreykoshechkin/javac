@@ -1,0 +1,20 @@
+в Junit5 тереь можно не исползовать модификторы доступа как на классах так и на методах(убираем модификтор доступа public с класса и метода).
+Запускаются только те тесты, которые помечены аннотоцией @Test(surfire plugin их отслеживает).	
+
+Название класса, который что-то тестироует, должен описывать что тестируем.
+
+
+    @Test
+    void usersIsEmptyIfNoUserAdded() {
+
+        UserService userService = new UserService();
+        List<UserDto> users = userService.getAll();
+        assertTrue(users.isEmpty());
+    }
+
+ assertTrue <--- Проверяет ожидаемый результат с файтическим
+
+
+
+Мы так же можем добавить описание:
+assertFalse(users.isEmpty(), () -> "User service should be empty");

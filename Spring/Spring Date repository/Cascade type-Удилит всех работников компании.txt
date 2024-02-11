@@ -1,0 +1,8 @@
+Каскадное удаление (CascadeType.ALL): В вашей аннотации @ManyToOne установлен параметр cascade = CascadeType.ALL. 
+Это означает, что все операции, включая удаление, будут распространяться на связанный объект (Company).
+Убедитесь, что вам действительно нужно такое поведение.
+
+    @NotAudited
+    @JoinColumn(name = "company_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Company company;

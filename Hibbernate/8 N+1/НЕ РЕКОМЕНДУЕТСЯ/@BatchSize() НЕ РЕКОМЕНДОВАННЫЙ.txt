@@ -1,0 +1,80 @@
+Одна из решение проблемы с N +1 являеться установка BatchSize(size = num)
+
+Но у BatchSize есть свои минусы, к примеру, мы можем установить  @BatchSize(size = num) над маппингом @OneToMany, но мы не можем сделать тоже самое для @ManyToOne
+
+    @Builder.Default
+    @BatchSize(size = 3) <--  @BatchSize(size = 3)
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    private Set<Payment> paymentList = new HashSet<>();
+
+В примере ниже,   @BatchSize работь не будет  
+    @ManyToOne(fetch = FetchType.LAZY)
+    @BatchSize(size = 3)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+Правило: Для маппинга @ManyToOne BatchSize устанавливается над сущностью, а для @OneToMany над самой коллекцией
+
+================================================================================================================
+Если мы всеже хотим, установить BatchSize над маппинго @ManyToOne, то ставить аннотацию @BatchSize нужно над самой сущностью 
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "companyName")
+@ToString(exclude = "employee")
+@Builder
+@Entity
+@BatchSize(size = 3)
+public class Company implements GenerationId<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "company_name")
+    private String companyName;
+
+    private String president;
+
+    @Convert(converter = DateConverterExample.class)
+    @Column(name = "foundation_date")
+    private DateEntity foundationDate;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<Employee> employee = new ArrayList<>();
+}
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "username")
+@ToString(exclude = {"company", "paymentList", "profiles"})
+@Builder
+@Entity
+public class Employee implements GenerationId<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    private String username;
+
+    @Embedded
+    private EmployeeInfo employeeInfo;
+
+    @Builder.Default
+    @BatchSize(size = 3)
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    private Set<Payment> paymentList = new HashSet<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    private Set<Profile> profiles = new HashSet<>();
+}

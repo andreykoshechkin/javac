@@ -1,0 +1,60 @@
+ 
+         List<Integer> list = List.of(2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+         OptionalDouble optionalDouble = list.stream().filter(num -> num % 2 == 1)
+         .filter(num -> num % 5 == 0).mapToInt(Integer::intValue).average();
+         optionalDouble.ifPresent(System.out::println);
+
+
+
+         List<String> strings = List.of(
+         "String-1",
+         "String-2",
+         "String-3",
+         "String-4",
+         "String-10",
+         "String-10",
+         "String-10",
+         "String-12",
+         "String-16"
+         );
+
+         Long result = strings.stream().filter(length -> length.length() > 8).distinct().count();
+         System.out.println(result);
+
+
+
+         Map<String, Integer> stringMap = new HashMap<>();
+         stringMap.put("string1", 1);
+         stringMap.put("strin2", 2);
+         stringMap.put("string3", 3);
+         stringMap.put("string4", 5);
+         stringMap.put("strin5", 5);
+         long result = stringMap.entrySet().stream().filter(key -> key.getKey().length() < 7).mapToInt(value -> value.getValue()).sum();
+         System.out.println(result);
+
+
+       
+         List<Integer> integerList = List.of(1,2,3,4,5);
+         String result = integerList.stream().map(value-> String.valueOf(value)).reduce((acc,n)-> acc+n).get();
+         System.out.println(result);
+        
+
+
+        List<Person> list = new ArrayList<>();
+        list.add(new Person("Ivan", " Ivanov", 20));
+        list.add(new Person("Petr", " Petrov", 25));
+        list.add(new Person("Sveta", " Svetikova", 33));
+        list.add(new Person("Katya", " Ivanova", 45));
+        list.add(new Person("Slava", " Slavikova", 18));
+
+
+        Comparator<Person> comparator = (o1, o2) -> {
+            if (o1.getAge() > o2.getAge()) {
+                return -1;
+            } else if (o1.getAge() < o2.getAge()) {
+                return 1;
+            } else return 0;
+        };
+
+
+       list.stream().filter(length ->length.getFirstName().length() <=15).max(Comparator.comparingInt(Person::getAge)).ifPresent(System.out::println)

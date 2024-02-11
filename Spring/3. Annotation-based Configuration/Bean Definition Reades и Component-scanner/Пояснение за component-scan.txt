@@ -1,0 +1,32 @@
+Component scanning в Spring - это механизм, позволяющий автоматически обнаруживать и регистрировать бины (компоненты) в контексте приложения. Это осуществляется с использованием Component Scanner.
+
+Сам фильтер:
+    <context:component-scan
+            base-package="org.example.spring.*" <---Фильтрация по пути
+            annotation-config="true"            <---Подключает annotation-config
+            name-generator=""			//На практике не встречается
+            resource-pattern=""                 <---Поиск по классу **/*.class тоже не использует
+            scope-resolver=""                   <---фильтор по Scope(singlton, prototype и ьтд)
+            scoped-proxy=""                     <---Создай proxy класса. interfaces dynamic proxy, targetClass proxy через наследования, no не создавать proxy
+            use-default-filters=""              <---По-умолчанию true, который использует фильтры для того что бы находить бины в base-package, false - не использовать фильтры
+
+    />
+
+Типы фильтров
+annotation  - ищет все класса отмеченные аннотацией @Component
+assignable  - у класса вызывается метод assignableFrom куда мы передаем интерфейс/класс и если этот класс наследуеться интерфейса или класса, то создается bean definition
+regex 	    - ругулярные вырожения на основании имени класса
+aspect      - с помощью аспектно ориентироованного програмирования
+custom	    - 
+
+ПРИМЕР:
+ <context:component-scan
+
+     base-package="org.example.spring.*"	<--Ищи мне в директории spring
+     scoped-proxy="no"				<--Без создавай proxy
+     use-default-filters="false">		<--Я хочу использовать свой фильтр
+ 
+     <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>	<Создай бины из тех классов, которые отмечены аннотацией Component
+     <context:include-filter type="regex" expression="org\..+Repository"/>	<--Создай бины из тех классов, которые заканчиваются на "Repository"
+
+ </context:component-scan>

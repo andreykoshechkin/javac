@@ -1,0 +1,11 @@
+Conditional test execution - Позволяет задать какие-то условия для теста. Для этого нужно имплементить интерфейс ExecutionCondition
+
+Пример: В этом примере мы говорим, пропусти все тесты если есть проперти с именем skip
+public class ConditionExtension implements ExecutionCondition {
+    @Override
+    public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext extensionContext) {
+        return System.getProperty("skip") != null
+                ? ConditionEvaluationResult.disabled("test disabled")	<--- отключает
+                : ConditionEvaluationResult.enabled("test enabled");	<--- включает
+    }
+}

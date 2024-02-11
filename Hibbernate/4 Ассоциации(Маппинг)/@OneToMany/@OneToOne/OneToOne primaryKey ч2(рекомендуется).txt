@@ -1,0 +1,55 @@
+CREATE TABLE profile
+(
+    id      SERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL UNIQUE REFERENCES users (id),--В реализации OneToOne forgen key обязяан быть NOT NULL and UNIQUE
+    address VARCHAR(128),
+    lang    CHAR(2)
+);
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company companyId;
+
+    @Column(unique = true)
+    private String username;
+
+    @AttributeOverride(name = "birth_day", column = @Column(name = "birthday"))
+    private PersonInfo personInfo;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Profile profile;
+
+}
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
+    private String address;
+    private String lang;
+
+
+    /*
+    * id у Profile должен полностю совпадать с id user
+    * Для решения этой проблелймы, создаем метод
+    * */
+    public void setUser (User user){
+        user.setProfile(this);
+        this.user = user;
+    }

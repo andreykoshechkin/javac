@@ -1,0 +1,23 @@
+
+@RequiredArgsConstructor
+public class UserCreateEditMapper implements Mappers<UserCreateEditDto, UserEntity> {
+
+    private final CompanyRepository companyRepository;  //Использовать repository в mapper это нормальная практика
+
+    @Override
+    public UserEntity transferToEntity(UserCreateEditDto object) {
+        return UserEntity.builder()
+                .username(object.getUsername())
+                .firstname(object.getFirstname())
+                .lastname(object.getLastname())
+                .birthDate(object.getBirthDate())
+                .role(object.getRole())
+                .companyId(getCompany(object.getCompanyId()))
+                .build();
+    }
+
+    private CompanyEntity getCompany(Integer companyId) {
+        return Optional.ofNullable(companyId).flatMap(companyRepository::findById).orElse(null);
+    }
+
+}

@@ -1,0 +1,32 @@
+Так как мы хотим проверить поле firstname, а это поле является String, значит мы должны в параметры   ConstraintValidator указать String.
+Если я захочу создать аннотацию над классом, тогда я должен передавать в ConstraintValidator<FirstNameAndLastNameValid, ИМЯ_КЛАСС>
+
+public class FirstNameAndLastNameValidation implements ConstraintValidator<FirstNameAndLastNameValid, String> {
+    @Override
+    public void initialize(FirstNameAndLastNameValid constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
+
+    @Override
+    public boolean isValid(String string, ConstraintValidatorContext constraintValidatorContext) {
+        return StringUtils.hasText(string);
+    }
+}
+
+
+
+
+
+public class FormatEmailValidation implements ConstraintValidator<EmailValidation, String> {
+    @Override
+    public void initialize(EmailValidation constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
+
+    @Override
+    public boolean isValid(String string, ConstraintValidatorContext constraintValidatorContext) {
+        Pattern compile = Pattern.compile("^[a-zA-Z][a-z-A-Z\\d]*+@(gmail.com|yandex.ru)");
+        Matcher matcher = compile.matcher(string);
+        return matcher.matches();
+    }
+}

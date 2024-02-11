@@ -1,0 +1,34 @@
+Audit-evners позволяет создавать аудит сущностей
+
+1. Подключаем зависимость hibernate-envers. Версия hibernate-envers должна быть такая же как и hibernate-core.
+
+2.В сущности, над которой мы хотим ввести аудит, нужно поставить аннотацию @Audited
+  (Если эта сущность имеет ссылки на другией сущности @OneToMany @ManyToOne @OneToOne и тд
+   то мы обязаны либо ввести аудит над поставить аннотацию @Audited
+   либо поставить аннотация @NotAudited чтобы не ввести аудит)
+
+пример: 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Audited	<--- говорим, что хотим ввести аудит сущности Payment 
+public class Payment extends AuditDatesExample {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotAudited		<--- говорим, что не хотим ввести аудит сущности employee
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    private Double amount;
+}
+
+=============
+@Audited(targetAuditMode = RelationTargetAuditMode.AUDITED)	 <-- аудировать все поля
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)	 <-- не аудировать сущности, которые являются полями(НЕ РАБОТАЕТ НА @OneToMany)
+над колекцией нужно ставить  @NotAudited

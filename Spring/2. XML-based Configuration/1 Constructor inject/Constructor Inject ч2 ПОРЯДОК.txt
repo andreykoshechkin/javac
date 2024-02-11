@@ -1,0 +1,64 @@
+По-умолчанию мы обязаны соблюдать порядок при инициализации консруктора, если в конструкторе ConnectionPool первый параметр String то и в бинах он так же должен быть.
+Но мы можем использовать индекс, name или указывать type, для соблюдения порядка. В таком случае, при создании бина мы можен не соблюдать порядок.
+
+============================================================================================================================================ 
+index: позволяют не соблюдать порядок параметров консруктора
+
+ <bean id="connectionPool1" name="pool1, pool2" class="org.example.spring.database.connection.ConnectionPool">
+	 <constructor-arg index="1" value="10"/>
+        <constructor-arg index="0" value="postgres"/>
+        <constructor-arg index="2">
+            <list>
+                <value>1000.31</value>
+                <value>99.11</value>
+                <value>31.132</value>
+            </list>
+        </constructor-arg>
+
+        <constructor-arg index="3">
+            <map>
+                <entry key="App" value="DriverManager"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+============================================================================================================================================
+Type: позволяют не соблюдать порядок параметров консруктора
+    <bean id="pool" class="org.example.spring.database.connection.ConnectionPool">
+        <constructor-arg type="java.lang.Integer" value="12345"/>
+        <constructor-arg type="java.lang.String" value="dbName"/>
+        <constructor-arg type="java.util.List">
+            <list>
+                <value>1000.2</value>
+                <value>131.51</value>
+                <value>8.11</value>
+                <value>46.19</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg type="java.util.Map">
+            <map>
+                <entry key="url" value="postgresUrl"></entry>
+                <entry key="password" value="19999"></entry>
+            </map>
+        </constructor-arg>
+    </bean>
+============================================================================================================================================
+Name: позволяют не соблюдать порядок параметров консруктора
+    <bean id="pool" class="org.example.spring.database.connection.ConnectionPool">
+        <constructor-arg name="password" value="12345"/>
+        <constructor-arg name="username" value="dbName"/>
+        <constructor-arg name="properties">
+            <map>
+                <entry key="url" value="postgresUrl"/>
+                <entry key="password" value="19999"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg name="listDouble">
+            <list>
+                <value>1000.2</value>
+                <value>131.51</value>
+                <value>8.11</value>
+                <value>46.19</value>
+            </list>
+        </constructor-arg>
+    </bean>

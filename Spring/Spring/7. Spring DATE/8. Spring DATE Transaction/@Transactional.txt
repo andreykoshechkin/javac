@@ -1,0 +1,29 @@
+Из пакета ----> org.springframework.transaction.annotation.Transactional
+
+@Transactional	//Автоматически открывает и закрывает транзакцию, ставится над классом и методом, причем, если эта аннотация стоит над классом, то управление транзакциями будет над всеми методами. Если же аннотация стоит и над классом и над методом то у метода будет приоритет.
+
+
+
+Примечение: Раньше я вручную открывал и закрывал транзакции entityManager.beginTransactional(), аннотация @Transactional сделает это за меня. По умолчанию, после завершение
+транзакции происходит rollback, мы можем изменить на коммит поставив @Commit
+
+Пример: Автоматическое открытие и закрытие транзакции
+@IT
+@RequiredArgsConstructor
+@Transactional
+@Rollback		
+class CompanyRepositoryIT {
+
+    private final EntityManager entityManager;
+    private final CompanyRepository companyRepository;
+
+    @Test
+    void findById() {
+
+        CompanyEntity companyEntity = entityManager.find(CompanyEntity.class, 1L);
+        Assertions.assertThat(companyEntity.getName()).isEqualTo("Google");
+
+        Assertions.assertThat(companyEntity.getLocales()).hasSize(2);
+
+    }
+}

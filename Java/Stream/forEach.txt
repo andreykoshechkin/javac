@@ -1,0 +1,16 @@
+ List<Integer> integerList = new ArrayList<>();
+        integerList.add(2);
+        integerList.add(3);
+        integerList.add(4);
+        integerList.add(5);
+        integerList.stream().forEach(o1 -> {
+            if (o1 % 2 == 0){
+                System.out.println(o1);
+            }
+
+        });
+
+integerList.stream().forEach(Math::cal); - Где Math имя класса. Где cal метод класса. Таким образом мы говорим, Примени к каждому элементу коллекции логику, которая задана
+в методе cal у класса Math.
+
+

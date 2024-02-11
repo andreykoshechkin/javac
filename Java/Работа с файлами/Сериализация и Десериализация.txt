@@ -1,0 +1,24 @@
+Сериализация - используется для сохранения состояния объекта в выходной поток
+Десериализация - считывание объекта из выходного потока
+
+static поля не сериализуются и не десериализуются, потому что они пренадлжеат всему классу а не объекту. Заисключением serialVersionUID
+
+Сериализация и Десериализация достигается с  помощью reflection API
+
+========================================================================================================================
+Десериализация: 
+        Path path = Path.of("C:\\Users\\Koshechkin\\Desktop\\Person.txt");
+
+        try (ObjectInputStream outputStream = new ObjectInputStream(new FileInputStream(path.toFile()));) {
+            try {
+                Person person = (Person) outputStream.readObject();
+
+                System.out.println(person);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+========================================================================================================================

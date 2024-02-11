@@ -1,0 +1,36 @@
+DaoAuthenticationProvide(DAO) - нужен для того, чтобы проводить аутентификацию пользователей, которые есть в бд. Для реализации нам нужно чтобы наш UserService 
+				реализовал интерфейс UserDetalisService.
+
+1. Добавить в liqubase 
+--liquibase formatter sql
+
+--changeset koshechkin:1
+ALTER TABLE users
+ADD COLUMN password VARCHAR(128) DEFAULT '{noop}123';   --Ставим дефолтный пароль 123 и так как DaoAuthenticationProvider использует Encoder
+                                                        --нам нужно поставить префикс в фигурные скобки где укажем явно, какой
+                                                        --encoder мы используем.
+							-- {noop} будет означать, что мы не используем шифрование паролей
+
+--changeset koshechkin:2
+ALTER TABLE users_aud
+ADD COLUMN password_aud VARCHAR(128)
+
+2. Нужно изменить Enum role
+public enum Role implements GrantedAuthority {
+    ADMIN,USER;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
+}
+
+3. Нужно реализвать UserDetalisService, для этого, наш UserService должен реализовать UserDetailsService
+   3.1 Мы должны пойти в UserRepository и написать метод Optional<UserEntity> findByUsername(String username);
+   3.2  реализация метода в userService
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+                .map(user -> new User(user.getUsername(), user.getPassword(), Collections.singleton(user.getRole())))
+                .orElseThrow(()-> new UsernameNotFoundException("FAIL")); UsernameNotFoundException этот exception мы обязано пробросить
+    }

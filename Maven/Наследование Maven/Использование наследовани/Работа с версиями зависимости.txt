@@ -1,0 +1,15 @@
+В ситуациях, когда несколько зависимостей имееют один groupId, при этом разные версии, то нам нужно  создать переменную в properties и указать версию.
+а уже в <dependency> в теге </version> обращаться к этой переменной через EL. Таким образом, все зависимости из этой groupID будут иметь одну и туже версию.
+
+   <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+        <spring.version>5.3.22</spring.version>			<--- Создали переменную(имя переменно может быть любым)
+    </properties>
+
+    <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>		<--- Обратились к этой переменной
+    </dependency>

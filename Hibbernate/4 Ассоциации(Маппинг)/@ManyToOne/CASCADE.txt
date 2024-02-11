@@ -1,0 +1,56 @@
+@ManyToOne(optional = false, cascade = CascadeType.ALL)		<-- Выполнит всё нижеперечисленное
+@ManyToOne(optional = false, cascade = CascadeType.PERSIST)	<-- Сохранит сущность
+@ManyToOne(optional = false, cascade = CascadeType.MERGE)	<-- 
+@ManyToOne(optional = false, cascade = CascadeType.REMOVE)	<-- Удалит сущность
+@ManyToOne(optional = false, cascade = CascadeType.REFRESH)	<-- Обновит сущность
+@ManyToOne(optional = false, cascade = CascadeType.DETACH)	<-- Закрываем сессию (выполняем метод session.evict)
+
+
+Обычно, мы должны сначало сохранить сущность Company и лишь потом  сущность User (потому-что users имеет forgen key на company)
+но если мы у Users укажем @ManyToOne(optional = false, cascade = CascadeType.ALL) то он автоматически создаст компанию
+
+В примре ниже, мы сохранили users без сохранения company. У нас так получилось,
+потому-что в сущности users поле Company отмечен аннотацией @ManyToOne + указано cascade type ALL
+
+===============================================================================================================================================================
+Не стоит ставить cascade = CascadeType.ALL над маппиногом @ManyToOne, так как при удаление user, удалиться и компания на которую этот user ссылается   
+
+@JoinColumn(name = "company_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    private CompanyEntity company;
+
+===============================================================================================================================================================
+Сущность users:
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "company_id")
+    private Company companyId;
+===============================================================================================================================================================
+Мain метод:
+
+        Company company = Company.builder()
+                .company_name("Google")
+                .build();
+
+        Users users = Users.builder()
+                .companyId(company)
+                .username("Ivan@gmail.com")
+                .usersInformation(UsersInformation.builder()
+                        .firstname("Ivan")
+                        .lastname("Ivanov")
+                        .birthday(new Birthday(LocalDate.of(1995, 9, 1)))
+                        .role(Role.USER)
+                        .build())
+                .build();
+
+
+        try (SessionFactory builder = BuilderConfiguration.getBuilder()) {
+            Session session = builder.openSession();
+            session.getTransaction();
+
+
+            session.save(users);
+
+            session.beginTransaction().commit();
+        } 
+
+===============================================================================================================================================================

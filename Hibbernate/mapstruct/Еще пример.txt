@@ -1,0 +1,6 @@
+    @Mappings({
+            @Mapping(target = ".", source = "characteristic"),
+            @Mapping(target = "companyReadDto", source = "company")
+    })
+
+    MobileReadDto mapReadToMobileDto(MobileEntity mobileEntity);

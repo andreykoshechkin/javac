@@ -1,0 +1,45 @@
+Описание того, как сделать так, чо=то при регистрации мы выбирали в селекте имя но на сервер шел id связанный с ээтим именем
+
+<form action="${pageContext.request.contextPath}/create" method="post">
+    <label>Firstname:
+        <input type="text" name="firstName">
+    </label><br>
+
+    <label>LastName:
+        <input type="text" name="lastName">
+    </label><br>
+
+    <label>Football team:
+        <select name="footballTeamId">
+            <c:forEach var="teamExample" items="${requestScope.team}">
+                <option name="footballTeam" value="${teamExample.id}">${teamExample.teamName}</option>
+            </c:forEach>
+        </select>
+
+    </label><br>
+    <button type="submit">Create</button>
+</form>
+
+@WebServlet("/create")
+public class FootballPlayersServlets extends HttpServlet {
+
+    private static final FootballPlayersService playersService = FootballPlayersService.getGetInstance();
+    private static final FootballTeamService service = FootballTeamService.getGetInstance();
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setAttribute("team", service.findAll());
+        req.getRequestDispatcher(GetJspPathHelper.getBasePath("playerCreate")).forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        FootballPlayersDto dto = FootballPlayersDto.builder()
+                .firstName(req.getParameter("firstName"))
+                .lastName(req.getParameter("lastName"))
+                .footballTeamId(Long.valueOf(req.getParameter("footballTeamId")))
+                .build();
+
+        playersService.create(dto);
+        resp.sendRedirect("/findAll");
+    }
+}

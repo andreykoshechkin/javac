@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache:config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns:ehcache='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.1.xsd">
+
+    <ehcache:cache alias="LessonsEmployees" uses-template="simple"/> <-- alias название региона, теперь для региона LessonsEmployees будут применены наши настройки 
+    <ehcache:cache alias="LessonsCompanies" uses-template="simple"/>
+
+    <ehcache:cache-template name="simple">
+        <ehcache:expiry>
+            <ehcache:ttl>10</ehcache:ttl> 	ttl <-- как много времени будет жить сериализованный объект типа entity в регионе (время в секундах)
+        </ehcache:expiry>
+        <ehcache:heap>1000</ehcache:heap>       heap <-- сколько в одном регионе может быть  сериализованный объект 
+    </ehcache:cache-template>
+
+</ehcache:config>
+
+
+
+hibernate-config.xml добавить проперти
+<property name="hibernate.javax.cache.uri">/ehcache-config.xml</property>
+
+
+@Audited
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "LessonsCompanies") <-- теперь будет использован наш настроеный regions
+public class Company implements GenerationId<Long> {	
+
+
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "LessonsUsers")      <-- теперь будет использован наш настроеный regions
+public class Employee implements GenerationId<Long> {

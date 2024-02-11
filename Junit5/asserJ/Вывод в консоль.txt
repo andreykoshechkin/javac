@@ -1,0 +1,7 @@
+   @Test
+    void testDB() throws SQLException {
+        Source source = new Source("jdbc:postgresql://localhost:5432/autocars", "postgres", "postgres");
+        Table table = new Table(source, "users");
+        assertThat(table).column("email").value().isEqualTo("OMgmeowmeow@yandex.ru");
+        output(table).toConsole();
+    }

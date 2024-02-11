@@ -1,0 +1,36 @@
+Release Plugin 				// Плагин для создания резила нашего проекта. Имеет два основных гола, prepare и perform.	
+=========================================================================================================================================================
+
+
+
+1. Устанавливаем Release Plugin 
+<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M6</version>
+            </plugin>
+</plugins>
+
+
+2. создаем секцию <scm>
+<scm>
+        <connection>scm:git:git@github.com:Exuseme/maven-lessons.git</connection> 			<---	только для чтения
+        <developerConnection>scm:git:git@github.com:Exuseme/maven-lessons.git</developerConnection> 	<---    для чтения и изменения
+        <url>https://github.com/Exuseme/maven-lessons</url>						<--- 	Докумнетация, которую мы использовали(НЕОБЯЗАТЕЛЬНО)
+</scm>
+
+
+
+
+
+=========================================================================================================================================================
+Как работают prepare, perform
+goals:prepare	
+1. Убирает SNAPSHOT из названия приложения и делает mvn package	
+2. Создать git tag и пушем измененный pom.xml(пушим 1.0.0 без SNAPSHOTA)
+3. Изменяем версии всех наших pom.xml и пушим в репозиторий
+			
+goals:perform
+1. Перейдет в target и сделаем клон тега, который мы указали в пункте 2 goals:prepare	
+2. пушит в удаленный репозиторий								 	

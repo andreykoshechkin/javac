@@ -1,0 +1,70 @@
+@Resources 	//Java аннотация для внедрения зависимостей по названию. Не ставиться над конструктором
+@Autowired	//Это аннотация спринга, которая связывает зависимости и полагается на тип. Ставится над конструктори и даже над аннотациями.
+		  Если у нас есть несколько бинов с одним и тем же типом, то аннотация @Autowired ищет тот бин, название которого такое-же как и названия поля  
+		  В слуае Консруктора, то component-scan будет впервую очередь искать тот консруктор, который отмечен аннотацией  @Autowired
+
+@Qualifier	//Данная аннотация работает вместе с @Autowired и служит для того, чтобы мы указывали имя бина который мы хотим заинджектить
+@Component	//Данная аннотация говорит, что класс будет использован в bean Difinition в xml должен быть <context:component-scan base-package="org.example.*"/>
+@Component(value = "pool1")	//Если название id отличается от названия класса 
+
+=======================================================================================================================================
+
+
+ЕСЛИ МЫ ЯВНО НЕ УКАЗЫВАЕМ ID BEAN(), ТО IDБИНА БУДЕТ ТАКИМ ЖЕ КАК И НАЗВАНИЕ САМОГО BEAN НО ТОЛЬКО С МАЛЕНЬКОЙ БУКВЫ.
+
+@Service
+public class BaseService {		<--- В этом случае, мы не указали @Component(value = "idService"), поэтому, тут ID будет baseService.
+
+    private final BaseRepository baseRepository;
+    private final BaseMapper baseMapper;
+
+    @Autowired
+    public BaseService(BaseRepository baseRepository, BaseMapper baseMapper) {
+        this.baseRepository = baseRepository;
+        this.baseMapper = baseMapper;
+    }
+}
+
+=======================================================================================================================================
+		  
+context:component-scan base-package="ГдеИскать"/>	//Ищет по указанному пути все те классы, который отмечены аннотацией @Component
+context:component-scan base-package=""/> 		//Внутри себя содержит еще и <context:annotation-config/>
+
+=======================================================================================================================================
+
+@Value 			//Дает возможность использовать значения properties
+public class ConnectionPool {
+
+    private final String username;
+    private final String password;
+    private final Map<Integer, String> properties;
+
+
+    public ConnectionPool(
+            @Value("${db.username}")		
+            String username,
+            @Value("${db.password}")
+            String password,
+            Map<Integer, String> properties) {
+        this.username = username;
+        this.password = password;
+        this.properties = properties;
+    }
+
+}
+==========================================================================================================================================
+
+
+Мы так же можем внедрять зависимости в виде коллекций, но только если этот лист имеет определенный тип
+
+
+public class BaseService {
+
+    @Autowired
+    private final List<ConnectionPool> connectionPool;
+
+      public BaseService(List<ConnectionPool> connectionPool) {
+        this.connectionPool = connectionPool;
+    }
+    
+}

@@ -1,0 +1,13 @@
+Source source = new Source("url", "username", "password");		<--- Подлкючаемся к базе данных
+Table table = new Table(source, "имяТаблицы")				<--- Берем таблицу
+
+assertThat(table).column("email").value().isEqualTo("OMgmeowmeow@yandex.ru");
+
+===================================================================================================================
+Пример:
+
+    @Test
+    void testDB() throws SQLException {
+        Table table = new Table(source, "users");
+        assertThat(table).column("email").value().isEqualTo("OMgmeowmeow@yandex.ru");
+    }

@@ -1,0 +1,69 @@
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@DiscriminatorValue("manager")
+public class Manager extends Users {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String project;
+
+    @Builder
+    public Manager(Long id, Company company, String username, UsersInformation info, Profile profile, List<UserChats> usersChats, Long id1, String project) {
+        super(id, company, username, info, profile, usersChats);
+        this.id = id1;
+        this.project = project;
+    }
+}
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString(of = "username")
+@EqualsAndHashCode(exclude = "company")
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
+public abstract class Users {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @Column(unique = true)
+    private String username;
+
+    @Embedded
+    private UsersInformation info;
+
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+
+    @OneToMany(mappedBy = "user")
+
+    private List<UserChats> usersChats = new ArrayList<>();
+
+}

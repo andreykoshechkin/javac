@@ -1,0 +1,65 @@
+Session - это обертка вокруг connection, которая работает с сущностями и создает sql запросы через рефлекуию
+
+
+Как работает Session внутри:
+
+public class RunnerTest {
+
+
+    @Test
+    void check() throws SQLException, IllegalAccessException {
+        User user = User.builder()
+                .username("test@gmail.com")
+                .firstname("firstName")
+                .lastname("lastname")
+                .birthdate(LocalDate.of(1999, 12, 12))
+                .age(13)
+                .build();
+
+
+        String sql = """
+                insert 
+                into 
+                %s
+                (%s)
+                values
+                (%s)
+                """;
+
+        String tableAndSchema = Optional.ofNullable(user.getClass().getAnnotation(Table.class))
+                .map(tableAnnotation -> tableAnnotation.name() + "." + tableAnnotation.schema())
+                .orElse(user.getClass().getName());
+
+        /*
+         * Optional.ofNullable(user.getClass().getAnnotation(Table.class)) <-- получаем аннотацию которую мы поставили у класса User
+         * .map(tableAnnotation -> tableAnnotation.name() + tableAnnotation.schema()) <-- мапим имя таблицы и схему (у класса User их написали)
+         * .orElse(user.getClass().getName()); <-- если имя таблица и схема не указана, то верни название класса
+         *
+         * */
+
+
+        Field[] declaredFields = user.getClass().getDeclaredFields();
+        String columName = Arrays.stream(declaredFields).map(colum -> Optional.ofNullable(colum.getAnnotation(Column.class))
+                .map(Column::name).orElse(colum.getName())).collect(joining(", "));
+
+        String collect = Arrays.stream(declaredFields)
+                .map(field -> "?")
+                .collect(joining(","));
+        /*
+        * Arrays.stream(user.getClass().getDeclaredFields()) <--берем все поля класса user
+        * map(colum -> Optional.ofNullable(colum.getAnnotation(Column.class))
+          .map(Column::name).orElse(colum.getName())).collect(Collectors.joining()); <--если у нас есть колонка с аннотацией Colum то берем ее имя иначе берем просто имя колонки
+        * Arrays.stream(declaredFields).map(field -> "?"); <- каждое поле мы ставим вместо вопроса и join через запятую
+        * */
+
+
+        System.out.println(sql.formatted(tableAndSchema, columName, collect));
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = connection.prepareStatement(sql.formatted(tableAndSchema, columName, collect));
+        for (Field declaredField : declaredFields) {
+            declaredField.setAccessible(true);
+            preparedStatement.setObject(1, declaredField.get(user));
+        }
+    }
+}

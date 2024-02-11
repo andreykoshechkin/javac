@@ -1,0 +1,16 @@
+К файлам proeprties мы можем получить доуступ двумя способоами:
+1. через префик spring.datasource
+2. через префик spring.jpa	<--- Позволяет настраивать hibernate
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        hbm2ddl.auto: validate

@@ -1,0 +1,57 @@
+v - класс, который содержит статические методы по созданию потока.	
+
+ExecutorService executorService = Executors.newFixedThreadPool(2) 					//В параметрах количество потоков
+	
+ExecutorService executorsService1  = Executors.newSingleThreadExecutor();				//Создание одного потока. Последовательно выполняет задачи.
+
+ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool();		//newScheduledThreadPool() - используем тогда, когда мы хотим установить рассписание.
+
+
+
+
+
+
+
+Варианты создание пула потоков 			 	//  #1 ExecutorService executorService = new ThreadPoolExecutor(); 
+							//  #2ExecutorService executorService = Executors.newFixedThreadPool(3); (Используем класс Executors)
+ 							//ExecutorService executorService = Executors.newCachedThreadPool(); - по мере необходимости 
+							  сам, внутри себя создает потоки или дает задание потокам, которые освободились.
+
+
+
+
+
+Два одинаковых метода, их отличие заключается в том что execute Синхронизирован, а submit Асинхронизирован
+						//В параметры передает тот класс который реализует метод Runnable();
+ExecutorService.execute()				//Этот метод передает наше задание в пул потоков, где далее оно выполняется.
+ExecutorService.submit() 				//Этот метод передает наше задание в пул потоков, где далее оно выполняется. 	
+							   Пример: ExecutorService.execute(new Runnable100()); 
+
+
+
+
+ExecutorService.showdown()				//Этот метод останавливает поток. Старые задачи будут выполнены но новые уже не будут приниматься.
+ExecutorService.awaitTermination() 			//Этот метод некий таймер, где в параметрах мы указываем, сколько ждать пока потоки выполнять всю реализацию.
+							  ЭТОТ МЕТОД ВЫЗЫВАЕМ ПОСЛЕ showdown()  Пример:ExecutorService.awaitTermination(1L, TimeUnits.HOURSE) 
+
+ 
+scheduledExecutorService.schedule()			//Метод schedule() Некое рассписание, которое указывает через какое время нужно приступить к выполнению задачи.	
+ 							  В параметрах указываем (класс который имплеменить Runnable, 4, TimeUnit.DAY) выполнение задачи начнется через 4 дня.
+
+scheduledExecutorService.scheduleAtFixedRate 		//Планирует рассписание выполнение задачи между потоками. 
+							  Задача будет выполнять по рассписанию, которое мы задаем в параметрах.
+scheduledExecutorService.scheduleWithFixedDelay
+							   (class,initial Delay, period, TIME)
+						            class - тот класс который имплементить Runnable:
+					 		    initial Delay - через сколько начать выполнение программы.
+							    period - интервал повторения между потоками.
+							    TIME - формат period (интервал повторение ввидя дня, часа, секунды)	
+
+
+   ScheduledExecutorService ex = Executors.newScheduledThreadPool(3);
+        ex.scheduleWithFixedDelay(new Runnable200(), 3,5,TimeUnit.SECONDS);
+        Thread.sleep(30000);
+        ex.shutdown();	
+
+
+

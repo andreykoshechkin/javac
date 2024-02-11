@@ -1,0 +1,31 @@
+Суть в том, что для всех потомков будет одна таблица(таблица родительского класса)
+
+@DiscriminatorColumn(name = "type") <---Ставится над родительским классом
+@DiscriminatorValue("manager")	    <---Ставится над классом потомком
+
+Плюс SINGLE_TABLE реализации заключается в том, что мы теперь можем использовать IDENTITY при генерации ID
+
+Как hibernate достает нужное нам поле:
+В примере, мы достаем сущность programmer
+Hibernate генерирует select запрос с условием, что type = programmer
+
+    select
+        programmer0_.id as id2_4_0_,
+        programmer0_.company_id as company10_4_0_,
+        programmer0_.birthday as birthday3_4_0_,
+        programmer0_.first_name as first_na4_4_0_,
+        programmer0_.last_name as last_nam5_4_0_,
+        programmer0_.role as role6_4_0_,
+        programmer0_.username as username7_4_0_,
+        programmer0_.language as language8_4_0_,
+        profile1_.id as id1_3_1_,
+        profile1_.street as street2_3_1_,
+        profile1_.user_id as user_id3_3_1_ 
+    from
+        Users programmer0_ 
+    left outer join
+        profile profile1_ 
+            on programmer0_.id=profile1_.user_id 
+    where
+        programmer0_.id=? 
+        and programmer0_.type='programmer'

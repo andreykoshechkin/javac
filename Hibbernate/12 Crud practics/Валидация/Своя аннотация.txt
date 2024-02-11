@@ -1,0 +1,5 @@
+Чтобы написать свою аннотацию, нужно следвать спецификации JSR 3.0.3, а именно:    
+Реализовать 3 метода
+    String message() default "{javax.validation.constraints.NotNull.message}";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};

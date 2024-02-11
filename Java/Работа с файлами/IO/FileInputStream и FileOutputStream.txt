@@ -1,0 +1,33 @@
+FileInputStream и FileOutputStream - предназначены для работы с бинарными файлами(Мы можем запимывать картинку, аудио файл и тд)
+Input  - считать от кудо-то
+Output - отдать(записать) куда-то
+
+Приняли бинарный текстовой файл, отдали картинку
+
+		 try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream("C:\\Users\\79964\\Desktop\\m6.txt"));
+             BufferedOutputStream bf = new BufferedOutputStream(new FileOutputStream("C:\\Users\\79964\\Desktop\\m6.jpg"))){
+
+            int ch;
+            while ((ch = bufferedInputStream.read()) != -1) {
+                bf.write(ch);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+============================================================================================================================================================
+
+В качестве второго параемтра FileOutputStream принимает boolean: 
+						true - записывай в конец файла(Если в файл есть какой-то текст, то он не будет перезаписан, просто будет добавлен в конец) 
+						fale(Поумолчанию) - перезаписвает файл(Стирает старое и записывает новое) 	
+File file = Path.of("task.txt").toFile();
+FileOutputStream fileOutputStream = new FileOutputStream(file, true))
+
+
+File file = Path.of("task.txt").toFile();
+BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file, true)) <--указали куда записываем и установили что нужно зписывать в конец строки
+String text = "hello";
+bufferedOutputStream.write(text.getBytes());				<---Записали 
+bufferedOutputStream.write(System.lineSeparator().getBytes());		<---Перевели на новую строку
+} 
+============================================================================================================================================================

@@ -1,0 +1,15 @@
+    UsersDto usersDto = UsersDto.builder()
+                .username(req.getParameter("username"))
+                .birthday(req.getParameter("birthday"))
+                .email(req.getParameter("email"))
+                .password(req.getParameter("password"))
+                .role(req.getParameter("role"))
+                .build();
+
+        try {
+            service.create(usersDto);
+            resp.sendRedirect("/login");
+        } catch (ValidatorException validatorException) {
+            req.setAttribute("error", validatorException.getValidationErrorList());
+            doGet(req, resp);
+        }

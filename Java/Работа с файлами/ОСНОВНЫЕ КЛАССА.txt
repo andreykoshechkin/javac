@@ -1,0 +1,4 @@
+Основные класс на которые нужнно обратить внимание:
+1)BufferReader BufferWrite BufferInputReader BufferOutputReader  ((BufferedReader у него есть методо .lines который возвращает strem)
+2)Files <--- тут сожержиться много очень удобных методов. К примеру Files.readString который сразу запишет весь текст в строку
+3)

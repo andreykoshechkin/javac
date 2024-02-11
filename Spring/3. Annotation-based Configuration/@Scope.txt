@@ -1,0 +1,16 @@
+@Scope						//Дает возможность БЕЗ XML указывать у класса каким скопом он будет, singleton or prototype
+proxyMode = ScopedProxyMode.INTERFACES		//Будет создан прокси через dynamic(дайнемик прокси)на наш bean UserRepository
+proxyMode = ScopedProxyMode.TARGET_CLASS	//Будет создан прокси через наследование на наш bean UserRepository
+
+@Scope(value = BeanDefinition.SCOPE_SINGLETON, proxyMode = ScopedProxyMode.INTERFACES)
+@Component
+@Component(value = "userRep")
+public class UserRepository {
+
+    @Autowired
+    private final UserDao userDao;
+
+    public UserRepository(UserDao userDao) {
+        this.userDao = userDao;
+    }
+}

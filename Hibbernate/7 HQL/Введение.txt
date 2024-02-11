@@ -1,0 +1,26 @@
+HQL (Hibernate Query Language) – это объекто-ориентированный язык запросов, который очень похож на SQL.Отличие от SQL заключается в том, что HQL работает именно с сущностями, а
+не с таблицами как это делает SQL.
+==================================================================================================================================================================
+Пример HQL:
+ List<Game> list = session.createQuery("select g from Game  g " +
+                        "join g.company c " +
+                        "where g.name = :gameName and c.name = :companyName", Game.class)
+                .setParameter("gameName", nameGame)
+                .setParameter("companyName", nameCompany).list();
+ 	        .setHint(QueryHints.HINT_FETCH_SIZE,50)		<--- Делаем выборку по фиксированному значению, Это улучшит производительность
+                .setHint(QueryHints.SPEC_HINT_TIMEOUT, 10)	<--- Устанавливаем, сколько времени нам ждать
+		.setMaxResults(3)				<--- Заменяет LIMIT 
+		.setFirstResult(3)				<--- Заменяет OFFSET
+
+        list.forEach(System.out::println);
+
+==================================================================================================================================================================
+При этом, в hibernate есть createNativeQuery 
+
+Пример: session.createNativeQuery("select g from Game g", Game.class); <-- это уже Sql запрос. При этом, hibernate сам смаппит объект из Базы данных в сущность
+
+
+
+
+
+

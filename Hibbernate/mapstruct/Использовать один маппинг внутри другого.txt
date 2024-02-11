@@ -1,0 +1,49 @@
+Проблема при маппинге: У нас есть две DTO, StudentDto и StudentToCoursesDto. Когда мы маппим StudentDto то информация о StudentToCoursesDto будет null из-за того, что нам нужно сделать маппинг StudentToCoursesDto и 
+		       маппинг StudentToCoursesDto заиспользовать в маппинге StudentDto.
+========================================================================================================================
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class StudentDto {
+
+    private String firstName;
+    private String lastName;
+    private String birthdate;
+    private List<StudentToCoursesDto> studentToCoursesDto;
+}
+
+
+
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class StudentToCoursesDto {
+
+    private StudentDto studentDto;
+    private CoursesDto coursesDto;
+}
+
+========================================================================================================================
+
+
+Если в нашем маппинге должен присутствовать другой маппинг, то нам нужно использовать @Mapper(uses = StudentToCoursesMapper.class)
+@Mapper(uses = StudentToCoursesMapper.class)
+public interface StudentMapper {
+
+    StudentMapper INSTANCE = Mappers.getMapper(StudentMapper.class);
+
+
+    @Mapping(target = "studentToCoursesDto", source = "toCoursesList")
+    StudentDto studentEntityToStudentDto(StudentEntity studentEntity);
+}
+
+==========
+Ответ GPT 
+Проблема, которую вы описываете, связана с тем, что MapStruct не может выполнить автоматическое сопоставление между полями StudentEntity и StudentToCoursesDto, 
+так как они не имеют одинаковых имен. Вам нужно добавить дополнительные настройки сопоставления для этой связи.
+Для этого вы можете создать ещё один маппер, который будет сопоставлять StudentToCourses с StudentToCoursesDto,
+а затем использовать этот маппер внутри вашего основного маппера StudentMapper. Вот как это можно сделать:
+Создайте маппер для сопоставления StudentToCourses с StudentToCoursesDto:

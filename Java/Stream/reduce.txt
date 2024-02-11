@@ -1,0 +1,25 @@
+reduce - метод stream, который сумирует элементы коллекции или саммива
+isPresent - можно испозьзовать как проверку, присутствует ли результат произведения которое мы получили при помощи метода reduce. 
+
+ List<Integer> integerList = new ArrayList<>();
+
+        Optional<Integer> total = integerList.stream().reduce((acc, o1)->acc * o1);
+        if (total.isPresent()){
+            System.out.println(total.get());
+        }else System.out.println("Элементов нет");
+
+
+так же, мы можем задать первоначальное значение аккамулятора в метоже, reduce и вычисление начнеться именно со значения, которое мы указали вручную
+
+    int x = integerList.stream().reduce(1,(acc, o1) -> acc * o1); - acc равен 1
+    System.out.println(x);
+
+================================================================================================================================================================
+Мы можем распараллелить нашу задачу на несколько потоков:
+	int x = studentExamples.stream().parallel().map(student -> student.getAge()).max((o1, o2) -> o1 - o2).get();
+
+
+================================================================================================================================================================
+Если мы хотим чтобы нашу задачу выполнял один поток, то вместо .parallel() можно использовать .sequential()
+int x = studentExamples.stream().sequential().map(student -> student.getAge()).max((o1, o2) -> o1 - o2).get();
+        System.out.println(x);

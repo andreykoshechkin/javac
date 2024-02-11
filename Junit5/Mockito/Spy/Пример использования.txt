@@ -1,0 +1,16 @@
+
+    @BeforeEach
+    void prepare() {
+        this.userDao = Mockito.spy(UserDao.class);
+        this.userService = new UserService(userDao);
+    }
+
+
+
+    @Test
+    void testDelete() {
+        userService.add(ANDREY);
+        Mockito.doReturn(true).when(userDao).delete(ANDREY.getId());
+        boolean delete = userService.delete(ANDREY.getId());
+        assertThat(delete).isTrue();
+    }

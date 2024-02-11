@@ -1,0 +1,25 @@
+Attribute - нужны для того чтобы хранить какие-то значения в сессии. Attribute представляют из себя
+	    ассотивный массив где Ключом явялется  String, а значением любой объект в том числе и java объект(объектDTO).
+
+Виды attribute:
+	1 - ServletContext, это один аттрибут на все наши сервлеты
+        2 - Аттрибуты сессии, это те аттрибуты, которые привязаны к сессии
+        3 - Request аттрибуты, это те аттрибуты, которые привязаны к httpServletRequest(к запросам)  
+
+@WebServlet("/session")
+public class SessionServlets extends HttpServlet {
+
+    public static final String USER = "kakoy-to";
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();		<Получаем ссесию
+        UserDTO user = (UserDTO) session.getAttribute(USER);	<Получаем атрибут и кастим в Dto
+
+        if (user == null) {
+            user = UserDTO.builder().id(10L).mail("Andrey@yandex.ru").build();
+        }
+        session.setAttribute(USER, user);
+
+    }
+}

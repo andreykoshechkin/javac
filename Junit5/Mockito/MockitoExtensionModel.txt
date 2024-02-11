@@ -1,0 +1,25 @@
+Аннотация @Mock - ставить над тем объектом из которого мы хотим сделать Mock
+Аннотация @InjectMocks- ставить над тем объектом, который внутри себя использует объект мока
+
+    @InjectMocks
+    private UserService userService;
+
+    @Mock			
+    private CarsDao carsDao;
+
+Это позволяет нам не создавать mock из объекта в ручную в BeforeEach. 
+
+@BeforeEach
+    void prepareEach(UserService userService) {
+        carsService = new CarsService();
+
+    }
+
+Не забыть! добавить MockitoExtension.class в @ExtendWith
+
+@ExtendWith({
+        UserServiceParameterResolver.class,
+        MockitoExtension.class,
+        ThrowableExtension.class
+
+})

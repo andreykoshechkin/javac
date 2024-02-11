@@ -1,0 +1,60 @@
+1: нужно загрузить DriverManager для соответствующей базы данных  и добавить Project Setting -> Modeules -> Dependencies -> + и добавляем driver postgresql
+2: Нужно ресурсную папку и там создать application.resources
+3: Нужно создать утилитный класс Properties который будет получать данные из application.resources по ключу
+
+=================================================================================================================================================
+							Описание класса properties:
+
+public final class utilProperties {
+    private static final Properties PROPERTIES = new Properties();
+
+    private utilProperties() {
+    }
+
+    static {
+        loadProperties();
+    }
+
+    public static String getKey(String key) {
+        return PROPERTIES.getProperty(key);
+    }
+    private static void loadProperties() {
+        try (var input = ConnectionToDateBase.class.getClassLoader().getResourceAsStream("application.properties")) {
+            PROPERTIES.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+=================================================================================================================================================
+
+4: Нужно создать класс для подключение к базе данных
+5: В этом классе нужно создать переменные 
+=================================================================================================================================================
+
+							Описание класса для подключение к БД:
+private static final String URL_KEY = "db.url";
+private static final String USERNAME_KEY = "db.username";
+private static final String PASSWORD_KEY = "db.password";
+
+
+    static {
+        loadDriver();
+    }
+    public static Connection open() {
+        try {
+            return DriverManager.getConnection(utilProperties.getKey(URL_KEY), utilProperties.getKey(USERNAME_KEY), utilProperties.getKey(PASSWORD_KEY));
+        } catch (SQLException e) {
+            throw new sqlRuntimeException(e);
+
+        }
+    }
+    private static void loadDriver() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+=================================================================================================================================================

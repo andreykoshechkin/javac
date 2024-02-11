@@ -1,0 +1,36 @@
+Методы:
+
+currentThread() - показывает поток в котором мы находимся 
+isInterrupted - прервыет поток
+
+Thread.currentThread().isInterrupted() прервыет поток в котором мы находимся 
+
+currentThread().isInterrupted - метод, начинает прерывание потока в том месте где он был выззван.
+thread1.interrupt() - это метод который сообщает потоку что мы хотим его остановить (Должен быть до thread.join())!
+
+
+МЕТОД КОТОРЫЙ ИСПОЛЬЗОВАТЬ НЕЖЕЛАТЕЛЬНО!
+thread.stop(); - метод который мгновенно останавливет поток.
+
+
+Random random = new Random();
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 1_000_000_000; i++) {
+
+                    Math.sin(random.nextDouble());
+
+                    if (Thread.currentThread().isInterrupted()) {
+                        System.out.println("Поток прерван".toUpperCase(Locale.ROOT));
+                        break;
+                    }
+                }
+            }
+        });
+        System.out.println("Starting Thread....");
+        thread1.start();
+        thread1.interrupt();
+        thread1.join();
+        Thread.sleep(1000);
+        System.out.println("Thread has completed!");

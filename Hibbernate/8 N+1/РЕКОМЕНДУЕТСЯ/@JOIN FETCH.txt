@@ -1,0 +1,20 @@
+Одно из лучших решений того, как ускорить производительность. Нужно использовать fetch join.
+
+JOIN FETCH - добавляет колонки из тех таблиц на которые мы делаем join, в результирующий набор (в наш select)
+
+Для Querydsl: 
+    new JPAQuery<QPayment>(session)
+                .select(payment)
+                .from(payment)
+                .join(payment.employee, employee).fetchJoin()		<--возьмет payment  и добавит его в результирующий набор
+                .join(employee.company, company).fetchJoin()		<--возьмет employee и добавит его в результирующий набор
+                .where(company.companyName.eq("Valve"))
+                .orderBy(employee.employeeInfo.firstName.asc(), payment.amount.asc())
+                .fetch().forEach(System.out::println);
+
+
+
+Для HQL:
+        session.createQuery("select e FROM  Employee e " +
+                "join fetch e.company c " +
+                "where c.companyName=:name ").setParameter("name", "Valve").list().forEach(System.out::println);

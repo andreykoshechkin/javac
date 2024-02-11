@@ -1,0 +1,22 @@
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.0</version>
+          <executions>
+            <execution>
+              <id>copy-dockerId</id>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+              <phase>validate</phase> <!-- указываем к какой фазе привязать goal -->
+              <configuration>
+                <outputDirectory>${project.basedir}/target</outputDirectory> <!-- куда копировать(в какую директорию) -->
+                <resources>
+                  <resource>
+                    <directory>${project.basedir}/docker</directory>  <!-- что копировать-->
+                  </resource>
+                </resources>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>

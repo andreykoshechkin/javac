@@ -1,0 +1,7 @@
+Переименование таблицы
+Для переименования таблиц применяется системная хранимая процедура "sp_rename". 
+Например, переименование таблицы Users в UserAccounts в базе данных usersdb:
+
+ 
+USE usersdb;
+EXEC sp_rename 'Users', 'UserAccounts';

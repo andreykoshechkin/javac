@@ -1,0 +1,40 @@
+		
+@Condition	# //Автоматически включает или выключает модули по какому-то условию. В Spring Framework используется для определения условий, при которых должен быть создан бин.  
+При использовании @Condition в аннотации @Bean метода конфигурации, бин будет создан только в том случае, если выполнено определенное условие.  
+Например, можно создать бин только если определенное свойство есть в свойствах приложения, если определенный бин уже существует или если определенный класс находится в classpath
+
+
+Если условия Condition выполнены то модуль/Конфигурационный класс будет добавлен в наш context, следовательно, код который написан в модули или Конфигурационном классе будет работать.
+
+
+Методы:
+getRegistry();			//Позволяет получить все Bean Difenition
+getBeanFactory();		//Позволяет получить все бины которые есть в sprin context
+getEnvironment();		//Позволяет получить доступ ко все properties/профайлам
+getResourceLoader();		//Загрузка ресурсов
+getClassLoader();		//
+
+
+=======================
+1.
+@Configuration
+@Conditional(JpaCondition.class)	<---Если условия которые написаны в JpaCondition.class будут  выполнены, то метод init выполнется 
+public class JpaConfiguration {
+
+    @PostConstruct
+    public void init(){
+        System.out.println("Jpa configuration is enable");
+    }
+}
+
+2. public class JpaCondition implements Condition {
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {	
+        try {
+            context.getClassLoader().loadClass("org.postgresql.Driver");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+}

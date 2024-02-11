@@ -1,0 +1,19 @@
+Что такое IoC инверсия управления - 
+Что такое Dependensi injection - 
+Что такое IoC container - 
+Что такое Been difinition - 
+Что такое Bean -
+Назовите 3 способа создать Been difinition -
+Какие интерфейсы реализует IoC container - 
+Фреймворк определяет и внедряет зависимости через -
+Инициализации callback -
+Destoy callback - 
+BeanFactoryPostProcessors- 
+Области видимости -
+Как работает component-scan-
+singlton и prototype - 
+@Component-
+@Configuration
+@Autowired - 
+@Scope -
+

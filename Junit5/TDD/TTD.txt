@@ -1,0 +1,38 @@
+Test Driven Development или сокращенно TDD  // Метод тестирования, когда сначала  пишеться тест к методу, а потом уже сам метод
+
+1.
+    @Test
+    void loginSuccessIfUsersExists() {                                                                        // Тест метода login которого еще нет
+        userService.add(ANDREY)   ;									      // ANDREY - это константа
+        Optional<UserDto> maybeUsers = userService.login(ANDREY.getUsername(), ANDREY.getPassword());         // Метод login должен возвращать user'a, этот метод нам придеться создать
+        assertTrue(maybeUsers.isPresent());                                                                   // Если user с переданными параметрами существует
+        maybeUsers.ifPresent(user -> assertEquals(ANDREY, user));					      // Если user есть то сравни его
+
+    }
+
+
+
+    @Test
+        //Тест который проверяет корректность пароль
+    void loginFailIsPasswordNotCorrect() {
+
+        Optional<UserDto> userPass = userService.login(ANDREY.getUsername(), "xxxxxxx");
+        assertTrue(userPass.isEmpty());         //Вернет true если пользователя с таким паролем нет
+    }
+
+
+    @Test
+    void loginFailUsernameIsCorrect() {
+        Optional<UserDto> dummy = userService.login("dummy", ANDREY.getPassword());
+        assertTrue(dummy.isEmpty());
+
+    }
+
+
+2. На уровне сервиса:
+   public Optional<UserDto> login(String username, String password) {
+        return list.stream()
+                .filter(user -> user.getUsername().equals(username))			
+                .filter(user -> user.getPassword().equals(password))
+                .findFirst();
+    }

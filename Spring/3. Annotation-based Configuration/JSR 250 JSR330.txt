@@ -1,0 +1,36 @@
+Java EE - представляет набор всех спецификаций.
+JSR(Java Specification Request) - набор интерфесов и аннотаций которые мы должны соблюдать, чтобы поддерживать эту спецификацию. 
+
+JSR250	- java annotation спецификаия
+JSR330	- Java dependency injection спецификация
+
+Spring следует JSR250 и JSR330 спецификации, а значит, все аннотации из JSR250 и JSR330 будут работать и в Спринге
+
+@ManagedBean из JSR250 тоже самое что и @Component из спринга 
+
+
+
+JSR330	    	 Spring
+@Inject    ----> @Autowored
+@Named 	   ----> @Component
+@Qualifier ----> @Qualifier
+@Scope	   ----> @Singleton
+
+
+
+
+
+JSR330
+<dependency>
+    <groupId>javax.inject</groupId>
+    <artifactId>javax.inject</artifactId>
+    <version>1</version>
+</dependency>
+
+
+JSR250
+  <dependency>
+        <groupId>jakarta.annotation</groupId>
+        <artifactId>jakarta.annotation-api</artifactId>
+        <version>2.1.1</version>
+    </dependency>

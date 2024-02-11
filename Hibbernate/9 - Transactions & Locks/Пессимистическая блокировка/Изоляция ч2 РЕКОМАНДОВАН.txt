@@ -1,0 +1,59 @@
+Решит проблем параллельных транзакций можно двумя способами:
+1 Оптимистическая блокировка  <--- лок на програмном уровне
+2 Пессимистическая блокировка <--- лок на уровне базы данных
+
+
+================================================================================================
+Оптимистическая блокировка: Оптимистическая блокировка запрещает запись объекта в базу данных(Выбросится exception OptimisticLockException), 
+если после считывания объекта он был изменен в базе данных.
+
+Реализация оптисистической блокировки: 
+1. Над классом поставить аннотацию @OptimisticLocking(type = OptimisticLockType.VERSION)
+2. Создать поле private Long version и поставить аннотацию @Version: <--Автоматически подключить алгоритм оптиместической блокировки
+  @Version
+  private Long version;
+
+
+var profile = session.find(Profile.class, 1L, LockModeType.OPTIMISTIC);				<-- Изменит version только если мы сделали update
+var profile = session.find(Profile.class, 1L, LockModeType.OPTIMISTIC_FORCE_INCREMENT);		<-- Изменит version в любов случае, даже если мы сделали select
+
+
+
+========================================================================================================================================================
+Пессимистическая блокировка: Означаем, что мы не можем изменять данные, пока стоит блокировка.
+Подробно под уровнях блокировки: 13.3.2. Блокировки на уровне строк https://postgrespro.ru/docs/postgresql/9.6/explicit-locking#locking-rows
+
+var profile1 = session.find(Profile.class, 1L, LockModeType.PESSIMISTIC_READ);
+        profile1.setPhone("Test1");
+
+Запрос который сформировал hibernate:
+    select
+        profile0_.id as id1_4_0_,
+        profile0_.employee_id as employee4_4_0_,
+        profile0_.phone as phone2_4_0_,
+        profile0_.version as version3_4_0_ 
+    from
+        Profile profile0_ 
+    where
+        profile0_.id=? for share		<--- for share аналог PESSIMISTIC_READ но в postgreSQL. Блокирует UPDATE, DELETE, SELECT FOR UPDATE такие запросы for share блокирует
+
+
+var profile1 = session.find(Profile.class, 1L, LockModeType.PESSIMISTIC_WRITE); <--- более строгий чем for share, но не блокирует SELECT FOR UPDAT
+
+
+
+    var profile1 = session.find(Profile.class, 1L, LockModeType.PESSIMISTIC_FORCE_INCREMENT); <-- требует версионность( @Version  private Long version;)
+        profile1.setPhone("Test1");
+
+
+
+
+
+
+
+
+
+
+
+
+

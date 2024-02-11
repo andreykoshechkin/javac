@@ -1,0 +1,20 @@
+Spring DATE - один из модулей spring framework, который дает нас следующие возможность:
+1. предоставляет свою реализацию dao слоя и у нас по сути готов dao слой из коробки
+2. автоматически открывать/закрывать транзакции
+3. более удобное конфигурированию
+
+================================================================================================================
+Автоконфигурация:
+ @AutoConfiguration(after = DataSourceAutoConfiguration.class, before = TransactionAutoConfiguration.class)
+ @ConditionalOnClass({ LocalContainerEntityManagerFactoryBean.class, EntityManager.class, SessionImplementor.class })
+ @EnableConfigurationProperties(JpaProperties.class)
+ @Import(HibernateJpaConfiguration.class)
+ public class HibernateJpaAutoConfiguration {
+ }
+
+
+JpaProperties.class				<-- Дает возможность настраивать properties конкретно для hibernate
+EntityManager.class				<-- Аналог entityManager, тобишь это обертка вокруг connection'a
+DataSourceAutoConfiguration.class		<--
+DataSource					<-- Стандарт sql, который представляет соединение с базой данных
+LocalContainerEntityManagerFactoryBean.class    <-- Загружает entityManagerFactory, аналог entityManagerFactory и по совместительству обертка connectionPool

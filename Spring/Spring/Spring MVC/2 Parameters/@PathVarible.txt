@@ -1,0 +1,7 @@
+@PathVariable Аннотация, указывающая, что параметр метода должен быть привязан к переменной шаблона URI.
+
+    @GetMapping("/{id}")
+    public String findById(Model model, @PathVariable("id") Long id){
+        userService.findById(id);
+        return "user/user";
+    }

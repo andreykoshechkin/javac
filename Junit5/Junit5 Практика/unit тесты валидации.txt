@@ -1,0 +1,93 @@
+class CreateUserValidationTest {
+
+    private CreateUserValidation createUserValidation;
+
+    @BeforeEach
+    void init() {
+        createUserValidation = new CreateUserValidation();
+    }
+
+    @Test
+    void userValidationSuccess() {
+        UsersDto user = UsersDto.builder()
+                .username("test")
+                .email("test@gmail.com")
+                .birthday("2000-01-01")
+                .password("123")
+                .role(Role.ADMIN.name())
+                .build();
+
+        ValidationResult actual = createUserValidation.isValid(user);
+        Assertions.assertThat(actual.isValid()).isTrue();
+    }
+
+
+    @Test
+    void validationBirthday() {
+        UsersDto user = UsersDto.builder()
+                .username("test")
+                .email("test@gmail.com")
+                .birthday("2000-01-01 12:31")
+                .password("123")
+                .role(Role.ADMIN.name())
+                .build();
+
+        ValidationResult actualResult = createUserValidation.isValid(user);
+
+        Assertions.assertThat(actualResult.getErrorList()).hasSize(1);
+        Assertions.assertThat(actualResult.getErrorList().get(0).getMessage()).isEqualTo("Birthday is not corrected");
+    }
+
+
+    @Test
+    void validationUsername() {
+        UsersDto user = UsersDto.builder()
+                .username("")
+                .email("test@gmail.com")
+                .birthday("2000-01-01")
+                .password("123")
+                .role(Role.ADMIN.name())
+                .build();
+
+        ValidationResult actualResult = createUserValidation.isValid(user);
+
+        Assertions.assertThat(actualResult.getErrorList()).hasSize(1);
+        Assertions.assertThat(actualResult.getErrorList().get(0).getMessage()).isEqualTo("Username is Empty");
+
+    }
+
+    @Test
+    void validationOfTheRole() {
+        UsersDto user = UsersDto.builder()
+                .username("test")
+                .email("test@gmail.com")
+                .birthday("2000-01-01")
+                .password("123")
+                .role("dummy")
+                .build();
+
+        ValidationResult actual = createUserValidation.isValid(user);
+
+        Assertions.assertThat(actual.getErrorList()).hasSize(1);
+        Assertions.assertThat(actual.getErrorList().get(0).getMessage()).isEqualTo("Role is not corrected");
+
+    }
+
+    @Test
+    void validationUsernameBirthdayRole() {
+        UsersDto user = UsersDto.builder()
+                .username("")
+                .email("test@gmail.com")
+                .birthday("2000-01-01 12:00")
+                .password("123")
+                .role("dummy")
+                .build();
+
+        ValidationResult actualResult = createUserValidation.isValid(user);
+
+        Assertions.assertThat(actualResult.getErrorList()).hasSize(3);
+        List<String> message = actualResult.getErrorList().stream().map(ValidationError::getMessage).toList();
+
+        Assertions.assertThat(message).contains("Username is Empty", "Birthday is not corrected", "Role is not corrected");
+    }
+}

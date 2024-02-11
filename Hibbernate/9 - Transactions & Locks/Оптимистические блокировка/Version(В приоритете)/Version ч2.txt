@@ -1,0 +1,15 @@
+@Entity
+public class MyEntity implements Serializable {    
+    // ...
+
+    @Version
+    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
+    private long version = 0L;
+
+    // ...
+}
+Почему? Потому что:
+
+Оптимистическая блокировка не сработает , если поле с аннотацией @Version случайно установлено в null.
+Поскольку это специальное поле не обязательно является бизнес-версией объекта, чтобы не вводить в заблуждение,
+я предпочитаю называть такое поле чем-то вроде, optlockа не version.

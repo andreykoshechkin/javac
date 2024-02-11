@@ -1,0 +1,8 @@
+Если при создании нам нужно передавать не сущность а лишь id:
+Пример: При создании mobileCreateDto нам нужно указать id компании, тогда в target мы обращаемся через . к ID 
+
+   @Mappings({
+            @Mapping(target = "company.id", source = "companyId"),
+            @Mapping(target = "characteristic", source = ".")
+    })
+    MobileEntity mapCreateToEntity(MobileCreateDto mobileCreateDto);

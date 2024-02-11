@@ -1,0 +1,33 @@
+Проекция 				# Некий класс, чаще всего интерфейс, который содержит в себе, только те поля, которые мы хотим получить. По сути это проекция и есть DTO.
+					# В случае проекции, лучше всего использовать нативные запросы.
+
+Проекция и DTO (Data Transfer Object)	# Могут быть похожими концепциями, но обычно DTO используется для передачи данных между различными слоями приложения,
+					  а проекция, как правило, привязана к работе с базой данных.
+
+
+
+Пример: 
+public interface UserProjectionDto {
+
+    String getUsername();
+    String getBirthdate();
+    String getRole();
+
+    @Value("#{target.username + ' ' + target.role}")
+    String getUsernameAndRole();
+}
+
+
+UserRepository
+
+    //Поля в Проекции должны быть точно такими же как и в таблице БД, но что бы соблюдать java conversion, то в Проекции мы не можем иметь поле String getBirth_date
+    //В таком случае, можно ставить альясы. Альяс должен быть таким же как и в проекции
+    // String getBirthdate1(); = birthdate1
+
+    @Query(value = "select u.username, u.role, u.birth_date birthdate FROM Users u WHERE u.company_id=:companyId", nativeQuery = true)
+    List<UserProjectionDto> findAllByCompanyIdProjection(@Param("companyId") Integer companyId);
+
+
+   @Query(value = "SELECT u.firstname, u.lastname, u.role, c.name CompanyName FROM Users u " +
+            "JOIN Company c ON u.company_id=c.id WHERE u.role=:role", nativeQuery = true)
+    List<UserProjection> findUserByRole(@Param("role") String role);

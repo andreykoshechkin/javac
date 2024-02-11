@@ -1,0 +1,26 @@
+@Mapper
+public interface UserMapper {
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    
+    @Mapping(source = "email", target = "username")         //Если имена полей отличаются
+    UserDto userEntityToUserDto(UserEntity userEntity);
+}
+@Mapper
+public interface UserMapper {
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+
+    //Если имена полей или тип отличается отличаются. 
+    //source - источник (от куда).
+    //target - цель (во что маппить)
+    @Mapping(source = "username", target = "email")         
+    UserDto userEntityToUserDto(UserEntity userEntity);
+}
+
+========================================================================================
+Если мы работаем с embeddebl объектами:
+У MobileEntity есть Characteristic где описана характеристика, но в DTO нету Characteristic
+
+    @Mapping(target = ".", source = "characteristic")
+    MobileReadDto mapReadToMobileDto(MobileEntity mobileEntity);
+
+========================================================================================

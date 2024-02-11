@@ -1,0 +1,34 @@
+@GeneratedValue(strategy = Generation.IDENTITY)  <-- Данной аннотацией мы отмечаем primary key, параметры значат, что в базе данных используемое поле автогенерируемое
+@GeneratedValue(strategy = GenerationType.SEQUENCE) <-- инкрементит выбранное поле. SEQUENCE есть не во всех базах данных
+
+@Column(unique = true)				 <-- Данной аннотацией мы указываем, что поле в базе данных является уникальным (UNIQUE COSTRANTE)
+
+
+
+Пример:
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
+    private String username;
+
+    @Embedded
+    @AttributeOverride(name = "birth_day", column = @Column(name = "birthday"))
+    private PersonalInfo personalInfo;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Type(type = "jsonb")
+    private String info;
+
+}

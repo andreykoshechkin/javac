@@ -1,0 +1,26 @@
+Parametr resolve -- есть один или несколько объектов, которые предоставляют зависимости для дпругих объектов.
+БЕЗ Parametr resolve НЕЛЬЗЯ ПИСАТЬ ТЕСТЫ С ПАРАМЕТРЫМИ
+
+У этого интерфейса есть два метода: 
+
+1.boolean supportsParameter(ParameterContext var1, ExtensionContext var2) -- Вызывается в начале, определяет, подходит ли параметры метода под parametr resolver 
+ParameterContext -- говорит всю информацию о параметре 
+ExtensionContext
+
+2.Object resolveParameter(ParameterContext var1, ExtensionContext var2) -- 
+
+
+Пример класса
+
+public class UserServiceParamResolver implements ParameterResolver {
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return parameterContext.getParameter().getType() == UserService.class;
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        ExtensionContext.Store store = extensionContext.getStore(ExtensionContext.Namespace.GLOBAL);
+        return store.getOrComputeIfAbsent(UserService.class, it -> new UserService());
+    }
+}

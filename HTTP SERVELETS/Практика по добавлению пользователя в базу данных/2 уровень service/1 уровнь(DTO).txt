@@ -1,0 +1,15 @@
+1: Нам нужно создать соответствующий класс DTO. Он должен быть immutable.
+2: все поля в нашей JSPL будут String,  так как getParametr в doPost возвращает map где пара ключ-значения являются строкой
+
+@Value
+@Builder
+public class CreateUserDTO {
+    String id;
+    String firstName;
+    String lastName;
+    String email;
+    String birthday;
+    String password;
+    String genders;
+    String role;
+}

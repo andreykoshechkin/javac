@@ -1,0 +1,15 @@
+/**
+ * 4. Использовать LocalDateTime из предыдущего задания, преобразовать его
+ * в объект типа Instant, указав тайм зону "America/Chicago". Вывести количество
+ * прошедших миллисекунд.
+ */
+
+        String date = "26-03-1968T09:24";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm");
+        LocalDateTime localDateTime = LocalDateTime.parse(date, dateTimeFormatter);
+
+        ZoneId zoneId =ZoneId.of("America/Chicago");
+
+        Instant instant = localDateTime.toInstant(zoneId.getRules().getOffset(localDateTime));
+
+        System.out.println(instant.toEpochMilli());

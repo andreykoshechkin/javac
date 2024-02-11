@@ -1,0 +1,49 @@
+org.postgresql.util.PSQLException: ОШИБКА: повторяющееся значение ключа нарушает ограничение уникальности "users_aud_username_key"
+  Подробности: Ключ "(username)=(vlad@gmail.com)" уже существует.
+
+Дело в том, что в таблице users_aud username не уникальный, он уже есть. Такое поведение возникает, когда в аудит таблицах какое-то поле взято из реальной таблицы.
+В аутид таблицах не должно быть уникльных полей!
+
+Решение 1:
+Было:
+CREATE TABLE IF NOT EXISTS users_aud(
+    id BIGINT,
+    rev INT REFERENCES revision (id),
+    revtype SMALLINT ,
+    username VARCHAR(64) NOT NULL UNIQUE,	<--- НЕ ДОЛЖЕН БЫТЬ УНИКАЛЬНЫМ
+    birth_date DATE,
+    firstname VARCHAR(64),
+    lastname VARCHAR(64),
+    role VARCHAR(32),
+    company_id INT
+)
+
+СТАЛО:
+CREATE TABLE IF NOT EXISTS users_aud(
+    id BIGINT,
+    rev INT REFERENCES revision (id),
+    revtype SMALLINT ,
+    username VARCHAR(64) NOT NULL,
+    birth_date DATE,
+    firstname VARCHAR(64),
+    lastname VARCHAR(64),
+    role VARCHAR(32),
+    company_id INT
+)
+
+Решение 2: Через liquibase для это нужно Удалить из таблицы users_aud констрейнт users_aud_username_key и изменить колонку username НА не уникальную. 
+1. создаем db.changelog-1.3.sql
+2. Пишем 
+--liquibase formatted sql
+
+--changeset koshechkin:1
+ALTER TABLE users_aud
+DROP
+CONSTRAINT users_aud_username_key;
+
+--changeset koshechkin:2
+ALTER TABLE users_aud
+ALTER COLUMN username DROP NOT NULL   
+
+3. Не забываем указать в db.changelog-master.yaml новый changelog
+

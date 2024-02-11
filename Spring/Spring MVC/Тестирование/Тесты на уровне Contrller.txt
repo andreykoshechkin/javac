@@ -1,0 +1,31 @@
+
+//package org.springframework.boot.test.autoconfigure.web.servlet; в этом пакете лежат аннотации, которые имитируют слой
+//Так как в примере ниже мы пишем IT тест, то нам нужен будет @AutoConfigureMockMvc, если мы хотим сделать unit test то лучше использовать @WebMvcTest
+//Все аннотации из этого пакета, позволяют имитировать какой-то слой
+@AutoConfigureMockMvc       //Аннотация, которая имитирует http запросы
+@RequiredArgsConstructor
+class UserControllerTest extends ContainerRunner {
+
+    private final MockMvc mockMvc;  //Дает возможность создать mock на http запрос
+
+
+    //MockMvcRequestBuilders() утилитный класс, который содержит get,post,put методы
+    //В нашем случае мы тестим метод findAll, а это уже get запрос, соответственно нам подойдет MockMvcRequestBuilders.get()
+
+    @Test
+    @SneakyThrows
+    void findAll() {
+        mockMvc.perform(MockMvcRequestBuilders.get("/users"))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())                   //Ожидаем, что мы получим 200 статус
+                .andExpect(MockMvcResultMatchers.view().name("user/users"))      //Ожидаем, что view "user/users"(в контроллере метод findAll возвращает view '"user/users"')
+                .andExpect(MockMvcResultMatchers.model().attributeExists("users"))      //Ожидаем, что название атрибута "users ((в контроллере метод findAll  model.addAttribute("users", userService.findAll());)"
+                .andExpect(MockMvcResultMatchers.model().attribute("users", hasSize(5)));//Ожидаем, что мы по заданному аттрибуту получим 5ых users;
+    }
+
+}
+
+
+Примечеание:
+Метод hasSize() должен быть из org.hamcrest.collection.IsCollectionWithSize.hasSize;, а не из testcontainer
+ 
+

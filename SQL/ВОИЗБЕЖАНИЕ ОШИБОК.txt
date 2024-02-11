@@ -1,0 +1,15 @@
+1: базу данных создаем на основание либо другой базы либо базы по-умполчанию 
+Должно быть так - jdbc:postgresql://localhost:5432/postgres
+  
+2:в application.properties где нужно указать url базы данных мы пишем jdbc:postgresql://localhost:5432/названиеБазыДанных
+
+3: При создание класса для подключение postgres driver URL ДОЛЖЕН БЫТЬ ПЕРВЫМ
+   Правильно:    @SneakyThrows
+  		  public static Connection getConnection() {
+       		 return DriverManager.getConnection(PropertiesUtil.getKey(URL_KEY), PropertiesUtil.getKey(PASSWORD_KEY), PropertiesUtil.getKey(NAME_KEY));
+   		 }
+ 
+   Неправильно:   	@SneakyThrows
+    			public static Connection getConnection() {
+       			return DriverManager.getConnection(, PropertiesUtil.getKey(PASSWORD_KEY), PropertiesUtil.getKey(NAME_KEY), PropertiesUtil.getKey(URL_KEY));
+  			  }

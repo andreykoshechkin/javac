@@ -1,0 +1,3 @@
+ОШИБКА отношение test не существует
+Решение 		в url должна быть указать схема
+	1: final String url = "jdbc:postgresql://localhost:5432/company_repository?currentSchema=company_storage";

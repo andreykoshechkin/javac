@@ -1,0 +1,8 @@
+@SpringBootTest(classes = Main.class)
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@ActiveProfiles("test")
+@Transactional
+public @interface IntegrationTestRunner {
+}

@@ -1,0 +1,41 @@
+    /* Добавляем сквозную функциональность по логированию
+       Join point - позволяет получить информацию, куда м внедрили Advice
+        joinPoint.getTarget() - наш service или контроллер
+        joinPoint.getThis() - Spring AOP proxy
+     */
+    @Before("antFindByIdServiceMethod() && args(id) && target(service) && this(proxy)  && @within(transactional)")   //Указываем pointcut и аргументы, которые мы хотим получить
+    public void addLogging(JoinPoint joinPoint, Object id, Object service, Object proxy, Transactional transactional) {	//JoinPoint joinPoint должен быть либо первым, если нам оне не нужен то можно его не ставить
+
+        log.warn("Invoke findById method: id  {}", id);
+        log.warn("Service target: {}", service);
+        log.warn("AOP proxy: {}", proxy);
+        log.warn("Transactional: {}", transactional);
+        /*
+        *
+        * 2023-07-08T22:54:32.951+04:00  WARN 4204 --- [nio-8080-exec-5] org.example.spring.aop.FirstAspect       : Invoke findById method: id  1
+          2023-07-08T22:54:33.557+04:00  WARN 4204 --- [nio-8080-exec-5] org.example.spring.aop.FirstAspect       : Service target: org.example.spring.service.UserService@7f4f432b
+          2023-07-08T22:54:34.836+04:00  WARN 4204 --- [nio-8080-exec-5] org.example.spring.aop.FirstAspect       : AOP proxy: org.example.spring.service.UserService@7f4f432b
+          2023-07-08T22:54:35.486+04:00  WARN 4204 --- [nio-8080-exec-5] org.example.spring.aop.FirstAspect       : Transactional: @org.springframework.transaction.annotation.Transactional
+        *
+        * */
+    }
+}
+
+
+Более предпочтителный способ, этот способ работает с более старыми версиями java
+
+@Aspect
+@Component
+@Slf4j
+public class AspectLogger {
+
+    @Pointcut("execution(public * org.example.service.UserService.findById(*))")
+    public void isUserService(){}
+
+
+    @Before(value = "isUserService() && args(id) && target(target)", argNames = "target,id")
+    public void loggerFindById(Object target, Object id){
+      log.warn("Сработал AspectLogger при вызове метода findById(Long id), {} --------- {}", target, id);
+
+    }
+}

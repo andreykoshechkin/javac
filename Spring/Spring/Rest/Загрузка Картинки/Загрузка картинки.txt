@@ -1,0 +1,76 @@
+1. Если в базе данных отсутствует поле, которое хранит путь к картинке то нам нужно добавить это поле. В случае liquibase:
+   --liquibase formatted sql
+
+   --changeset koshechkin:1
+   ALTER TABLE users
+   ADD COLUMN image VARCHAR(64);
+
+   --changeset koshechkin:2
+   ALTER TABLE users_aud
+   ADD COLUMN image VARCHAR(64)'
+
+
+2. Создаем imageService, в котором будет метод по загрузки картинки
+
+3. Нужно изменить html страницу registration, update
+
+    Так как мы будем передавать file, то обычный метод post не сработает(метод post это urlencoded), а нам нужнен multipart/form-data"
+    3.1 добавить enctype="multipart/form-data" в форму:
+	<form class="content" action="/users" enctype="multipart/form-data" method="post" th:object="${user}"> 
+
+    3.2 Добавляем новое поле
+	<label> Image:
+          <input type="file" name="image">
+        </label><br>
+
+4. Так как у нас UserCreatEditDto, которое являеться DTO и для регистрации и для обновления, то в это dto нужно добавить новое поле.
+ MultipartFile image; //Название должно быть таким же как и name в html страницы
+
+
+5. Нам нужно подправить mapper:
+    private void copy(UserCreateEditDto object, UserEntity user) {	в UserEntity добавить новое поле image
+        user.setId(object.getId());
+        user.setUsername(object.getUsername());
+        user.setFirstname(object.getFirstname());
+        user.setLastname(object.getLastname());
+        user.setBirthdate(object.getBirthdate());
+        user.setRole(object.getRole());
+        user.setCompanyId(getCompany(object.getCompanyId()));
+
+        Optional.ofNullable(object.getImage())
+                .filter(Predicate.not(MultipartFile::isEmpty))
+                .ifPresent(image -> user.setImage(image.getOriginalFilename()));
+    }
+
+6. Изменить основной userService:
+ private final ImageService imageService;
+
+    @Transactional
+    public UserReadDto create(UserCreateEditDto userCreateEditDto) {
+        return Optional.of(userCreateEditDto)
+                .map(dto -> {
+                    uploadImage(userCreateEditDto.getImage());
+                    return userCreateEditMapper.transferToEntity(dto);
+                })
+                .map(userRepository::save)
+                .map(usersMapper::transferToDto)
+                .orElse(null);
+    }
+
+    @Transactional
+    public Optional<UserReadDto> update(Long id, UserCreateEditDto user) {
+        return userRepository.findById(id)
+                .map(entity -> {
+                    uploadImage(user.getImage());
+                    return userCreateEditMapper.map(user, entity);
+                })
+                .map(userRepository::saveAndFlush)
+                .map(usersMapper::transferToDto);
+    }
+
+    @SneakyThrows
+    private void uploadImage(MultipartFile image) {
+        if(!image.isEmpty()){
+            imageService.uploadImage(image.getOriginalFilename(), image.getInputStream());
+        }
+    }

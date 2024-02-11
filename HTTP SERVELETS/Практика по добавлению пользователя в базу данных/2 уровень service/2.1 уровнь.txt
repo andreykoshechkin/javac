@@ -1,0 +1,17 @@
+1: В методе doPost(соответствующий servlets) нам необходимо в методет getParametr извлечь все данные и записать в объект DTO
+    (Так все данные которые пришли от клиента будут хранитс в DTO и в дальнейшем мы преобразуем DTO в entity чтобы добавить в базу данных)
+
+2: Создаем service с методом который в качестве параметров бодет принимать DTO (возвращать будет LONG но можно что-то другое). Service должен реализовать паттер синглтон
+
+
+Пример:
+ CreateUserDTO createUserDTO = CreateUserDTO.builder()
+                .firstName(req.getParameter("firstname"))
+                .lastName("lastname")
+                .email("email")
+                .birthday("birthday")
+                .password("password")
+                .role("role")
+                .genders("gen").build();
+   usersService.create(createUserDTO);		<---usersService.create это метод из сервиса
+        resp.sendRedirect("/login");		<---Перенаправляем на страницу login, которую создадим в будущем

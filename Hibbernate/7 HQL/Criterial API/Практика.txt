@@ -1,0 +1,43 @@
+Задача: Вывести сотрудника с конкретным именем
+       
+@Cleanup SessionFactory sessionFactory = BuilderConfiguration.getBuilder();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.getTransaction();
+
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Users.class);
+        var users = criteria.from(Users.class);
+
+        criteria.select(users).where(cb.equal(users.get(Users_.info).get(UsersInformation_.firstName),"Andrey"));
+
+        session.createQuery(criteria).list().forEach(System.out::println);
+        session.beginTransaction();
+
+================================================================================================
+Задача: показать всех сотрудников конкретной компании
+
+CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Users> criteria = cb.createQuery(Users.class);	<-- что возвращаем
+        Root<Company> company = criteria.from(Company.class);		<-- откуда возвращаем
+        ListJoin<Company, Users> users = company.join(Company_.users);
+
+        criteria.select(users).where(cb.equal(company.get(Company_.name), "Valve"));
+        session.createQuery(criteria).list().forEach(System.out::println);
+
+
+================================================================================================
+Задача: показать первых 3ёх сотрудников + отфильтровать по возрастанию имени 
+      @Cleanup SessionFactory sessionFactory = BuilderConfiguration.getBuilder();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.getTransaction();
+
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Users.class);
+        var users = criteria.from(Users.class);
+
+        criteria.select(users).orderBy(cb.asc(users.get(Users_.info).get(UsersInformation_.firstName)));
+
+        session.createQuery(criteria).
+                setMaxResults(3)
+                .list().forEach(System.out::println);
+        session.beginTransaction();

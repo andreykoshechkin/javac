@@ -1,0 +1,45 @@
+Если мы решили использовать EntityGrapth, то нужно их реализовывать в Service
+
+1. Зайти в интерфейс RepositoryDao и перегрузить нужный метод, метод должен принимать Map<String, Object>, а возвращать параметр(если он есть) и пустой Map
+public interface RepositoryDao<K extends Serializable, E extends GenerationId<K>> {
+
+    E save(E entity);
+
+    void deleteById(K id);
+
+    void updateByEntity(E entity);
+
+    default Optional<E> findById(K id) {
+        return findById(id, Collections.emptyMap());	<--Перегрузили метод и вернули параметр и пустую Map
+    }
+
+    Optional<E> findById(K id, Map<String, Object> properties); 
+
+    List<E> findAll();
+}
+
+
+2. Изменить абстрактный класс RepositoryBaseDao
+    @Override
+    public Optional<E> findById(K id, Map<String, Object> properties) {
+        return Optional.ofNullable(entityManager.find(clazz, id, properties));
+    }
+
+
+3. Серивис
+
+@RequiredArgsConstructor
+public class GameService {
+    private final RepositoryGame repositoryGame;
+    private final MapperGameToDto mapperGameToDto;
+
+    public Optional<GameDto> findById(Long id) {
+        var entityGraph = repositoryGame.getEntityManager().createEntityGraph(Game.class);
+        entityGraph.addAttributeNodes("company");
+        Map<String, Object> properties = Map.of(
+                GraphSemantic.LOAD.getJpaHintName(), entityGraph);
+        
+        
+        return repositoryGame.findById(id,properties).map(mapperGameToDto::transfer);
+    }
+}

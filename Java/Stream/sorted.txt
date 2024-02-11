@@ -1,0 +1,17 @@
+   	Student s1 = new Student("Maga", 30, 10.0);
+        Student s2 = new Student("Andrey", 26, 10.0);
+        Student s3 = new Student("Bob", 23, 10.0);
+
+
+        List<Student> list = new ArrayList<>();
+        list.add(s1);
+        list.add(s2);
+        list.add(s3);
+ 
+
+
+
+
+	Для сортировки по возрастанию используем "-";
+        list = list.stream().sorted((o1,o2)-> o1.getAge() - o2.getAge()).toList();  
+        System.out.println(list);

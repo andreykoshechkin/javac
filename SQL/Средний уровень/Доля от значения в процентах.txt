@@ -1,0 +1,27 @@
+SELECT
+    t.passenger_name,		
+    count(*), 
+    100.0 * (count(*)) / (SELECT count(*) FROM ticket)  :100 * сгрупированное колличество и подели на сумаррное колличество:
+FROM ticket t GROUP BY t.passenger_name ORDER BY 2 DESC;
+
+SELECT count(*)
+FROM ticket
+
+==============================================================================================
+round округляет вещественное число:
+Структур ROUND (какое-то число или запрос,2) 
+
+round(100.0 * (count(*)) / (SELECT count(*) FROM ticket), 2) 
+round(81.3888, 2),
+
+
+SELECT t.passenger_name,
+       count(*),
+       round(100.0 * (count(*)) / (SELECT count(*) FROM ticket t2), 2) total
+FROM ticket t
+GROUP BY t.passenger_name
+ORDER BY 2 DESC <--- 2 это индекс count(*)
+
+t.passenger_name, индекс 1
+       count(*), индкес 2
+

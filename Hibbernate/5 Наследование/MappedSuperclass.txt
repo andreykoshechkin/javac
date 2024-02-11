@@ -1,0 +1,16 @@
+//@MappedSuperclass - Наследование полей! Его суть заключается в том, что мы создаем абстрактный класс
+//                    В нем мы пишем какие-то поля, и тот класс который extend этот класс, будет иметь эти поля
+
+@MappedSuperclass
+@Setter     //Чтобы установить поле
+@Getter     //Чтобы получить поле
+public abstract class AuditEntity <T extends Serializable> implements BaseIdentity<T> {
+
+
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
+
+    @Column(name = "create_by")
+    private String createBy;
+
+}

@@ -1,0 +1,40 @@
+Аудит		//Отслеживание того, какие данные и кем были изменены
+
+1. Создать класс:
+@Getter
+@Setter
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+public abstract class AuditExample<T extends Serializable> implements BaseEntity<T> {
+
+    @CreatedDate
+    private Instant create_at;
+
+    @LastModifiedDate
+    private Instant modified_at;
+}
+
+2. Сщуность public class UserEntity extends AuditExample<Long> {
+}
+
+3.Создасть AuditConfiguration или поставить аннотацию @EnableJpaAuditing над Main.class
+
+@EnableJpaAuditing	<Аннотации для включения аудита в JPA с помощью конфигурации аннотаций.
+@Configuration
+public class AuditConfiguration {
+}
+================================================
+
+Если нам нужно указать кто создал/изменил сущность в бд
+1. в AuditExample добавить поля -     
+    @CreatedBy
+    private String create_by;
+
+    @LastModifiedBy
+    private String modified_by; 
+
+2.AuditConfiguration добавить:
+@Bean
+    public AuditorAware<String> auditorAware (){
+        return ()->Optional.of("ADMIN");
+    }

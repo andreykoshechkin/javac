@@ -1,0 +1,34 @@
+N+1 	//Сколько сущностей мы достали столько дополнительных запросов будет сделано в бд чтобы проинициализировать свзязь между таблицами
+
+========================================================================================================================================================
+
+Если в нашей сущности есть несколько ассоциаций @OneToMany, и эти ассоциации храняться в списке, тобишь в PersistenBag, и мы имееют FetchType.EAGER, то мы 
+не сможем получить данные нескольких ассоциаций одним запросом, мы получим MultipleBagFetchException.Все дело в том, что наш Bag не поддерживает сортировку 
+и hibernate не может их смаппить, он не знает что к чему относится. 
+
+
+
+Пример:   
+   @Builder.Default
+    @OneToMany(mappedBy = "user",  fetch = FetchType.EAGER)
+    private List<UsersChatEntity> userChatList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.EAGER)
+    private List<Payments> payments = new ArrayList<>(); 
+
+========================================================================================================================================================
+Но если мы будем использовать Set (PersistentSet), то в таком случаи, мы не получим exception, но у нас возникнет декартовое произведение множеств.
+PersistentSet (как и любой другой set) - не зависит от порядка, главное переопределить equals & Hascode
+
+Пример:
+    @Builder.Default
+    @OneToMany(mappedBy = "user",  fetch = FetchType.EAGER)
+    private Set<UsersChatEntity> userChatList = new HashSet<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.EAGER)
+    private Set<Payments> payments = new HashSet<>();
+
+
+========================================================================================================================================================

@@ -1,0 +1,57 @@
+1) Создаем класс на котору мы будем создавать маппинг. В нашем примере, ticket ссылаеться на flight. Соответственно, нам нужно создать класс Fligh
+   1. Создаем класс record flight со всеми полями, что есть в БД
+   2. Создаем sql запрос, который объединяет ticket и flight (через JOIN)
+
+2)Пример:
+  1. record class flight public record FlightEntity(Long id,
+                           String flight_no,
+                           LocalDateTime departure_date,
+                           String departure_airport_code,
+                           LocalDateTime arrival_date,
+                           String arrival_airport_code,
+                           Long aircraft_id,
+                           String status) {
+			}
+  2. sql запрос    
+	   public static final String FIND_ALL_JOIN= """
+            SELECT
+           t.id,
+           t.passenger_no,
+           t.passenger_name,
+           t.flight_id,
+           t.seat_no,
+           t.cost,
+           
+           f.id,
+           f.flight_no,
+           f.departure_date,
+           f.departure_airport_code,
+           f.arrival_date,
+           f.arrival_airport_code,
+           f.aircraft_id,
+           f.status
+            FROM ticket t JOIN flight f ON t.flight_id = f.id
+            """;
+==========================================================
+Примечание: мы создавали отдельный метод builderTicket, который возвращал ticket:
+  private static TicketEntity builderTicket(ResultSet resultSet) throws SQLException {
+        FlightEntity flight = new FlightEntity(
+                resultSet.getLong("id"),
+                resultSet.getString("flight_no"),
+                resultSet.getTimestamp("departure_date").toLocalDateTime(),
+                resultSet.getString("departure_airport_code"),
+                resultSet.getTimestamp("arrival_date").toLocalDateTime(),
+                resultSet.getString("arrival_airport_code"),
+                resultSet.getLong("aircraft_id"),
+                resultSet.getString("status")
+        );
+        return new TicketEntity(
+                resultSet.getLong("id"),
+                resultSet.getString("passenger_no"),
+                resultSet.getString("passenger_name"),
+                flight,
+                resultSet.getString("seat_no"),
+                resultSet.getBigDecimal("cost")
+        );
+    }
+   

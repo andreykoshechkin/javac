@@ -1,0 +1,42 @@
+ SessionFactory - это пул соединений
+Session - само соединение(Connection)
+Для создание объекта SessionFactory нам нужен hibernate.config.xml 
+
+
+1: Создаем application.properties 
+2: Создаем  hibernate.confin.xml. Для этого перейдем в настройки проекта  -> module -> жмем плюс -> Hibernate -> В области Descriptors жмем + и добавляем hibernate.config.xml
+
+hibernate.confin.xml должен выглядеть так:		
+	<?xml version='1.0' encoding='utf-8'?>
+	<!DOCTYPE hibernate-configuration PUBLIC
+   	 "-//Hibernate/Hibernate Configuration DTD//EN"
+	    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+  <hibernate-configuration>
+	  <session-factory>
+  	  <property name="connection.url">jdbc:postgresql://localhost:5432/postgres</property> 	<--  url database
+  	  <property name="connection.driver_class">org.postgresql.Driver</property>		<-- Driver postgres
+  	  <property name="connection.username">postgres</property>				<-- username database
+   	  <property name="connection.password">postgres</property>				<-- username password
+   	  <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property> 
+   	  <property name="show_sql">true</property>  						 <--чтобы мы видели, какой sql запрос формирует Hibernate
+    	  <property name="format_sql">true</property> 						 <--чтобы форматировал
+	  <mapping class="org.example.entity.User"></mapping>  	
+</session-factory>
+  </hibernate-configuration>
+	
+3: В main методе: 
+	
+        Configuration configuration = new Configuration();
+        configuration.configure();
+        try (SessionFactory sessionFactory = configuration.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            System.out.println("OK");
+        }
+    <property name="connection.url">jdbc:postgresql://localhost:5432/postgres</property>
+    <property name="connection.driver_class">org.postgresql.Driver</property>
+    <property name="connection.username">postgres</property>
+    <property name="connection.password">postgres</property>
+    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
+    <mapping class="org.example.entity.User"></mapping>
+    <property name="show_sql">true</property>   <--чтобы мы видели, какой sql запрос формирует Hibernate
+    <property name="format_sql">true</property> <--чтобы форматировал

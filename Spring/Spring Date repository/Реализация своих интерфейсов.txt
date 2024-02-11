@@ -1,0 +1,40 @@
+Нужно использоват префикс Impl для кастомных интерфейсов
+
+
+=========================================================================
+Если мы хотим создать свой кастомный интерфес, то мы должны
+ 1. Создать класс, который реализовал бы этот интерфейс
+ 2. Этот класс, должен иметь такое-же название как и интерфейс + префикс Impl
+ 3. Слой repository должен extent этот интерфес.
+
+
+Пример:
+ 1. Интерфейс:
+    public interface CustomFindAllByRole {
+
+    List<Users> findAllByRoleCustom(Role role);
+}
+
+
+ 2. 
+  Класс:
+  @RequiredArgsConstructor
+   public class CustomFindAllByRoleImpl implements CustomFindAllByRole {
+
+    private final EntityManager entityManager;
+
+    @Override
+    public List<Users> findAllByRoleCustom(Role role) {
+        return  entityManager.createQuery("select u from Users u WHERE u.role=:role", Users.class)
+                .setParameter("role", role)
+                .getResultList();
+    }
+}
+
+
+ 3. Тест(Вызов метода)
+      @Test
+    void custom(){
+        List<Users> allByRoleCustom = userRepository.findAllByRoleCustom(Role.USER);
+        allByRoleCustom.forEach(System.out::println);
+    }

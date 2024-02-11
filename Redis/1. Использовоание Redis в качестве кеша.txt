@@ -1,0 +1,46 @@
+1) Добавить в application.properties 
+   spring.cache.type=redis
+   spring.data.redis.host=localhost
+   spring.data.redis.port=6379
+
+2) Написать configuration for Redis
+   @EnableCaching
+   @Configuration
+   @RequiredArgsConstructor
+   public class RedisCachingConfiguration {
+
+       @Bean
+       public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory();
+       }
+
+       @Bean
+       public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+           RedisTemplate<String, Object> template = new RedisTemplate<>();
+           template.setConnectionFactory(factory);
+           template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
+           return template;
+       }
+   }
+
+
+3) Для примера возьмем метод findAll
+
+ @Cacheable(cacheNames = "findAll", key = "'employeeRead'")
+    public List<EmployeeReadDto> findAll() {
+        try {
+            Thread.sleep(5000);
+            return    employeeRepository.findAll().stream().map(employeeMapper::readMapper).toList();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+4) Чтобы проверить результат, мы должны открыть терминал, написать docker exec -it idContainerRedis redis-cli 
+   и выполнить команду keys*
+
+
+
+
+ 

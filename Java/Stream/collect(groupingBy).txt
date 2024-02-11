@@ -1,0 +1,23 @@
+collect(Collectors.groupingBy) - группирует по условиям, возвращает map 
+	Student st1 = new Student("Andrey", 27, 6.8, 'm');
+        Student st2 = new Student("Masha", 25, 8.8, 'w');
+        Student st3 = new Student("Olga", 27, 4.8, 'w');
+        Student st4 = new Student("Elena", 23, 9.7, 'w');
+
+
+        List<Student> list = new ArrayList<>();
+        list.add(st1);
+        list.add(st2);
+        list.add(st3);
+        list.add(st4);
+
+        Map<Integer, List<Student>> integerListMap = list.stream().collect(Collectors.groupingBy(el -> el.getAge()));
+        for (Map.Entry<Integer, List<Student>> x : integerListMap.entrySet()) {
+            System.out.println(x.getKey() + " " + x.getValue());
+        }
+
+collect(Collectors.partitioningBy) - группирует на те кто попал под условия(true) и те кто не попал (false) если возраст студента больше 20 то он идет в группу true
+ Map<Boolean, List<Student>> x = list.stream().collect(Collectors.partitioningBy(o->o.getAge() > 20));
+        for (Map.Entry<Boolean, List<Student>> part : x.entrySet() ) {
+            System.out.println(part);
+        }

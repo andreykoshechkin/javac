@@ -1,0 +1,4 @@
+Unsafe - Класс для работы с памятью
+
+Инициализация -  Unsafe unsafe = Unsafe.getUnsafe();
+        	 System.out.println(unsafe.addressSize());

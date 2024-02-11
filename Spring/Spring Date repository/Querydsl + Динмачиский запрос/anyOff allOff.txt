@@ -1,0 +1,9 @@
+anyOf	<-- логическое И
+allOf	<-- логическое или
+    public Predicate whereAnd(){			
+        return ExpressionUtils.anyOf(predicates);
+    }
+
+    public Predicate whereOr(){
+        return ExpressionUtils.allOf(predicates);
+    }

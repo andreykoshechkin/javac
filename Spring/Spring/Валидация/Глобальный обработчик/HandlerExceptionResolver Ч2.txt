@@ -1,0 +1,6 @@
+Глобальный обработчик валидации(HandlerExceptionResolver) - что используется в Rest. Чтобы реализовать, нужно поставить аннотацию @ExceptionHandler().
+							    Глобальный обработчик нужен, чтобы обрабатывать ошибки ВО ВСЕХ КОНТРОЛЛЕРАХ.
+
+ResponseEntityExceptionHandler - Чтобы мы не писали своюй HandlerExceptionResolver, Spring предоставляет свой ResponseEntityExceptionHandler на все случаи жизни
+ 				 и он назвается ResponseEntityExceptionHandler и лежит в пакете package org.springframework.web.servlet.mvc.method.annotation.
+				 Чтобы реализовать его, наш класс(Класс отмеченный аннотацией @ControllerAdvice) должен его унаследовать.

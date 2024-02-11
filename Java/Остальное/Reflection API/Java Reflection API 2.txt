@@ -1,0 +1,45 @@
+newInstance() - создает новый объект класса(по умолчанию вызывает пустой конструктор)
+
+getMethod () - получить метдот по сигнатуре
+invoke() - вызывает метод объекта, в параметры передается конструктор .
+
+getConstructor() - получить конструктор по сигнатуре
+
+forName - получить доступ к объекту класса Класс(принимает название класса и из него создает объект и возвращает его в переменную)
+
+
+Создание объекта с помощью конструктора::
+					Class employee = Employee.class;
+      				        Constructor constructorEmployee = employee.getConstructor(String.class, String.class, int.class);
+        				Object objEmployee = constructorEmployee.newInstance("Andrey", "Koshechkin", 25000);
+        				System.out.println(objEmployee);
+
+
+Выозов метода с помощью invoke():
+ 				       Method method = employee.getMethod("sayHello2"); в параметрах имя метода
+       				       method.invoke(objEmployee);
+
+Получение значение привотного поля:
+					   .field.setAccessible(bool) true = разрешаем, false = не разрешаем
+				   	  
+					    Field field = employeeClass.getDeclaredField("age");
+      					    field.setAccessible(true);
+       					    int ageRef = (int)field.get(employee);
+       					    System.out.println(ageRef);
+
+Изменение приватного поля  field.set(employee, 999); 1 параметр: объект у которого мы хотим изменить, 2 новое значение
+
+
+Пример:
+   User user = new User();
+        System.out.println(user);
+
+        Class<User> userClass = User.class;
+        Field field = userClass.getDeclaredField("user");
+        field.setAccessible(true);
+
+        String userReflection =  (String)field.get(user);
+        System.out.println(userReflection);
+
+        field.set(user, "Ivan");
+        System.out.println(user);

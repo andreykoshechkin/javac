@@ -1,0 +1,51 @@
+Создаем класс:
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class QPredicateExample {
+
+
+    private List<Predicate> predicates = new ArrayList<>();
+
+
+    public static QPredicateExample builder() {
+        return new QPredicateExample();
+    }
+
+    public <T> QPredicateExample add(T object, Function<T, Predicate> function) {
+        if (object != null) {
+            predicates.add(function.apply(object));
+        }
+        return this;
+    }
+
+
+    public Predicate builderAdd() {
+        return ExpressionUtils.allOf(predicates);
+    }
+
+    public Predicate builderOr() {
+        return ExpressionUtils.anyOf(predicates);
+    }
+}
+
+Сам запрос теперь выглядет так:
+    @Test
+    void checkHQLQuery() {
+        @Cleanup var sessionFactory = ConfigurationBuilder.getBuilder();
+        @Cleanup var session = sessionFactory.openSession();
+        session.getTransaction();
+
+        var predicate = QPredicateExample.builder()
+                .add("Andrey", employee.employeeInfo.firstName::eq)
+                .add("Koshechkin", employee.employeeInfo.lastName::eq).builderAdd();
+
+        new JPAQuery<Double>(session)
+                .select(payment.amount.avg())
+                .from(payment)
+                .join(payment.employee, employee)
+                .where(predicate)
+                .fetch().forEach(System.out::println);
+        session.beginTransaction().commit();
+    }

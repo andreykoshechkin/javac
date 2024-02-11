@@ -1,0 +1,57 @@
+1. мы должны создать propertis где будут лежать путь к нашим скипртам, этот properties должен называться СТРОГО db.changelog-master.yaml и лежать СТРОГО по следующему пути 
+  "resources - > db ->changelog ->db.changelog-master.yaml";
+
+2. Внутри db.changelog-master.yaml пишем
+databaseChangeLog:
+  - include:
+      file: путь где лежит скрипт
+  - include:
+      file:  путь где лежит скрипт
+
+======================================================
+3. Создаем changelog в котором будут наши скрипты(changset) с названием db.changelog-1.0.sql
+Пример: Один changeset в который входят ряд change
+--liquibase formatted sql
+--changset kosheckin:1					
+CREATE TABLE IF NOT EXISTS company
+(
+    id SERIAL PRIMARY KEY ,
+    name VARCHAR(64) NOT NULL UNIQUE
+    );
+ 
+CREATE TABLE IF NOT EXISTS company_locales
+(
+    company_id INT REFERENCES company (id),
+    lang VARCHAR(2),
+    description VARCHAR(255) NOT NULL ,
+    PRIMARY KEY (company_id, lang)
+    );
+
+======================================================
+Пример: несколько changeset и каждому changeset принадлежит свой change
+
+--changset kosheckin:1					
+CREATE TABLE IF NOT EXISTS company
+(
+    id SERIAL PRIMARY KEY ,
+    name VARCHAR(64) NOT NULL UNIQUE
+    );
+
+--changset kosheckin:2	 
+CREATE TABLE IF NOT EXISTS company_locales
+(
+    company_id INT REFERENCES company (id),
+    lang VARCHAR(2),
+    description VARCHAR(255) NOT NULL ,
+    PRIMARY KEY (company_id, lang)
+    );
+
+======================================================
+changeset с Rollback
+--changset kosheckin:1
+CREATE TABLE IF NOT EXISTS company
+(
+    id SERIAL PRIMARY KEY ,
+    name VARCHAR(64) NOT NULL UNIQUE
+    );
+--rollback DROP TABLE company <--вместо DROP TABLE может быть любой другой скрипт

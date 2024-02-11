@@ -1,0 +1,13 @@
+PartTreeJpaQuery	//Создает criteria API запрос на основании имени метода, а саму реализацию предоствит нам Spring JPA в виде criteri API.
+                          Внутри себя, partTree использует регулярные вырожения чтобы спарсить название нашего метода.
+			  в partTreeJpaQuery название методов это некий шаблок по которому мы должны слеодвать
+
+Optional<UserEntity> findByIdContainingIgnoreCase(Integer id); <-- название метода состоит из зарезервированных слов
+
+userRepository.findByUsernameContainingIgnoreCase("Google");  <-- findBy зарезервированное слово
+								  Username это поле из сущности
+								  Containing зарезервированное слово
+								  IgnoreCase зарезервированное слово
+
+Документация по созданию запросов с помощью Шаблонов:
+https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods 

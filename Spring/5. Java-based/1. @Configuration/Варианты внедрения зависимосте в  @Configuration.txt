@@ -1,0 +1,58 @@
+3 варианта внедрения зависимостей.
+ 1. Мы можем указать другие бины в качестве полей в нашем конфиг классе (Класс отмеченный аннотацией @Configuration)
+    Потому что, класс отмеченный аннотацией @Configuration является обычным компонентов(@Component), а значит и бином. ИСПОЛЬЗУЕТСЯ РЕДКОЮ. 
+    
+    Пример:
+	@Configuration
+	@ComponentScan(basePackages = "org.example.*", scopedProxy = ScopedProxyMode.TARGET_CLASS)
+	@Import(PropertySourceConfig.class)
+	public class BaseConfig {
+	
+	 @Autowired
+	 private ConnectionManager connect;			<-- Название должно быть таким как и ID бина, который мы хотим внедрить 
+ 
+         @Bean
+        public BaseRepository baseRepository2(){
+        return new BaseRepository(connect);
+    	  }
+	}
+
+
+ 
+ 2. Мы так же можем внедрять зависимости в качестве параметров 
+  
+    Пример:
+	@Configuration
+	@ComponentScan(basePackages = "org.example.*", scopedProxy = ScopedProxyMode.TARGET_CLASS)
+	@Import(PropertySourceConfig.class)
+	public class BaseConfig {
+
+	@Bean
+    	public ConnectionManager conn() {
+        	return new ConnectionManager("redis", "redis-pass", "url/redis/5432:5432");
+    	}
+
+	@Bean
+    	public BaseRepository baseRepository2(@Qualifier("conn") ConnectionManager connectionManager){
+        return new BaseRepository(connectionManager);
+    	}
+
+ 3. Когда мы в методе вызываем другой метод(который возвращает бин). Под копотом будет создаваться прокси. Но только в том случае, если @Configuration(proxyBeanMethods = true) если будет false ничего не получится,
+    потому что, если мы отключим proxy, нам нужно будет создавать каждый раз бин по новой
+   
+    Пример:
+	 @Configuration
+	 @ComponentScan(basePackages = "org.example.*", scopedProxy = ScopedProxyMode.TARGET_CLASS)
+	 @Import(PropertySourceConfig.class)
+	 public class BaseConfig {
+    
+  	 @Bean
+ 	 public ConnectionManager connection1() {
+         return new ConnectionManager("redis", "redisPass", "54/33");
+         }
+
+         @Bean("repository")
+  	 public BaseRepository repository (){
+           return new BaseRepository(connection1());
+   	   }
+	}

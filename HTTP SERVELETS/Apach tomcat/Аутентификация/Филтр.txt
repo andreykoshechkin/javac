@@ -1,0 +1,35 @@
+@WebFilter(servletNames = {    //url сервелета к которому будет применяться фильтер. Если указать /* то фильтер будет применятся ко всем запросам. Мы не можем использовать value = "/*" и servletNames  одновременно
+				 	
+        "RegistrationCars",                  //<--- Фильр будет применяеться только к сервелету с именем RegistrationCars
+        "dsadfsladf;ls"                      //<--- Мы можем перечислять сервелеты к которым будет прменяться фильтр
+})
+
+public class FilterServlets implements Filter {
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
+        //Мы должны задать фильтр как для запроса так и для ответа
+        servletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        servletRequest.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
+
+        //filterChain цепочка событий. Определяет, стоит ли возвращать сразу какое-то отфильтрованное значение или идти по фильтрам дальше
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+}
+=============
+Проверка пользователя(Являеться ли он админом, если да то перейдет на страницу /admin)
+@WebFilter("/admin")
+public class UnsafeFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        Object Used = (CarsDTO)((HttpServletRequest) servletRequest).getSession().getAttribute("Used");
+        
+        if(Used != null){
+            filterChain.doFilter(servletRequest, servletResponse);
+        }else {
+            ((HttpServletResponse) servletResponse).sendRedirect("/registration");
+        }
+    }
+}

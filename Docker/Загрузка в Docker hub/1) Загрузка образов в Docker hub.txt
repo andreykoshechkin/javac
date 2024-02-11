@@ -1,0 +1,15 @@
+### Пошаговое руководство о том, как загрузить свой образ на docker hub. 
+
+    Если на нашем компьютере уже есть образы, который мы хотим запушить на docker hub, мы должны удалить их, 
+    так как для корректного пуша в docker hub, имя образа должно начинаться с названия нашего аккаунта на docker hub
+
+1) Нужно зарегистрироваться на docker hub
+
+2) Нужно собрать все необходимые образы и указать имя нашего репозитория на docker hub (имя репозитория это наш username)
+   Пример: docker build . -t koshechkinandrey/любое_название_образа (docker build . -t koshechkinandrey/time_app_backend_layer )
+
+3) Открыть терминал и пройти через терминал процедуру аутентификации.
+
+4) В терминале ввести команду docker push koshechkinandrey/любое_название_образа 
+   Пример: docker push koshechkinandrey/time_app_backend_layer
+	   docker push koshechkinandrey/time_app_frontend_layer

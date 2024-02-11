@@ -1,0 +1,35 @@
+test life cycle callbacks - Позволяет внедряться в любой цикл тестирования(BeforeAll/BeforeEach...AfterEach/AfterAll)
+
+Реализация:
+1. Создаем директорию
+2. В директории создаем класс
+3. Этот класс должен имплементить один из интерфейсов который принадлежат callback(есть картинка)
+4. Сам интерфейс зависит от того, в какой цикл мы хотим внедриться
+
+Пример:
+public class ExtensionCallBack implements BeforeAllCallback, AfterAllCallback {
+    @Override
+    public void afterAll(ExtensionContext extensionContext) throws Exception {
+        System.out.println("Внедрение в afterAll ");
+    }
+
+    @Override
+    public void beforeAll(ExtensionContext extensionContext) throws Exception {
+        System.out.println("Внедрение в beforeAll ");
+    }
+}
+
+В этом примере, мы внедряемся в цикл BeforeAll и AfterEach. 
+
+
+
+5. Класс в котором мы все тестируем, должен быть помечен аннотацией @ExtendWith() 
+6. Внутри   @ExtendWith мы должны вызвать тот класс, который имплементить callback
+
+Пример класса:
+@ExtendWith({
+        ExtensionCallBack.class
+})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class AppRunnerTest {
+}

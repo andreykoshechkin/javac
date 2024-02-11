@@ -1,0 +1,26 @@
+ORDER BY	//Сортирует элементы 
+
+
+SELECT  
+FROM flight f ORDER BY date; отсортирует по дате в порядке возрастания(от меньшего к большему)
+
+
+ORDER BY позволяет делать сортировку и по математическим операция
+
+SELECT flight_no,
+       departure_date,
+       departure_airport_code,
+       arrival_date,
+       arrival_airport_code,
+       aircraft_id,
+       status,
+       f.arrival_date - f.departure_date
+FROM flight f ORDER BY (f.arrival_date - f.departure_date) DESC;
+
+
+
+
+отсортируй сначало по имени, а если у нас есть два одинкаовых имени, тогда отсортируй по зарплате
+SELECT DISTINCT
+    *
+FROM company_storage.employee WHERE first_name ILIKE '%Alex%'ORDER BY first_name, salary DESC

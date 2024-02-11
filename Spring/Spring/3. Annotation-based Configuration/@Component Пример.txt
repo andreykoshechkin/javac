@@ -1,0 +1,33 @@
+@Component(value = "pool1")
+
+
+@Component(value = "pool1")
+public class ConnectionPool {
+
+    private final String username;
+    private final String password;
+    private final Map<Integer, String> properties;
+
+    public ConnectionPool(String username, String password, Map<Integer, String> properties) {
+        this.username = username;
+        this.password = password;
+        this.properties = properties;
+    }
+}
+
+=======================================================================================================================
+
+
+    <bean id="pool1" class="org.example.spring.database.connection.ConnectionPool">
+        <constructor-arg name="username" value="${db.username}"/>
+        <constructor-arg name="password" value="${db.password}"/>
+        <constructor-arg name="properties">
+            <map>
+                <entry key="1" value="${db.urlCustom}"/>
+                <entry key="2" value="${db.urlReserve}"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+
+=======================================================================================================================

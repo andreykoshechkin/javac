@@ -1,0 +1,14 @@
+URL - url представляет из себя протокол + идефикатор хоста(само название сайта) https://www.google.com
+URN - это параметры или путь, которые идут после URL 
+URI - это совокупность URL и URN 
+
+ 
+
+URL = позволяет получить какие-то сетевые данные о ресурсе(HTML страницу, протокол)
+URL url = new URL("file:C:\\Users\\andre\\IdeaProjects\\http-servelets-project\\src\\com\\koshechkin\\http\\socket\\datagram\\DatagramRunner.java");
+        URLConnection urlConnection = url.openConnection();
+        System.out.println(new String(urlConnection.getInputStream().readAllBytes()));
+
+        URL url1 = new URL("https://www.google.com");
+        URLConnection urlConnection1 = url1.openConnection();
+        System.out.println(new String(urlConnection1.getInputStream().readAllBytes()));

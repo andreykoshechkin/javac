@@ -1,0 +1,10 @@
+assertEquals(expected, actual): Проверяет, что expected равно actual.
+assertNotEquals(unexpected, actual): Проверяет, что unexpected не равно actual.
+assertTrue(condition): Проверяет, что условие condition истинно.
+assertFalse(condition): Проверяет, что условие condition ложно.
+assertNull(actual): Проверяет, что actual равно null.
+assertNotNull(actual): Проверяет, что actual не равно null.
+assertSame(expected, actual): Проверяет, что expected и actual - это один и тот же объект в памяти.
+assertNotSame(unexpected, actual): Проверяет, что unexpected и actual - это разные объекты в памяти.
+assertArrayEquals(expectedArray, actualArray): Проверяет, что два массива expectedArray и actualArray равны.
+assertIterableEquals(expectedList, actualList): Проверяет, что две коллекции expectedList и actualList равны.

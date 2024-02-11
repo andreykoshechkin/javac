@@ -1,0 +1,2 @@
+GraphSemantic.LOAD.getJpaHintName()  <-- Использует тот FetchType который мы расставили в сущностях
+GraphSemantic.FETCH.getJpaHintName() <-- По усполчанию использует FETCHTYPE.LAZY ДАЖЕ ЕСЛИ В СУЩНОСТЯХ СТОИТ EAGER

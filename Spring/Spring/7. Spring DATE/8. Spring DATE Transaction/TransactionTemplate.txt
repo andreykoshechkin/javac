@@ -1,0 +1,19 @@
+@IT
+@RequiredArgsConstructor
+class CompanyRepositoryIT {
+
+    private final EntityManager entityManager;
+    private final TransactionTemplate transactionTemplate;
+
+    @Test
+    void findById(){
+        transactionTemplate.executeWithoutResult(tx->{
+            CompanyEntity actualResult = entityManager.find(CompanyEntity.class, 1L);
+            Assertions.assertThat(actualResult).isNotNull();
+            Assertions.assertThat(actualResult.getName()).contains("Google");
+            Assertions.assertThat(actualResult.getLocales()).hasSize(2);
+     
+        });
+
+    }
+}

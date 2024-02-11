@@ -1,0 +1,3 @@
+    <a href="${pageContext.request.contextPath}/createUser">
+        <button type="button"> registration</button>
+    </a>

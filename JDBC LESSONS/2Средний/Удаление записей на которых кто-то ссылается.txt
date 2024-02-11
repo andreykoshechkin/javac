@@ -1,0 +1,58 @@
+
+Чтобы удалить компанию на которую  ссылается employee нужно:
+1: Нужно написать запрос для удаления   employee
+2: Нужно написать запрос для удаления company    
+3: Нужно установить autoCommit в false (Поумолчанию стоит в true и не позволяет удалять)       
+4: Выполняем 2а запроса
+5: Делаем commit
+
+=========================================================================================================
+Пример:
+Integer id = 8;
+        String deleteToCompany = """			<----   Нужно написать запрос для удаления   employee
+                DELETE FROM company_storage.company WHERE id = ?;		
+                """;
+        String deleteToEmployee = """			<----Нужно написать запрос для удаления company    
+  DELETE FROM company_storage.employee WHERE company_id = ?;
+                """;
+
+        Connection connection = null;
+        PreparedStatement preparedStatementCompany = null;
+        PreparedStatement preparedStatementEmployee = null;
+        try {
+            connection = ConnectionToDateBase.open();
+            preparedStatementEmployee = connection.prepareStatement(deleteToEmployee);
+            preparedStatementCompany = connection.prepareStatement(deleteToCompany);
+
+            connection.setAutoCommit(false);		<----Нужно установить autoCommit в false (Поумолчанию стоит в true и не позволяет удалять)       			
+
+            preparedStatementEmployee.setInt(1, id);	<--- Устанавливаем по какому id удалять Employee 
+            preparedStatementCompany.setInt(1, id);	<--- Устанавливаем по какому id удалять Company
+
+
+            preparedStatementEmployee.executeUpdate();	<--- Выполняем 1ый запрос
+
+            preparedStatementCompany.executeUpdate();	<--- Выполняем 2ой запрос
+
+
+            connection.commit();				<--- Делаем commit
+
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback();				<---Если подкючились то сделай rollback
+            }
+            throw e;
+        } finally {
+            if (connection != null)				<---Если подкючились то закрой соединени
+                connection.close();
+            if (preparedStatementCompany != null) {
+                preparedStatementCompany.close();
+            }
+            if (preparedStatementEmployee != null) {
+                preparedStatementEmployee.close();
+            }
+        }
+    }
+}
+=========================================================================================================

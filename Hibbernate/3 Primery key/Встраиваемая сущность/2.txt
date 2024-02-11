@@ -1,0 +1,55 @@
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "users")
+@AttributeOverride(name = "birth_day", column = @Column(name = "birthday")) 
+Аннотация указываем: где name - как называется поля во встаиваемой сущности, где column = @Column  как называется поле в базе данных
+
+public class User {
+
+    @Id
+    private String username;
+
+    @Embedded
+    @AttributeOverride(name = "birth_day", column = @Column(name = "birthday"))
+    private PersonalInfo personalInfo;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Type(type = "jsonb")
+    private String info;
+
+}
+
+============================================================================================================
+Main метод должен выглятедь так:
+@Slf4j
+public class Main {
+    public static void main(String[] args) {
+        try (SessionFactory builder = ConfigurationUtil.getBuilder()) {
+            Session session = builder.openSession();
+            Transaction transaction = session.getTransaction();
+            log.warn("Transaction get ready {}", transaction);
+
+        User user = User.builder()
+                    .username("kosh@gmail.com")
+                    .personalInfo(PersonalInfo.builder()
+                            .firstname("Andrey").
+                            lastname("koshechkin")
+                            .birth_day(new Birthday(LocalDate.of(1995, 1, 9))).build())
+                    .role(Role.ADMIN)
+                    .info("")
+                    .build();
+
+            log.warn("User added {}", user);
+            session.saveOrUpdate(user);
+            session.beginTransaction().commit();
+            log.warn("Transaction begin is commit");
+        }
+
+
+    }
+}

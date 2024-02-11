@@ -1,0 +1,27 @@
+public class ExampleException extends Exception{			<---Создаем класс и наследуемся от Exception
+public ExampleException(String text){					<---Создаем конструктор
+super(text);
+ }						
+
+
+
+			
+
+
+public class ExampleException extends Exception{
+
+/*    public ExampleException(String text){
+        super(text);
+    }*/
+
+@Override
+public String getMessage() {				<--- Переопределяем метод и возвращаем какую-то строку, которая будет выведена при вызове методы printStackTrace()
+return "kakayo-ro ere";
+}
+
+
+@Override
+public void printStackTrace() {				<--- Выведит то сообщение, которое есть в методе getMessage()
+super.printStackTrace();
+}
+

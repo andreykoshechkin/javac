@@ -1,0 +1,54 @@
+Entity Callbacks: Нужны для перехвата каких-то событий из жизненого цикла сущности и что-то там сделать. (Жизненый цикл сущности: создание, обновление, удаление)
+    PRE_UPDATE(PreUpdate.class),		<--- Перед обновлением сущности(к примеру: перед обновление мы можем что-то изменить) 
+    POST_UPDATE(PostUpdate.class),		<--- После обновления сущности(к примеру: после обновление мы можем что-то изменить) 
+    PRE_PERSIST(PrePersist.class),		<--- Перед сохранением сущности(к примеру: перед сохранением сущности мы можем что-то сделать) 
+    POST_PERSIST(PostPersist.class),		<--- После после сохранения сущности(к примеру: после сохранения мы можем что-то изменить) 
+    PRE_REMOVE(PreRemove.class),		<--- Перед удалением сущности(к примеру: перед удалением мы можем что-то изменить) 
+    POST_REMOVE(PostRemove.class),		<--- После удаления сущности(к примеру: после удаления мы можем что-то изменить) 
+    POST_LOAD(PostLoad.class);
+
+======================================================================================================================================================
+Реализация:
+
+@Getter
+@Setter
+@MappedSuperclass
+public abstract class AuditableEntity implements GenerationId<Long> {
+
+    private Instant createIn;
+    private String createBy;
+
+    private Instant updateIn;
+    private String updateBy;
+
+
+    }
+}
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+public class Payment extends AuditableEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    private Double amount;
+
+    @PrePersist
+    public void prePersist(){		<----- указываем, что перед созданием сущности, сохрани время создания(мы можем получить это поле потому-что extand AuditableEntity )
+        setCreateIn(Instant.now());
+        setCreateBy("ADMIN");
+    }
+
+    @PreUpdate
+    public void preUpdate(){		<----- указываем, что перед обновлением сущности, сохрани время обновления(мы можем получить это поле потому-что extand AuditableEntity )
+        setUpdateIn(Instant.now());
+        setUpdateBy("ADMIN");

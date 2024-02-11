@@ -1,0 +1,31 @@
+НУЖНЫЙ МОДУЛЬ - там лежит метод main
+
+1    Компилируем метод main в нужном модуле(Можно через панель справа или через терминал, зайти через cd зайти в нужный модуль и прописать mvn:compile)
+1.1  Если нужный метод имеет зависимости от других модулей, то другие модули должны лежать в .m2 (кнопка install)
+
+2    Для того, чтобы запускать jar архивы нам нужно указать полный путь к методу main в специальном файле 
+2.1  В нужном модуле в директории resources нам нужно созать директорию с НАЗВАНИЕМ META-INF и в этой директории создать файл MANIFEST.MF
+2.2  В этом написать Main-Class: и указать полный путь к методу main. 
+     Пример: Main-Class: com.koshechkin.AppRunner
+
+
+3    Обчыно, все приложения собираются в архим(jar), для этого вызываем метод packege(можно через терминал, зайти через cd в нужный модуль mvn:package) 
+3.1  Чтобы запустить наш архим(jar) в терминале заходим в нужный модуль --> java -jar target/service-1.0.0-SNAPSHOT.jar
+     Пример где service наш модуль: C:\Users\andre\IdeaProjects\first-maven-project\service> java -jar target/service-1.0.0-SNAPSHOT.jar 
+
+Так же у нужного модуля в pom.xml нужно переопределить maven-jar-plugin
+ <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.koshechkin.AppRunner</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+
+

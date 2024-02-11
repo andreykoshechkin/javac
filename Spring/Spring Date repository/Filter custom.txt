@@ -1,0 +1,40 @@
+1.Создает класс и фильтрация будет по тем полям, что есть в этом классе 
+public record UserFilter(String firstname, String lastname, LocalDate birthdate) {
+}
+
+2. Создаем интерфейс
+public interface UserFilterRepository {
+    List<UserEntity> findAllByFilter(UserFilter userFilter);
+}
+
+3. Создаем custom класс. Примечание: Название custom класс и интерфейса должно быть идентичны + custom класс должен иметь постфикс Impl
+
+@RequiredArgsConstructor
+public class UserFilterRepositoryImpl implements UserFilterRepository {
+
+    private final EntityManager entityManager;
+
+    @Override
+    public List<UserEntity> findAllByFilter(UserFilter filter) {
+        var cb = entityManager.getCriteriaBuilder();
+        var criteria = cb.createQuery(UserEntity.class);
+
+        var user = criteria.from(UserEntity.class);
+        criteria.select(user);
+
+        List<Predicate> predicates = new ArrayList<>();
+        if (filter.firstname() != null) {
+            predicates.add(cb.like(user.get("firstname"), filter.firstname()));
+        }
+        if (filter.lastname() != null) {
+            predicates.add(cb.like(user.get("lastname"), filter.lastname()));
+        }
+
+        criteria.where(predicates.toArray(Predicate[]::new));
+
+        return entityManager.createQuery(criteria).getResultList();
+    }
+}
+
+===================================================
+UserRepository реализовать интерфейс из пункта 2. таким образом, реализация метода будет доступна userRepository

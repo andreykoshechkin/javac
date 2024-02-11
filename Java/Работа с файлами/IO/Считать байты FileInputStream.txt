@@ -1,0 +1,8 @@
+
+        File file = Path.of("text").toFile();
+        try (FileInputStream fileInputStream = new FileInputStream(file)){
+            byte[] bytes = fileInputStream.readAllBytes();
+            String s = new String(bytes);	<-- У String есть конструктор, который применяет байты
+            System.out.println(s);
+
+        }

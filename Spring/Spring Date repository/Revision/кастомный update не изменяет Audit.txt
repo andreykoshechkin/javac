@@ -1,0 +1,25 @@
+Проблема, вероятно, связана с тем, что использование @Modifying и @Query в вашем методе updateRoleById 
+не инициирует механизм автоматического обновления даты последнего изменения, предоставляемый Spring Data JPA Auditing.
+
+По умолчанию, механизм автозаполнения (Auditing) срабатывает только при изменении сущности с использованием методов репозитория,
+ а не напрямую через запросы @Query. В вашем случае, когда вы вызываете updateRoleById, Spring Data JPA, возможно, не видит это как изменение самой сущности, и поэтому не обновляет modified_at.
+
+Чтобы решить эту проблему, вам нужно явно указать Spring Data JPA, что сущность была изменена. Можно сделать это с помощью EntityManager.
+ Вот как вы можете изменить ваш метод:
+
+java
+Copy code
+@Modifying(clearAutomatically = true, flushAutomatically = true)
+@Query("update UserEntity u set u.role = :role where u.id = :id")
+int updateRoleById(@Param("id") Long id, @Param("role") Role role);
+
+default void updateRoleAndModifyDate(Long id, Role role) {
+    Optional<UserEntity> optionalUser = findById(id);
+    optionalUser.ifPresent(user -> {
+        user.setRole(role);
+        save(user);
+    });
+}
+В этом примере updateRoleAndModifyDate использует findById для получения сущности, а затем изменяет ее и сохраняет через метод save.
+ Это приведет к вызову механизма автозаполнения, который обновит поле modified_at. 
+Вы можете использовать этот метод вместо updateRoleById для обновления роли и даты модификации.

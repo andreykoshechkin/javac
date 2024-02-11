@@ -1,0 +1,70 @@
+1. БД
+
+CREATE TABLE users_chat
+(
+    id BIGSERIAL PRIMARY KEY ,
+    user_id BIGINT REFERENCES users(id),
+    chat_id BIGINT REFERENCES chat(id),
+    created_at TIMESTAMP NOT NULL,
+    created_by VARCHAR (32) NOT NULL,
+    UNIQUE(user_id, chat_id)
+);
+
+2. Создаем сущность users_chat 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+ 
+    @ManyToOne
+    private Users user;
+  
+    @ManyToOne
+    private Chat chat;
+  
+    @Column(name = "created_at")
+    private Instant createdAt;
+   
+    @Column(name = "created_by")
+    private String createdBy;
+   
+   public void setChat(Chat chat) {
+        this.chat = chat;
+        this.chat.getUsers().add(this);
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+        this.user.getUsersChats().add(this);
+    }
+
+3. В сущности User Добавляем связь
+    @OneToMany(mappedBy = "chat")
+    private List<UsersChat> usersChats = new ArrayList<>();
+
+4. В сущности Chat добавляем связь 
+    @OneToMany(mappedBy = "chat")
+    private List<UsersChat> users = new ArrayList<>();
+
+5. Test 
+ @Test
+    void manyToMany() {
+        @Cleanup SessionFactory sessionFactory = BuilderConfiguration.getBuilder();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.getTransaction();
+
+        Users users = session.get(Users.class, 1L);
+        Chat chat = session.get(Chat.class, 1L);
+
+        UsersChat usersChat = UsersChat.builder()
+                .createdAt(Instant.now())
+                .createdBy("ADMIN")
+                .build();
+
+        usersChat.setChat(chat);
+        usersChat.setUser(users);
+
+        session.save(usersChat);
+        session.beginTransaction().commit();
+    }
+}
+

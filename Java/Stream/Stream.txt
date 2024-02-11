@@ -1,0 +1,18 @@
+Stream - интерфейс для последовательной работы с каждым элементом колекции. Методы stream  не меняют коллекцию/массив на основе которого был создан stream, но мы можем записать
+результат stream в новую структуру данных или присвоить старой колекции новые элементы
+	
+	List<Student> list = new ArrayList<>();
+        list.add(student1);
+        list.add(student2);
+        list.add(student3);
+        list.add(student4);
+        System.out.println(list);
+        list = list.stream().filter(o1 -> o1.getAge() < 25 && o1.getAvgGrade() > 9).toList();
+        System.out.println(list);э
+
+Теперь в list только те условия которые прошли условие
+
+Intremediate methods - промежуточные методы(map, filter)
+Терминальные методы - методы, которые не возвращают нам поток(forEche, reduce - эти методы ничего не возвращают).
+
+Intremediate methods не сработает пока мы не вызовем метод Терминальные методы 

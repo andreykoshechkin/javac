@@ -1,0 +1,22 @@
+      Configuration configuration = new Configuration();
+        configuration.configure();
+        try (SessionFactory sessionFactory = configuration.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            User user = User.builder()
+                    .username("andrey@gmail.com")
+                    .firstname("Andrey")
+                    .lastname("Koshechkin")
+                    .birthdate(LocalDate.of(1995, 1, 9))
+                    .age(27)
+                    .build();
+            session.save(user);
+            session.getTransaction().commit();
+        }
+    }
+}
+/*
+* Ошибка Unknown entity: org.example.entity.User возникает, когда мы не добавили в SessionFactory сущность
+* 1. Чтобы добавить сущность в SessionFactory нам нужно в hibernate.config.xml добавить маппинг <mapping class="org.example.entity.User"></mapping>
+* 2. Или configuration.addAnnotatedClass(User.class);
+* */

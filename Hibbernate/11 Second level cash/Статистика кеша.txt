@@ -1,0 +1,6 @@
+Статистика кеша замедляет приложение:
+
+Добавить в проперти <property name="hibernate.generate_statistics">true</property>
+
+    var statistics = sessionFactory.getStatistics();
+         System.out.println(statistics);

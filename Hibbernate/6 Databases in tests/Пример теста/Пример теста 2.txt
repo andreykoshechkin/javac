@@ -1,0 +1,54 @@
+/**
+ * This class is a set of tests for a class
+ * AccountingForOrdersRepository
+ */
+@Slf4j
+public class AccountingForOrdersRepositoryIT {
+
+    private final SessionFactory sessionFactory = TestContainerRunner.getSessionFactory();
+    private Session session;
+    private AccountingForOrdersRepository accountingForOrdersRepository;
+
+
+    @BeforeEach
+    public void init() {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        accountingForOrdersRepository = new AccountingForOrdersRepository(session);
+        session.createQuery("delete FROM Order ").executeUpdate();
+
+        InitData.initializeTestData(session);
+    }
+
+    @AfterEach
+    public void close() {
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    @Test
+    void shouldReturnListOrderByStatus() {
+        List<Order> actualResult = accountingForOrdersRepository.getListOrderByStatus(OrderStatus.PROCESSING);
+        Assertions.assertThat(actualResult).hasSize(1);
+    }
+
+    @Test
+    void shouldReturnOrderById() {
+
+        Optional<Order> maybeOrder = accountingForOrdersRepository.findByIdOrder(1L);
+        System.out.println(maybeOrder);
+        Assertions.assertThat(maybeOrder.get().getOrderStatus()).isEqualTo(OrderStatus.PROCESSING);
+        Assertions.assertThat(maybeOrder.get().getTotalCost()).isEqualTo(1000.0);
+    }
+
+
+    @Test
+    void shouldReturnListOrderByClientId() {
+        List<Order> actualResultFirst = accountingForOrdersRepository.getListOrderByClient(1L);
+        List<Order> actualResultTwo = accountingForOrdersRepository.getListOrderByClient(2L);
+
+        Assertions.assertThat(actualResultFirst).hasSize(2);
+        Assertions.assertThat(actualResultTwo).hasSize(1);
+    }
+}

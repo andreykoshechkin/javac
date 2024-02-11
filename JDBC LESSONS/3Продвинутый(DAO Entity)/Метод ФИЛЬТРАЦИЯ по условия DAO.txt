@@ -1,0 +1,45 @@
+v public static List<FlightEntity> selectLimitAndOffset(FlightDTA flightDTA) {
+
+
+        List<FlightEntity> flightEntities = new ArrayList<>();
+
+        List<String> whereSql = new ArrayList<>();
+
+        List<Object> objectList = new ArrayList<>();
+
+
+        if (flightDTA.flight_no() != null) {
+            whereSql.add("flight_no = ?");
+            objectList.add(flightDTA.flight_no());
+        }
+        objectList.add(flightDTA.limit());
+        objectList.add(flightDTA.offset());
+        var where = whereSql.stream().collect(Collectors.joining(" AND ", " WHERE ", " LIMIT ? OFFSET ? "));
+
+        String FilterSql = sql + where;
+
+        try (Connection driver = MyConnectionToSql.getDriver();
+             PreparedStatement preparedStatement = driver.prepareStatement(FilterSql)) {
+            System.out.println(preparedStatement);
+            for (int i = 0; i < objectList.size(); i++) {
+                preparedStatement.setObject(i + 1, objectList.get(i));
+            }
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                FlightEntity flight;
+                flightEntities.add(flight = new FlightEntity(resultSet.getLong("id"),
+                        resultSet.getString("flight_no"),
+                        resultSet.getTimestamp("departure_date"),
+                        resultSet.getObject("departure_airport_code", String.class),
+                        resultSet.getTimestamp("arrival_date"),
+                        resultSet.getObject("arrival_airport_code", String.class),
+                        resultSet.getInt("aircraft_id"),
+                        resultSet.getString("status")));
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return flightEntities;
+    }

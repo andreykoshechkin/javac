@@ -1,0 +1,29 @@
+
+Метод distinct - возвращает в структуру данных, только уникальные элементы    
+
+List<String> list = new ArrayList<>();
+        list.add("andrey");
+        list.add("gello");
+        list.add("andrey");
+        list.add("privet");
+        list.add("a312");
+
+        list = list.stream().distinct().toList();
+        System.out.println(list);
+
+input - [andrey, gello, privet, a312];
+
+
+int [] massive = {1,1,2,3,4,5,5,6,2};
+        massive = Arrays.stream(massive).distinct().toArray();
+        System.out.println(Arrays.toString(massive));
+
+input - [1, 2, 3, 4, 5, 6]
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+count() - метод возвращает количество элементов в структуре данных(возвращает ввиде целого числа типа long)
+      long [] massive = {1,1,2,3,4,5,5,6,2};
+       long massive1 =  Arrays.stream(massive).distinct().count();
+        System.out.println(massive1); 
+
+Метод peak - такой же как и forEach, позволяет просмотреть элементы, но в отличие от forEach, Intremediate methods является

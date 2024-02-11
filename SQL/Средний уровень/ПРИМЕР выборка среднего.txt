@@ -1,0 +1,6 @@
+SELECT name_book,
+       count_pages 
+FROM info_book_dba
+WHERE count_pages > (SELECT avg(count_pages) from info_book_dba)
+
+Перевод: выведи только те книги у которых страниц больше среднего

@@ -1,0 +1,29 @@
+Когда в классе для создание соединение с h2 будет писать sql код, который создает таблицу, имя таблицы должны быть таким же как и в настоящей базе данных
+
+private static final String CREATE_TABLE_USER = """
+            CREATE TABLE IF NOT EXISTS name123			<----name123 должен быть таким же как и в базе данных + в наших sql запросах для дао
+            (
+            id          BIGSERIAL PRIMARY KEY,
+            username    VARCHAR(132) NOT NULL UNIQUE,
+            birthday    DATE NOT NULL,
+            email       VARCHAR(132) NOT NULL UNIQUE,
+            password    VARCHAR (132) NOT NULL,
+            gender      VARCHAR (64) NOT NULL,
+            country     VARCHAR (64) NOT NULL 
+              
+                        
+            )
+            """;
+
+
+ public static final String FIND_ALL = """	<--- sql запрос для дао
+            SELECT 
+            u.id,
+            u.username,
+            u.birthday,
+            u.email,
+            u.password,
+            u.gender,
+            u.country
+            FROM name123 u			<----
+             """;

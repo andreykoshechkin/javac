@@ -1,0 +1,5 @@
+Try with resources - это когда в блоке try мы открываем скобки и передаем туда ресурсы, это позволяет автоматически закрывать потоки 
+
+ try (FileReader fileReader = new FileReader("C:\\Users\\79964\\Desktop\\myTxt.txt")) {
+
+Несколько объектов должны разделяться запятой:  try (FileReader fileReader = new FileReader("C:\\Users\\79964\\Desktop\\myTxt.txt")); другой объект { 

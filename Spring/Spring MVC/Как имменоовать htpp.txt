@@ -1,0 +1,11 @@
+https://phauer.com/2015/restful-api-design-best-practices/#use-two-urls-per-resource
+
+1. Для методов Get(findAll, findById) принято использовть url во множественном числе
+   employees	<-- метод findAll
+   employees/1     <-- метод findById(1);
+
+2. В url не использовать глаголы 
+   http://localhost:8080/findAll    	  <--- Не правильно
+   http://localhost:8080/updateEmployee   <--- Не правильно 
+   http://localhost:8080/employees        <--- Правильно
+

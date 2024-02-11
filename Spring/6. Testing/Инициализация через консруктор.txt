@@ -1,0 +1,15 @@
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = Main.class, initializers = ConfigDataApplicationContextInitializer.class)
+@RequiredArgsConstructor
+@ActiveProfiles("test")
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)	<---------Дает возможность инициализировать поля через консруктор(Теперь нам можно и не ставить 										  аннотацию @Autowired над полем)
+public class UserServiceIT {
+
+
+    private final ConnectionManager pool1;
+
+    @Test
+    void test() {
+        System.out.println();
+    }
+}

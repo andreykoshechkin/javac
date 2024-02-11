@@ -1,0 +1,41 @@
+JSTL - Позволяет описывать JSP страницу без скриплетов(без java кода). Так же позволяет писать ветвления, циклы и тд.
+
+Для  использования JSTL в проекте нужно скачать 2е зависимости: 
+jakarta.servlet.jsp.jstl-2.0.0.jar  		В гугли maven glassfish jakarta jstl	(Там в строчке files выбираем jar)
+jakarta.servlet.jsp.jstl-api-2.0.0.jar		В гугле maven jakarta.servlet.jsp.jstl-api
+**для старых версий тольео jstl-1.2.jar
+Далее. нужно jakarta.servlet.jsp.jstl-2.0.0.jar  и jakarta.servlet.jsp.jstl-api-2.0.0.jar скопировать в папку lib нашего проекта
+
+Далее, на JSP страницы подключить JSTL челе tagLib:
+<%@tagLib prefix="c" uri="uri" %>
+========================================================
+Условные выражение JSTL (только if)
+Пример:
+<с:if test="${условие}>
+  выводится результат
+</c:if>
+
+
+Предварительно у нас есть атрибут с ключам user, а в качестве значение используется объект у которого есть поле role
+<c:if test="${requestScope.user.role == 'ADMIN'}	если role = ADMIN то создай кнопу DELETE
+<button type ="submit"> DELETE </button>
+</c:if>
+========================================================
+Условные выражение JSTL (if else)
+Пример:
+<c:choose>
+     <c:when test = "${requestScope.user.role == 'ADMIN'}>
+	<button type ="submit"> DELETE </button>
+     </c:when>
+
+      <c: otherwise> 
+      	<div> hello admin </div>
+      </c: otherwise> 
+</c:choose>
+===========================================================
+Циклы:
+<c:forEach var = "какой-то имя" items ="${requestScope.ключИзСозданногоАтрибута}>  		//В items мы кладем коллекцию или массив
+<p> {var.setNo}</p>
+
+<c:forEach var = "какой-то имя" begin= "0" end = "10"> 				//В items мы кладем коллекцию или массив
+<p> {requestScope.ключИзСозданногоАтрибута[index].setNo}</p>

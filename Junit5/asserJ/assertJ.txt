@@ -1,0 +1,20 @@
+  @Test
+    void ifUsersNotToAddUsers() {
+        userService.add(ANDREY, IVAN);
+        List<UserDto> all = userService.getAll();
+        assertThat(all).hasSize(2);
+    }
+
+    @Test
+    void calculatorTest() {
+        Integer num = userService.calculate(4, 5);
+        assertThat(num).isEqualTo(20);
+    }
+
+    @Test
+    void loginSuccessIfUserExist() {
+        userService.add(IVAN);
+        Optional<UserDto> users = userService.login(IVAN.getUsername(), IVAN.getPassword());
+        assertThat(users).isPresent();
+        users.ifPresent(user -> assertThat(user).isEqualTo(IVAN));
+    }

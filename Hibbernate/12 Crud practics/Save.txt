@@ -1,0 +1,46 @@
+ПРАВИЛО: в методе save и тому подобных должны быть валидация
+
+Service:
+@RequiredArgsConstructor
+public class GameService {
+
+    private final RepositoryGame repositoryGame;
+
+    private final MapperCreateGameToEntity mapperCreateGameToEntity;
+
+    public Long create(GameDto gameDto) {
+		//Сначала валидация
+        var entity = mapperCreateGameToEntity.transfer(gameDto);
+        return repositoryGame.save(entity).getId();
+    }
+}
+
+
+Mapper:
+
+public class MapperCreateCompanyToEntity implements MapperExample<CompanyDto, Company>{
+    @Override
+    public Company transfer(CompanyDto obj) {
+        return Company.builder()
+                .id(obj.getId())
+                .name(obj.getName())
+                .foundingDate(obj.getDateExample())
+                .build();
+    }
+}
+
+
+@RequiredArgsConstructor
+public class MapperCreateGameToEntity implements MapperExample<GameDto, Game>{
+
+    private final RepositoryCompany repositoryCompany;
+    @Override
+    public Game transfer(GameDto obj) {
+        return Game.builder()
+                .id(obj.getId())
+                .name(obj.getName())
+                .genre(obj.getGenre())
+                .company(repositoryCompany.findById(obj.getCompanyId()).orElse(null))
+                .build();
+    }
+}

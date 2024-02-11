@@ -1,0 +1,4 @@
+Hibernate создает прокси наш объект, только тогда, когда в таблице есть forgen_key
+
+Пример: есть сущность Profile and User 
+Если в таблице user не будет reference profile_id, то когда мы в сущности user укажем FetchType.Laze над profile, hibernate не создаст proxy объекта profile  

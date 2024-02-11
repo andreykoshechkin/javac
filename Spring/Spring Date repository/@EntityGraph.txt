@@ -1,0 +1,50 @@
+Repository:  
+  @EntityGraph(attributePaths = "locales")
+    @Query("select c from CompanyEntity c ")
+    List<CompanyEntity> findAllAndCompanyLocales();
+
+Test:
+  @Test
+    void findAllAndCompanyLocales(){
+        List<CompanyEntity> companyEntities = companyRepository.findAllAndCompanyLocales();
+        companyEntities.forEach(it -> System.out.println(it.getLocales()));
+    }
+
+================================================================================================================================================
+Когда нам нужно создать subgraph
+
+    @EntityGraph(attributePaths = {"company", "company.locales"})
+    @Query("select u FROM Users u where u.id=:id")
+    Optional<Users> findById(Long id);
+================================================================================================================================================
+Наименованный EntityGraph:
+
+CompanyRepository:
+   @EntityGraph("company.locales")
+    @Query("select c from CompanyEntity c ")
+    List<CompanyEntity> findAllAndCompanyLocales()
+
+
+@NamedEntityGraph(name = "company.locales", attributeNodes = {
+        @NamedAttributeNode("locales")
+})
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "company")
+public class CompanyEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String name;
+
+    @ElementCollection
+    @CollectionTable(name = "company_locales", joinColumns = @JoinColumn(name = "company_id"))
+    @MapKeyColumn(name = "lang")
+    @Column(name = "description")
+    private Map<String, String> locales = new HashMap<>();
+}

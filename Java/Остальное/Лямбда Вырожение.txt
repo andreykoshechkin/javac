@@ -1,0 +1,74 @@
+Лямбда - реализацтя функционального интерфейса
+
+метод reduc - соединяет элементы в одно.
+ int total6 = Arrays.stream(massive).reduce((o1, o2) -> o1 + o2).getAsInt(); (getAsInt - преобразует поток stream в инт)
+
+
+В ПАРАМЕТРА STREAM() ДЛЯ КОЛЛЕКЦИЙ НЕ НУЖНО УКАЗЫВАТЬ НАШУ КОЛЛЕКЦИЮ ДЛЯ ОБЫЧНОГО МАССИВА НУЖНО ARRAYS.STREAM(MASSIVE)/
+
+.map();
+Для int[]:
+имяМассива = Arrays.stream(имя массива)map(a -> a * 2).toArray();
+
+Для ArrayList:
+        List<Integer> list = new ArrayList<>();
+        
+        list = list.stream().map(a -> a *2).toList();
+        System.out.println(list);
+
+Для Set<>;
+	Set<Integer> set = new HashSet<>();
+	set = set.stream().map(a -> a *2).collect(Collectors.toSet());
+
+Лямбду можно записывать в переменную ПРИМЕР:
+
+Comparator<Integer> comparator = (o1,o2)->{
+        if (o1 > o2) {
+            return -1;
+        }else if (o1 < o2){
+            return 1;
+        }else return 0;
+      };
+
+
+
+ЗАМЕНТА ЦИКЛА  forEach - list.stream().forEach(a -> System.out.println(a));
+
+
+
+
+  Comparator<Integer> comparatorSort = ((o1, o2) -> {
+            if (o1 > o2) {
+                return -1;
+            } else if (o1 < o2) {
+                return 1;
+            } else return 0;
+        });
+
+        int[] massive = new int[10];
+        fillMassive(massive);
+        System.out.println(Arrays.toString(massive));
+        massive = Arrays.stream(massive).map(o1 -> o1 * 2).toArray();
+        System.out.println(Arrays.toString(massive));
+
+        System.out.println();
+
+        List<Integer> list = new ArrayList<>();
+        fillList(list);
+        System.out.println(list);
+        list = list.stream().filter(o1 -> o1 % 2 == 0).sorted(comparatorSort).map(o1 -> o1 * 2).toList();
+        System.out.println(list);
+
+    }
+
+    public static void fillMassive(int[] massive) {
+        for (int i = 0; i < 10; i++) {
+            massive[i] = i + 1;
+        }
+    }
+
+    public static void fillList(List<Integer> list) {
+        for (int i = 0; i < 10; i++) {
+            list.add(i + 1);
+        }
+    }

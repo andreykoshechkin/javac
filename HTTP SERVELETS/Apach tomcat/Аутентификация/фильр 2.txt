@@ -1,0 +1,26 @@
+
+@WebFilter("/*")
+public class filter implements Filter {
+
+    private final Set<String> stringSet = Set.of(REGISTRATION, LOGIN);
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        String uri = ((HttpServletRequest) servletRequest).getRequestURI();
+        if (isPublic(uri) || isLoggin(servletRequest)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            ((HttpServletResponse) servletResponse).sendRedirect(LOGIN);
+        }
+
+    }
+
+    private boolean isLoggin(ServletRequest servletRequest) {
+        UserDto userDto = (UserDto) ((HttpServletRequest) servletRequest).getSession().getAttribute("user");
+        return userDto != null;
+    }
+
+    private boolean isPublic(String uri) {
+        return stringSet.stream().anyMatch(uri::startsWith);
+    }
+}

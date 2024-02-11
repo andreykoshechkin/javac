@@ -1,0 +1,43 @@
+@CacheEvict() - Эта аннотация, которая очищает кеш, ее нужно ставить над теми методами, которые либо удаляют либо обновляют данные. 
+
+*********************************************************************************************************************************************************************
+Почему аннотатцию нужно ставить над методами по обновлению данных.
+Пример: 
+	1. Мы выполнили методт findById(1L), данные метод нашел пользователя с id = 1 и username=alex@gmail.com, эти данные закешировались.
+ 	2. Теперь мы одновляем username пользователя(был alex@gmail.com, стал username@gmail.com), и если сейчас мы выполним findById(1L) мы получим старые данные
+	   ведь исходя из пункта 1, данные были закешированы.
+
+	Итог: Если мы не поставим @CacheEvict() над тем методом, который обновляет данные, ты мы просто получим старые данные
+
+
+
+    @Cacheable(cacheNames = "employee", key = "#employeeId")
+    public Optional<EmployeeReadDto> findById(Long employeeId) {
+        return employeeRepository.findById(employeeId).map(employeeMapper::readMapper);
+
+    }
+
+
+    @Transactional
+    @CacheEvict(cacheNames = "employee", key = "#employeeId")
+    public Optional<EmployeeReadDto> update(Long employeeId, EmployeeCreateEditDto employeeDto) {
+        return employeeRepository.findById(employeeId)
+                .map(eml -> employeeMapper.updateMapper(eml, employeeDto))
+                .map(employeeRepository::saveAndFlush)
+                .map(employeeMapper::readMapper);
+    }
+
+
+*********************************************************************************************************************************************************************
+Параметры:
+
+# cacheNames или value: Определяет имя кэша или массив имен кэшей, из которых следует удалить данные. Этот параметр обязателен.
+
+# key и keyGenerator:   Определяют ключ (или генератор ключа), который будет использоваться для поиска и удаления конкретного элемента из кэша.
+		        Можно использовать выражение SpEL (Spring Expression Language) или определить собственный KeyGenerator.
+# condition:	        Указывает условие, при котором кэш будет очищен. Метод кэширования вызывается только при выполнении этого условия.
+
+# allEntries: 	        Указывает, следует ли удалить все записи из кэша (если true), вне зависимости от ключа, или только те, которые соответствуют ключу (если false). По умолчанию установлен в false.
+
+# beforeInvocation:     Указывает, следует ли выполнить удаление из кэша до вызова метода (если true) или после выполнения метода (если false). По умолчанию установлен в false.
+

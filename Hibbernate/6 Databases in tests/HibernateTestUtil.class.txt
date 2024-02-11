@@ -1,0 +1,34 @@
+Нам нужно переопределить ConfigurationBuilder из main/Java <--- это наш обычный ConfigurationBuilder
+Он должен быть таким: 
+
+  public static SessionFactory getBuilderSession() {
+        Configuration configuration = buildConfiguration();
+        configuration.configure();
+        return configuration.buildSessionFactory();
+    }
+
+    public static Configuration buildConfiguration() {
+        Configuration configuration = new Configuration();
+        configuration.addAttributeConverter(new FoundingDateConverter());
+        return configuration;
+    }
+
+@UtilityClass
+public class HibernateTestUtil {
+
+    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer("postgres:15");
+
+    static {
+        postgres.start();
+    }
+
+    public static SessionFactory getBuilderSession() {
+        Configuration configuration = ConfigurationBuilder.buildConfiguration();
+        configuration.setProperty("hibernate.connection.url", postgres.getJdbcUrl());
+        configuration.setProperty("hibernate.connection.username", postgres.getUsername());
+        configuration.setProperty("hibernate.connection.password", postgres.getPassword());
+        configuration.configure();
+        return configuration.buildSessionFactory();
+    }
+
+}

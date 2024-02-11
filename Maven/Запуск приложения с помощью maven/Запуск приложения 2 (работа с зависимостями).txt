@@ -1,0 +1,30 @@
+Если наше приложение имеет зависимость от других приложений, то наше приложение работать не будет, мы получим java.lang.NoClassDefFoundError
+Пример: service зависит от database, так как в классе UserService мы вызывали метод findId из database dao.
+
+Решение: Создать одну jar со всеми зависимостями. СОЗДАТЬ В web pom.xml
+
+  
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.4.2</version>
+                <executions>
+                    <execution>
+                        <id>singe-assembly-id</id>
+                        <goals><goal>single</goal></goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <descriptorRefs>jar-with-dependencies</descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.koshechkin.AppRunner</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+
+
+  

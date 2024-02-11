@@ -1,0 +1,53 @@
+ 
+1. Создать в директории resources application.yaml
+1.1 Запись в yaml формате происходит в виде дерева. Пример:
+	db:
+	  username: postgres
+  	  password: postgres
+  	  pools:
+    	    size: 10
+    	    timeout: 15
+
+
+2. Создать класс который будет представлять наш yaml в виде объекта
+
+@Data
+@NoArgsConstructor
+@ConfigurationProperties(prefix = "db")
+public class DatabaseProperties{
+
+    private String username;
+    private String password;
+    private PoolProperties pools;
+
+    @Data
+    @NoArgsConstructor
+    public static class PoolProperties{
+        private Integer size;
+        private Integer timeout;
+    }
+}
+
+ВАЖНО!!!!!!!!!!!!!!!!!
+3. Main класс должен быть отмечен аннотацией @ConfigurationPropertiesScan
+
+@SpringBootApplication
+@ConfigurationPropertiesScan //Сканирует все классы которые отмечены аннотацией @ConfigurationProperties
+public class Main {
+    public static void main(String[] args) {
+
+        ConfigurableApplicationContext context = SpringApplication.run(Main.class);
+        UserRepository userRepository = context.getBean("userRepository", UserRepository.class);
+        UserRepository userRepositoryExample = context.getBean("userRepositoryExample", UserRepository.class);
+        DatabaseProperties databaseProperties = context.getBean(DatabaseProperties.class);
+        System.out.println();
+
+    }
+}
+=================================
+Можем еще возвращать бин в config классе:
+  @Bean
+    @ConfigurationProperties(prefix = "db")
+    public DatabaseProperties databaseProperties() {
+        return new DatabaseProperties();
+    }

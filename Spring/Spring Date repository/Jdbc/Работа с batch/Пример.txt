@@ -1,0 +1,64 @@
+
+    private static final String INSERT_BATCH = """
+            INSERT INTO users (username, birth_date, firstname, lastname, role, company_id) 
+            VALUES (?,?,?,?,?,?)
+            """;
+
+    private static final String UPDATE_BATCH_BY_USERS = """
+            UPDATE users set role = ? where id = ?
+            """;
+
+    private static final String DELETE_BATCH = """
+            DELETE FROM users where id = ?
+            """;
+    private final JdbcTemplate jdbcTemplate;
+
+    @Override
+    public void insertBatch(UserEntity... userEntities) {
+        List<Object[]> args = Arrays.stream(userEntities).map(user -> new Object[]{
+                user.getUsername(),
+                user.getBirthDate(),
+                user.getFirstname(),
+                user.getLastname(),
+                user.getRole().name(),
+                user.getCompanyId().getId()
+        }).toList();
+
+        jdbcTemplate.batchUpdate(INSERT_BATCH, args);
+    }
+
+    @Override
+    public void updateRoleBatchEntity(Role role, UserEntity... userEntities) {
+        List<Object[]> args = Arrays.stream(userEntities).map(user -> new Object[]{
+                role.name(),
+                user.getId()
+        }).toList();
+
+        jdbcTemplate.batchUpdate(UPDATE_BATCH_BY_USERS, args);
+    }
+
+    @Override
+    public void updateRoleBatchIds(Role role, Long... ids) {
+        List<Object[]> args = Arrays.stream(ids).map(userID -> new Object[]{role.name(), ids}).toList();
+        jdbcTemplate.batchUpdate(UPDATE_BATCH_BY_USERS, args);
+    }
+
+    @Override
+    public void deleteBatch(UserEntity... userEntities) {
+        List<Object[]> args = Arrays.stream(userEntities).map(usr -> new Object[]{usr.getId()}).toList();
+        jdbcTemplate.batchUpdate(DELETE_BATCH, args);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

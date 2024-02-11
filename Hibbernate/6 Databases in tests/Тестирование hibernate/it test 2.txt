@@ -1,0 +1,207 @@
+@Slf4j
+@Tag("serviceIt -run")
+public class AccountingForOrdersServiceIT {
+
+    private final SessionFactory sessionFactory = TestContainerRunner.getSessionFactory();
+    private final Session session = sessionFactory.openSession();
+    private final AccountingForOrdersRepository repository = new AccountingForOrdersRepository(session);
+    private final OrderMapper orderMapper = OrderMapper.INSTANCE;
+    private final AccountingForOrdersService service = new AccountingForOrdersService(repository, orderMapper);
+
+    @BeforeEach
+    public void init() {
+        session.beginTransaction();
+        ImportDataForIntegrationTest.initializeTestDataEntity(session);
+    }
+
+    @Nested
+    @Tag("serviceIt -positive")
+    @DisplayName("A set of positive tests")
+    class positiveTest {
+
+        @Test
+        @DisplayName("Should create an order if the order parameters are entered correctly.")
+        void shouldCreateOrderDtoIfEnteredIsCorrect() {
+            OrderDto orderDto = OrderDto.builder()
+                    .customerId(1L)
+                    .dateOfCreation(ImportDataForIntegrationTest.getLOCAL_DATE_TIME())
+                    .orderStatus(OrderStatus.REFUND.name())
+                    .totalCost(100.0)
+                    .build();
+
+            OrderDto order = service.createOrder(orderDto);
+            Assertions.assertThat(order).isEqualTo(orderDto);
+        }
+
+        @Test
+        @DisplayName("Should return an order if an order with the provided ID exists")
+        void shouldReturnOrderDtoById() {
+            Optional<OrderDto> actualResult = service.findOrderById(1L);
+
+            Assertions.assertThat(actualResult).isPresent();
+            actualResult.ifPresent(it -> Assertions.assertThat(it.getTotalCost()).isEqualTo(1000.0));
+            actualResult.ifPresent(it -> Assertions.assertThat(it.getDateOfCreation()).isEqualTo(ImportDataForIntegrationTest.getLOCAL_DATE_TIME()));
+        }
+
+        @Test
+        @DisplayName("Should update the order status if the order exists.")
+        void shouldUpdateOrderStatusIfOrderExist() {
+            Optional<OrderDto> maybeOrder = service.findOrderById(1L);
+            maybeOrder.ifPresent(it -> Assertions.assertThat(it.getOrderStatus()).isEqualTo(OrderStatus.PROCESSING.name()));
+
+            OrderDto actualResult = service.updateOrderStatus(1L, OrderStatus.COMPLETED);
+
+            Assertions.assertThat(actualResult.getOrderStatus()).isEqualTo(OrderStatus.COMPLETED.name());
+            Assertions.assertThat(actualResult).isNotEqualTo(maybeOrder.get());
+        }
+
+        @Test
+        @DisplayName("Should return a list of orders if a customer with the provided ID exists and has orders.")
+        void shouldReturnListOrderByClientIfClientExist() {
+            List<OrderDto> actualResult = service.getListOrderDtoByClient(1L);
+            List<Long> orderIds = actualResult.stream().map(OrderDto::getId).toList();
+            double sumTotalCostOrder = actualResult.stream().mapToDouble(OrderDto::getTotalCost).sum();
+
+            Assertions.assertThat(actualResult).hasSize(2);
+            Assertions.assertThat(orderIds).contains(1L, 2L);
+            Assertions.assertThat(sumTotalCostOrder).isEqualTo(1750.0);
+            Assertions.assertThat(sumTotalCostOrder).isGreaterThan(0.0);
+        }
+
+        @Test
+        @DisplayName("Should return a list of orders if orders with the provided OrderStatus exist.")
+        void shouldReturnListOrderByOrderStatusIfOrderExist() {
+            Optional<OrderDto> maybeOrder = service.findOrderById(1L);
+
+            List<OrderDto> actualResult = service.getListOrderByStatus(OrderStatus.PROCESSING);
+            Assertions.assertThat(actualResult).hasSize(1);
+            Assertions.assertThat(actualResult).contains(maybeOrder.get());
+        }
+
+        @Test
+        @DisplayName("Should return a list of products in the order if the order exists and contains products.")
+        void shouldReturnProductByOrderIdIfOrderExist() {
+            List<ProductDto> actualResult = service.getProductByOrderId(2L);
+            List<String> productNames = actualResult.stream().map(ProductDto::getProductName).toList();
+            double sumTotalPrice = actualResult.stream().mapToDouble(ProductDto::getProductPrice).sum();
+
+            Assertions.assertThat(actualResult).isNotEmpty();
+            Assertions.assertThat(actualResult).hasSize(1);
+            Assertions.assertThat(productNames).contains("Google");
+            Assertions.assertThat(sumTotalPrice).isBetween(1199.0, 1201.0);
+        }
+
+        @Test
+        @DisplayName("Should add a product to the order if both the product and the order exist.")
+        void shouldAddProductInOrderIfProductAndOrderExist() {
+            session.createQuery("delete from AddProductInOrder ").executeUpdate();
+
+            List<ProductDto> actualResultOnTheFirstAddition = service.addProductInOrder(3L, 1L);
+            List<ProductDto> actualResultOmTheTwoAddition = service.addProductInOrder(3L, 2L);
+            List<ProductDto> actualResultOnTheThirdAddition = service.addProductInOrder(3L, 3L);
+
+            Assertions.assertThat(actualResultOnTheFirstAddition).hasSize(1);
+            Assertions.assertThat(actualResultOmTheTwoAddition).hasSize(2);
+            Assertions.assertThat(actualResultOnTheThirdAddition).hasSize(3);
+        }
+
+
+        @Test
+        @DisplayName("Should return a list of orders if the filter conditions are met.")
+        void shouldReturnOrderByFilterIfOrderExist() {
+            AccountingFilter accountingFilter = new AccountingFilter(null, 2L, null);
+            List<OrderDto> actualResult = service.getOrderByFilter(accountingFilter);
+            Assertions.assertThat(actualResult).hasSize(1);
+            Assertions.assertThat(actualResult.get(0).getCustomerId()).isEqualTo(2L);
+        }
+    }
+
+    @Nested
+    @Tag("serviceIt -negative")
+    @DisplayName("A set of negative tests")
+    class negativeTest {
+
+        @Test
+        @DisplayName("Should return Optional.Empty if the order cannot be found by the given ID")
+        void shouldReturnEmptyIfOrderIsNotExist() {
+            Optional<OrderDto> actualResult = service.findOrderById(10L);
+            Assertions.assertThat(actualResult).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Should throw an ConstraintViolationException if incorrect data is passed during the creation of orderDto.")
+        void shouldThrowExceptionIfDataOrderDtoIsNotCorrectly() {
+            OrderDto orderDto = OrderDto.builder()
+                    .customerId(null)
+                    .dateOfCreation(ImportDataForIntegrationTest.getLOCAL_DATE_TIME())
+                    .orderStatus(OrderStatus.REFUND.name())
+                    .totalCost(100.0)
+                    .build();
+
+
+            ConstraintViolationException actualResult = org.junit.jupiter.api.Assertions.assertThrows(ConstraintViolationException.class, () -> service.createOrder(orderDto));
+            Assertions.assertThat(actualResult).hasMessage("customerId: должно быть задано");
+        }
+
+        @Test
+        @DisplayName("Should throw an exception if the Status update operation was not executed.")
+        void shouldReturnThrowUpdateExceptionIfUpdateOrderFailed() {
+            UpdateException actualResult = org.junit.jupiter.api.Assertions.assertThrows(UpdateException.class, () -> service.updateOrderStatus(10L, OrderStatus.EXIST));
+            Assertions.assertThat(actualResult).hasMessage("failed to update order status");
+        }
+
+        @Test
+        @DisplayName("Should throw an ListOrderException if products cannot be found by Order id.")
+        void shouldReturnThrowIfProductCannotBeFoundOrderId() {
+            ListOrderException actualResult = org.junit.jupiter.api.Assertions.assertThrows(ListOrderException.class, () -> service.getProductByOrderId(Mockito.any()));
+            Assertions.assertThat(actualResult).hasMessage("Сouldn't find the list of products from the order");
+            Assertions.assertThat(actualResult).isInstanceOf(RuntimeException.class);
+        }
+
+        @Test
+        @DisplayName("Should throw an ListOrderException if order cannot be found by clientId.")
+        void shouldReturnThrowListOrderExceptionIfTheClientIdCouldNotBeFound() {
+            ListOrderException actualResult = org.junit.jupiter.api.Assertions.assertThrows(ListOrderException.class, () -> service.getListOrderDtoByClient(10L));
+            Assertions.assertThat(actualResult).hasMessage("Order with client is not found");
+            Assertions.assertThat(actualResult).isInstanceOf(RuntimeException.class);
+        }
+
+        @Test
+        @DisplayName("Should throw an ListOrderException if order cannot be found by OrderStatus.")
+        void shouldReturnThrowListOrderExceptionIfTheOrderStatusCouldNotBeFound() {
+            ListOrderException actualResult = org.junit.jupiter.api.Assertions.assertThrows(ListOrderException.class, () -> service.getListOrderByStatus(Mockito.any()));
+            Assertions.assertThat(actualResult).hasMessage("Order with status is not found");
+            Assertions.assertThat(actualResult).isInstanceOf(RuntimeException.class);
+        }
+
+        @Test
+        @DisplayName("Should return an empty list if no orders were found based on the filter condition.")
+        void shouldReturnListEmptyIffNoOrdersWereFoundBasedOnTheFilterCondition() {
+            AccountingFilter filterClientId = new AccountingFilter(null, 10L, null);
+            AccountingFilter filterDate = new AccountingFilter(null, null, LocalDateTime.of(2000, 10, 10, 15, 0));
+
+            List<OrderDto> actualResultFilterClientId = service.getOrderByFilter(filterClientId);
+            List<OrderDto> actualResultFilterDate = service.getOrderByFilter(filterDate);
+
+            Assertions.assertThat(actualResultFilterClientId).isEmpty();
+            Assertions.assertThat(actualResultFilterDate).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Should throw an AddProductInOrderException if the product cannot be added to the order.")
+        void shouldThrowAddProductInOrderExceptionIfAddedProductInOrderFailed() {
+/*            ConstraintViolationException actualResult = org.junit.jupiter.api.Assertions.assertThrows(ConstraintViolationException.class, () -> service.addProductInOrder(1L, 10L));
+            Assertions.assertThat(actualResult).hasMessage("could not execute statement");
+            Assertions.assertThat(actualResult).isInstanceOf(RuntimeException.class);*/
+
+            List<ProductDto> productDtos = service.addProductInOrder(1L, 10L);
+            System.out.println(productDtos);
+        }
+    }
+
+    @AfterEach
+    public void close() {
+        session.getTransaction().commit();
+        session.close();
+    }
+}

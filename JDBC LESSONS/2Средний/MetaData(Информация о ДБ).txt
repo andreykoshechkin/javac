@@ -1,0 +1,42 @@
+getMetaData() 			//Метод, который позволяет получить информацию о нашей ДБ(Схемы, таблицы, колонки).  Возвращает DatabaseMetaData
+Пример:				DatabaseMetaData databaseMetaData = connection.getMetaData();
+				System.out.println(databaseMetaData.getSchemas());
+
+
+getCatalogs()			//Получить все базы данных. Возвращает ResualtSet. в параметрах getString указать TABLE_CAT (Можено посмотреть в документациях)
+Пример: 			ResultSet resultSet = databaseMetaData.getCatalogs();
+            			while (resultSet.next()) {
+               			System.out.println(resultSet.getString("TABLE_CAT"));
+            			}
+
+getSchemas()			//Получение всех схем.Возвращает ResualtSet. в параметрах getString указать TABLE_SCHEM (Можено посмотреть в документациях)
+Пример:				  ResultSet resultSet = databaseMetaData.getSchemas();
+            			  while (resultSet.next()) {
+              			  System.out.println(resultSet.getString("TABLE_SCHEM"));
+				 }
+
+ 
+getTable()			//Получить все таблицы из нужных каталогов 
+Пример:				try (Connection connection = ConnectionManager.loadDriverLoad()) {
+        			    DatabaseMetaData databaseMetaData = connection.getMetaData();
+				    ResultSet resultSet1 = databaseMetaData.getCatalogs();			
+          		            ResultSet resultSet2 = databaseMetaData.getSchemas();
+
+        			    while (resultSet1.next()){
+           			    String catalog = resultSet1.getString("TABLE_CAT");
+             			    while (resultSet2.next()){
+                    		    String schema = resultSet2.getString("TABLE_SCHEM");
+                    		    ResultSet resultSet3 = databaseMetaData.getTables(catalog,schema, "%", new String[]{"TABLE"} );
+                   		    while (resultSet3.next()){
+                        	    System.out.println(resultSet3.getString("TABLE_NAME"));
+                  			  }
+               				 }
+          			  }
+
+getTable()			// try (Connection connection = ConnectionManager.loadDriverLoad()) 
+Пример №2:	          	   DatabaseMetaData databaseMetaData = connection.getMetaData();
+ 				   ResultSet resultSet = databaseMetaData.getTables(null, null, "%", new String[]{"TABLE"});
+            		           while (resultSet.next()){
+                		   System.out.println(resultSet.getString("TABLE_NAME"));
+      
+		

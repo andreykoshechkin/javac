@@ -1,0 +1,40 @@
+  arrayList.set(0,10); 			//заменяет элемент заданного индекса на новый элемент(в индексе 0 будет лежать 10);
+arrayList1.addAll(arrayList);  		//добовляет элементы arraylist в конец массива arrayList1
+arrayList.indexOf("Какой-то имя"); 	//возвразает индекс заданного элемента
+arrayList.lastIndexOf());возвразает 	//индекс последнего заданного элемента
+arrayList.contains("Ivan")); 		//Проверяет, содержит ли наш лист элемент (если да - true: если нет - false) содержит ли наш лист имя Ivan.
+
+arrayList.clone();			// Клонирует один arrayList в новый arrayList
+					List<StringBuilder> arrayList2 = (ArrayList<StringBuilder>) ((ArrayList<String>) arrayList).clone();
+					ArrayList<String> arrayList2 = (ArrayList<String>)arrayList.clone();
+					Если мы в изначальном arrayList изменим значение объекта, то в клонированном листе ничего не поменяется, он будет
+					хранить в себе первоначальное значение старого листа
+
+toArray(); 				//Преобразует arrayList в массив. 1)Новый(Обычный)массив должен ссылаться на наш лист, а в параметрах нужно 
+					указать что мы создает массив.
+					StringBuilder[] massiveSB = arrayList.toArray(new StringBuilder[10]);
+					String[] massiveSB = arrayList.toArray(new String[10]);
+					Integer[] massive = list1.toArray(new Integer[list1.size()]);
+
+Arrays.AsList 				//Преобразует обычный массив в ArrayList. НО ДЛИНА ВСЕГДА БУДЕТ ТАКОЙ КАК У ОБЫЧНОГО МАССИВА(ДЛИНА НЕ ИЗМЕНИТСЯ)
+					String[] massiveString = {"a","b","c","d"};
+     					List<String> listString = Arrays.asList(massiveString);
+     					System.out.println(listString);
+
+
+list1.removeAll(list.2);		//Удаляет из list1 все одинаковые элементы, которые есть в list2 
+list1.retainAll(list2);			//Оставляет только те элементы которые есть и в list1 и в list2, все остальные элементы удаляет
+list1.containsAll(list2);		//Содержит ли list1 все элементы lisy2(возвращает boolean)
+list1.subList(0, 4);			//Предстовление ArrayList.Возвращает в виде LIST кусок значений от начально индекса по конечному индексу. Так же, при
+					  добавление нового элемента в sublist, этот элемент будет добавлен и в arraylist 
+					List<Integer> sublist = list1.subList(0, 4); из Arraylist вернет элементы с 0 по 4 индекс.
+
+List.of(какие-то элементы);		//Упращенный метод создание list<>(Аналог List<> list1 = new ArrayList). Оличаеться тем, что является НЕИЗМЕНЯЕМЫМ.
+					созданные элементы через List.of() нельзя изменить. 
+
+List.copyOf(Какой-то лист);		//является НЕИЗМЕНЯЕМЫМ! Копирует один list в другой.  List<Integer> listCopyTest = List.copyOf(list1);		
+
+
+
+List<Person> people = Arrays.asList(new Person(1, "Andrey", "Koshechkin"), 		//Один из способов создания List'a
+new Person(2, "Vlad", "Demidov"));

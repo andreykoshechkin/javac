@@ -1,0 +1,20 @@
+Когда мы работаем с колекцией(реализуем oneToMany) Hibernate использует свой PersistentCollection.  
+PersistentCollection <-- обертка вокруг java коллекций, именно его hibernate использует, когда мы хотим получить сущность из быза данных.
+Когда мы сохраняем в базу данных, то используется java collections 
+Когда мы получаем что-то из бызы данных, то уже используется PersistentCollection
+
+=============================================================================================================================
+
+В jave есть list, в persistent это будет PersistentBag
+В jave есть set, в persistent это будет PersistentSet
+
+
+PersistentBag <-- List()
+PersistentSet <-- Set()
+PersistentMap <-- Map()
+PersistentArrayHolder <-- Array()ю
+
+
+
+public abstract class CollectionType  <--- родительский класс всех PersistentCollection
+в BasicType нету OneToManyType, вместо него, hibernate использует CollectionType

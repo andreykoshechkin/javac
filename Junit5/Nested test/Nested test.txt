@@ -1,0 +1,23 @@
+Nested test - когда мы внетри одного класса создаем еще один класс по тестированию. 
+Nested class должен иметь tag который описывает, к чему относятся наши тесты + он должен быть отмечен аннотацией @Nested
+
+
+@Tag("fast")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class AppRunnerTest {
+
+
+    @Nested
+    @Tag("login")		<---  Вложенный класс(Nested class)
+    class LoginTest{		
+        @Test
+        @Tag("login")
+        void loginSuccessIfUsersExists() {
+            userService.add(ANDREY);
+            Optional<UserDto> users = userService.login(ANDREY.getUsername(), ANDREY.getPassword());
+            assertAll(
+                    () -> assertThat(users).isPresent(),
+                    () -> users.ifPresent(userActual -> assertThat(userActual).isEqualTo(ANDREY)));
+    }
+  } 
+}

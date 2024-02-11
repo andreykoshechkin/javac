@@ -1,0 +1,16 @@
+1. У нас должен быть sql скрипт, который вносить данные в табилцы
+   этот sql скрипт должен лежать в test -> resources -> какая-нибудьДиректория
+
+
+2. В этом скрипте, у каждой таблице должен быть id и этот id мы должны прописать сами
+
+3. В этом скрипте на каждую таблицу должен быть sequence на соответсвующую таблицу 
+
+
+
+Пример: таблицы company из скрипта data.sql
+INSERT INTO company (id,name)
+VALUES (1,'Google'),
+       (2,'Meta'),
+       (3,'Amazon');
+SELECT SETVAL('company_id_seq', (SELECT MAX(id) FROM company));

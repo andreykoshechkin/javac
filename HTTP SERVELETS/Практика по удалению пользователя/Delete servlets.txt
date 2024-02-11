@@ -1,0 +1,22 @@
+@WebServlet("/delete")
+public class UserDeleteServlets extends HttpServlet {
+
+    private static final TicketService service = TicketService.getINSTANCE();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher(JspHelper.getJspPath("UserDelete")).forward(req, resp);
+        Long id = Long.valueOf(req.getParameter("id"));
+        service.delete(id);
+
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        resp.sendRedirect("/findAll");
+
+
+    }
+}

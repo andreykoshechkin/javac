@@ -1,0 +1,47 @@
+1) volumes:					#Таким образом мы в docker-compose создадим том внутри виртуальной машины.
+    любое_название:
+
+
+2) service:
+      mysql: mysql
+      volumes: 
+        - названиеТома:/var/lib/mysql		#Название тома должно быть таким же как мы указали при создании(пункт 1)
+						#/var/lib/mysql - директория, где находятся данные mysql.
+
+
+Пример docker-compose.yml
+
+version: '3'
+
+services:
+  app:
+    build: ./api
+    restart: always
+    ports:
+      - '5555:5000'
+    depends_on:
+      - mysql
+
+  front:
+    build: ./frontend
+    restart: always
+    ports:
+      - '3000:3000'
+
+  mysql:
+    image: mysql
+    restart: always
+    volumes:
+      - mysql_volumes:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: time_db
+      MYSQL_ROOT_PASSWORD: password 
+      
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - '8888:8080'
+
+volumes:				#Должен быть на одном уровне с service, а не внутри него
+  mysql_volumes:

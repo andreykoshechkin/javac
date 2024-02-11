@@ -1,0 +1,14 @@
+Синтаксим: DELETE FROM имяТаблицыИзКоторойМыХотимУдалить WHERE условие по которому нужно удалить
+
+DELETE
+FROM company_table
+WHERE salary = (SELECT max(salary) FROM company_table);
+
+Мы не может просто взядить и удалить элемент на которыq кто-то ссылается, для этого нам нужно, у элемента на который кто-то ссылается указать явно что мы можем удалять
+ 
+(company_id  ссылется на id из таблицы company) 
+
+company_id INT  NOT NULL REFERENCES company (id) ON DELETE CASCADE , 
+CASCADE - удалить сотруднки и компанию 
+NO ACTION - не делать никаких действий
+SET NULL - устанавливает полю NULL значение но оно не должно иметь кастрейнт NOT NULL

@@ -1,0 +1,21 @@
+
+
+    /*
+     * name = "users_chat", <-- таблица через которую мы хотим объекдинить две таблицы
+     *  joinColumns = @JoinColumn(name = "user_id"), <-- как называется колонка в таблице, для нашей сущности
+     * inverseJoinColumns = @JoinColumn(name = "chat_id")) <-- как называется колонка в таблице к которой мы хотим присоединится
+     *
+     * */
+
+   @Builder.Default
+    @ManyToMany
+    @JoinTable(
+            name = "user_chat",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "chat_id"))
+    private List<Chat> chats = new ArrayList<>();
+
+    public void getUsersInChat(Chat chat) {
+        chats.add(chat);
+        chat.getUsers().add(this);
+    }

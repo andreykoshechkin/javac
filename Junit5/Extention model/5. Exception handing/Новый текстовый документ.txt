@@ -1,0 +1,12 @@
+Exception handing 		 - Позволяет отлавливать исключения и что-то изменять в них.
+
+
+Пример: если throwable содержит IOException, то тогда выбраси IOException. (Если мы словим RuntimeException, то все хорошо иначе все плохо)
+public class ThrowableExtension implements TestExecutionExceptionHandler {
+    @Override
+    public void handleTestExecutionException(ExtensionContext extensionContext, Throwable throwable) throws Throwable {
+        if (throwable instanceof IOException){
+            throw new IOException();
+        }
+    }
+}

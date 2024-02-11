@@ -1,0 +1,6 @@
+Mock - позволяет создать заглушку какого-то класса не трогая его функционал этого класса.
+@BeforeEach
+   void prepare() {
+        this.userDao = Mockito.mock(UserDao.class);	<-- Сделали заглушку из класса UserDao. 
+        this.userService = new UserService(userDao);
+    }

@@ -1,0 +1,6 @@
+Criteril API позволяет создавать динамические запросы.
+Для работы с Criterial API нужно:
+1. Подключаить зависимость hibernate-jpamodelgen
+2. скомпилировать весь наш проект через maven
+3. зайти в настройки проекта --> source --> generation-source пкм поставить Source 
+

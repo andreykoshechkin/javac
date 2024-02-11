@@ -1,0 +1,23 @@
+Если у нас возникли проблемы с датой, то есть три способа решить эту проблему:
+1. Через application.yaml и для этого нужно в application.yaml добавить 
+spring
+   .mvc:    
+      format:
+         date: iso
+
+2. Через аннотацию @DateTimeFormat
+@Value
+@Builder
+@FieldNameConstants
+public class UserCreateEditDto {
+    Long id;
+    String username;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")		<--- теперь в тестах для даты мы пишем день/месяц/год 
+    LocalDate birthDate;
+    String firstname;
+    String lastname;
+    Role role;
+    Integer companyId;
+}
+
+3. Через конфигураяию. Описание как задать формат даты через конфигурацию описанно в другом файле

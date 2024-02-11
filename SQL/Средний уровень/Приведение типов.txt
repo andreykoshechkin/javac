@@ -1,0 +1,26 @@
+:: - приведение типов 
+SELECT INTERVAL '2 days'; - Интервал в 2а дня
+
+SELECT now() - SELECT INTERVAL '2 days'::DATE 	//Текущее время - 2 дня, но так как now() возвращает и дату и время(вплоть до милесекунд) а нам нужно только дата, тогда 
+мы используем :: для приведения к типу DATE 
+
+selectr '123':: INTEGER  //Преобразуем varchar в integer
+
+================================================================================================
+Из практики SQL Средний уровень:
+Время 21:10
+
+f.departure_date - время вылета должно равняться текущее время - 2 дня
+AND f.departure_date::DATE = (SELECT now() - interval '2 days')::DATE;
+
+
+
+Полный код:
+SELECT *
+FROM ticket t
+         join flight f on f.id = t.flight_id
+WHERE f.departure_airport_code = 'LDN'
+  AND f.arrival_airport_code = 'MNK'
+AND f.departure_date::DATE = (SELECT now() - interval '2 days')::DATE;
+
+================================================================================================

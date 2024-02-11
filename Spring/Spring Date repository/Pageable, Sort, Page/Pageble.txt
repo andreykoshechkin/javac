@@ -1,0 +1,20 @@
+Pageable - Интрефейс, который дает возможность задавать limit and offset динамически + он сам сортирует. Реализуеться в случаях Пагинации.
+PageRequest - это базовая имплементация интерфейса Pageable.
+=========================================================================================================================
+Практический пример:
+
+UserRepository:
+   List<UserEntity> findAllBy(Pageable pageable);
+
+
+
+  @Test
+    void testSort2(){
+        PageRequest pageable = PageRequest.of(1, 2, Sort.by("id"));			//Где 1 это offset, где 2 это Limit, Sort.by("id") <-- Сортировка по id
+        List<UserEntity> users = userRepository.findAllBy(pageable);
+        users.forEach(System.out::println);
+    }
+===================================================================================================
+
+Spring предоставляет свои коллекции в качестве возвращаемого значения и эти коллекции мы можем использовать вместе с Pageable
+ 

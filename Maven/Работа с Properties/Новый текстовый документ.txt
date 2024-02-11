@@ -1,0 +1,28 @@
+Всего у maven есть 5 properties к которому у него есть доступ:
+1. project
+2. setting
+3. env.
+4. ${spring.version}
+5. System.getProperty
+
+============================================================================================
+
+у нас есть properties file в нем лежит 2 переменные, но у этих переменных пустые значения, т.е после EL нету ничего.
+
+Пример:
+project.version=${project.version}тут/ДолжноБыть/Значение
+current.dir=${project.basedir}тут/ДолжноБыть/Значение
+============================================================================================
+
+Чтобы maven поставил в эти переменные значения, из properties к которому у него есть доступ, нужно использовать фильтеринг
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+</build>
+
+Теперь, когда мы нажмем на resources:resources то в директории target/classes появится properties со значениями 

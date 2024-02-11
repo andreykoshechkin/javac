@@ -1,0 +1,19 @@
+ public Long create (CreateUserDTO createUserDTO){
+        // validation  <-- мы должны будем проверять валидатность данных. Должны бать обязательна
+        // mapper <--  перобразовать DTO в entity. На уровне dao мы работаем с сущностями
+        // userDao.save <-- чтобы сохранить преобразованную сущность
+
+        return null;
+    }
+
+Пример:
+public Integer create(CreateUserDTO createUserDTO) {
+        ValidatorResult valid = createUserValidator.isValid(createUserDTO);
+        if (!valid.isValid()) {
+            throw new ValidatorException(valid.getErrorList());	<-- мы должны создать свой exception
+        }
+        UsersEntity usersEntity = mapperTransformation.transformation(createUserDTO);
+
+userDao.save(usersEntity);
+        return usersEntity.getId();
+    }

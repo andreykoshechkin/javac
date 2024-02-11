@@ -1,0 +1,33 @@
+Для Работы с properties:
+1. Подключить в pom соответствующие зависимости
+2.Создать файл в root директории с именем lombok.config
+3. Добавить то что написано ниже (Главное добавить полный путь)
+
+config.stopBubbling = true
+lombok.copyableannotations += org.springframework.beans.factory.annotation.Value
+lombok.copyableannotations += org.springframework.beans.factory.annotation.Qualifier
+=====================================================================================
+
+ <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                   
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>

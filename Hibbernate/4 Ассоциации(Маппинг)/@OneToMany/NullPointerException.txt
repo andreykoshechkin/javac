@@ -1,0 +1,8 @@
+NullPointerException возникает из-за того, что ToString and Equals одинаков у двух сущностей.
+Решение:
+1. Переопределить ToString and Equals у двух сущностей
+2. У сущности, на которую кто-то ссылаеться (@OneToMany) над колекией поставить @Builder.defualt
+
+    @Builder.Default
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Game> gameSet = new HashSet<>();

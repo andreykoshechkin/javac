@@ -1,0 +1,6 @@
+   public Optional<byte[]> findImage(Long id){
+        return userRepository.findById(id)//Находим пользователя
+                .map(UserEntity::getImage) //Берем у него image
+                .filter(StringUtils::hasText) //Проверяем, есть ли у него image
+                .flatMap(imageService::getImage);//Если картинка есть, то берем его используя метод getImage у imageService
+    }

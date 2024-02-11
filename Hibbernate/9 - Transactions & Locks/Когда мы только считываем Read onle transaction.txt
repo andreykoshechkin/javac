@@ -1,0 +1,32 @@
+Когда мы хотим, чтобы во время транзакции мы могли только считывать, то нам нужно установить mode: ReadOnly На программном уровне:
+
+Пример:В рамках этой транзакции мы не сможем изменить сущность profile
+
+ @Cleanup var sessionFactory = getBuilder();
+        @Cleanup var session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.setDefaultReadOnly(true);			<--- устанавливает "только для чтения" всем сущностям сессии
+	session.setReadOnly(Profile.class, true);		<--- устанавливает "только для чтения"  только сущности Profile
+        var profile = session.find(Profile.class, 1L);
+        profile.setPhone("pp");
+        session.getTransaction().commit();
+		
+
+==============================================================================================================================
+Для HQL:
+        session.createQuery("select p FROM Profile p", Profile.class)
+                .setReadOnly(true)
+                .list();
+=======================================
+На уровне базы данных:
+
+     @Cleanup var sessionFactory = getBuilder();
+        @Cleanup var session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.createNativeQuery("SET TRANSACTION  READ ONLY ").executeUpdate();
+
+        var profile = session.find(Profile.class, 1L);
+        profile.setPhone("read only");
+        session.getTransaction().commit();

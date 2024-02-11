@@ -1,0 +1,46 @@
+
+@RevisionEntity  	//В проекте может быть только один @RevisionEntity
+
+Поле с аннотацией @RevisionTimestamp должно иметь тип long, Long, java.util.Date или java.sql.Date.
+============================================================================================================================================
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@RevisionEntity
+public class Revision {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @RevisionNumber
+    private Long id;
+
+    @RevisionTimestamp
+    private Long timestamp;
+}
+================================================================================================================================================
+
+Если мы хотим чтобы в нашем Revision было какое-то поле:
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@RevisionEntity(RevisionListenerExample.class)
+public class Revision {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @RevisionNumber
+    private Long id;
+
+    @RevisionTimestamp
+    private Long timestamp;
+
+    private String username;
+}
+public class RevisionListenerExample implements RevisionListener {
+    @Override
+    public void newRevision(Object o) {
+        ((Revision)o).setUsername("koshechkin123");
+    }
+}

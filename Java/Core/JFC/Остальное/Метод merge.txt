@@ -1,0 +1,15 @@
+   
+merge - сумирует значение если ключ одинаковый: 
+Если в map1 ключ/значнеие 1/3 и в map2 ключ/значнеие 1/3 === то вернет 1/6
+Если в map1 ключ/значнеие 2/5 и в map2 ключ/значнеие 2/5 === то вернет 2/10
+Если в map1 ключ/значнеие 4/5 и в map2 ключ/значнеие 0/1 === то вернет 0/1 and 4/5
+
+
+   public static Map<Integer, Integer> result(Map<Integer, Integer> poly1, Map<Integer, Integer> poly2) {
+
+
+        for (Map.Entry<Integer, Integer> x : poly2.entrySet()) {
+            poly1.merge(x.getKey(), x.getValue(), Integer::sum);
+        }
+        return poly1;
+    }

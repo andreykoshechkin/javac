@@ -1,0 +1,26 @@
+@RequestParam		//Аннотация позволяет добавлять к url какие-то параметры. Spring сам преобразуем значение параметра в нужный тип данных и все что нам нужно сделать
+			  это после @RequestParam указать тот тип данных, который мы хотим получить.
+                          Если мы зайдем в исходной код этой аннотации то увидим   boolean required() default true;
+                          это значит, что мы обязятельно должны устанавливать в url параметр http://localhost:8080/app/hello?age=18. Если мы переопределим required() 
+                          и поставим false, то мы можем переходить по http://localhost:8080/app/hello как с параметрами так и без них
+ Пример:
+ 
+ 1. В этом случае, мы перейдем на http://localhost:8080/app/hello только есть укажем параметр ?age=значение. http://localhost:8080/app/hello?age=18
+   @GetMapping("hello")
+    public ModelAndView hello(ModelAndView modelAndView, HttpServletRequest httpServletRequest, @RequestParam(value = "age") Integer age) {
+        httpServletRequest.getParameter("age");
+        modelAndView.setViewName("hello");
+        return modelAndView;
+    }
+
+
+ 2.  этом случае, мы перейдем на http://localhost:8080/app/hello даже если мы не укажем параметр.
+    @GetMapping("hello")
+    public ModelAndView hello(ModelAndView modelAndView, HttpServletRequest httpServletRequest, @RequestParam(value = "age", required = false) Integer age) {
+        httpServletRequest.getParameter("age");
+        modelAndView.setViewName("hello");
+        return modelAndView;
+    }
+
+
+DispetcherResolver с помощтю argumentResolver мапит наши параметры, cookie в нужный тип данных

@@ -1,0 +1,16 @@
+<?XML version = "1.2" encoding="UTF-8"?>
+<xml>
+    <name>Andrey</name>
+    <age>28</age>
+    <city>Astrakhan</city>
+
+    <skill>
+        <testing>
+            <testDesign>Exel</testDesign>
+        </testing>
+    </skill>
+
+    <dev/> //Означает, что тег ничего не содержит
+
+</xml>
+

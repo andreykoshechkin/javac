@@ -1,0 +1,11 @@
+ 
+?:  Позволяет исключить группу
+String regex = "dasfsadf +299 (33) 111-22-33 dsadsad as+375 (29) 898-12-29";
+        Pattern pattern = Pattern.compile("(?:.\\d*).\\((\\d*)\\).\\d{3}.\\d{2}.\\2");
+
+
+        Matcher matcher = pattern.matcher(regex);
+
+        System.out.println(matcher.matches());
+        while (matcher.find()){
+            System.out.println(matcher.group(1));

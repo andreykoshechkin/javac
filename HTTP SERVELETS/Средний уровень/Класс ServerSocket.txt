@@ -1,0 +1,16 @@
+Класс ServerSocket:					//Позволяет реализовать сервер на стороне java(на нашем компе)
+ServerSocket serverSocket = new ServerSocket(7777)	//В параметрах нужно передать порт на котором будет развернут сервер
+
+Методы:
+serverSocket.accept()) 				 //Возвращает клиента, который подключился к серверу. Возвращает socket
+
+========================================================================================================
+    InetAddress inetAddress = Inet4Address.getByName("localhost");
+        try (Socket socket = new Socket(inetAddress, 8888);
+             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream())) {
+
+            dataOutputStream.writeUTF("HI");
+
+            System.out.println("Response from server " + dataInputStream.readUTF());
+========================================================================================================

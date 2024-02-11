@@ -1,0 +1,34 @@
+@NamedQuery		//Одно из возможностей создание запросов. Имеет приоритет над partTreeMethod
+			//В query передается сам запрос, если мы выполням запрос по какому-то условию, то параметр условия, должен быть таким же как и 
+			  в слое repository.
+
+Синтаксис:
+@NamedQuery(
+name = "ИмяСущности.НазваниеМетода"
+query= "hql запрос")
+
+========================================================================================================================================================================
+
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+      Optional<UserEntity> findByUsername(String username);			    <--- String username это параметр 
+      //Optional<UserEntity> findByUsername(@Param("username2") String username);   <--- Мы можем использовать @Parma для точного указания имени, передав туда имя параметра из
+											 Сущности
+}
+
+===========================Сущность=======================================================================================================================================
+@NamedQuery(
+        name = "UserEntity.findByUsername",	<--- Используем шаблон
+        query = "select u FROM UserEntity u WHERE u.username=:username "	<--- username это параметр и его наименование должно быть таким же как и в слое repository
+)
+@Table(name = "users")
+public class UserEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+}
+
+
+

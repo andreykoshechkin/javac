@@ -1,0 +1,26 @@
+@WebServlet("/registration")
+public class UsersServlets extends HttpServlet {
+    private static final UsersService service = UsersService.getINSTANCE();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setAttribute("role", List.of("USER", "ADMIN"));
+
+        req.getRequestDispatcher(JspHelper.getJspPath("UserRegistration")).forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        UsersDto usersDto = UsersDto.builder()
+                .username(req.getParameter("username"))
+                .birthday(req.getParameter("birthday"))
+                .email(req.getParameter("email"))
+                .password(req.getParameter("password"))
+                .role(req.getParameter("role"))
+                .build();
+
+        service.create(usersDto);
+        resp.sendRedirect("/findAll");
+
+    }
+}

@@ -1,0 +1,48 @@
+assertThat(actual).isNotNull(): Проверяет, что объект actual не равен null.
+assertThat(actual).isNull(): Проверяет, что объект actual равен null.
+assertThat(actual).isEqualTo(expected): Проверяет, что actual равно expected.
+assertThat(actual).isNotEqualTo(unexpected): Проверяет, что actual не равно unexpected.
+assertThat(actual).isSameAs(expected): Проверяет, что actual и expected - это один и тот же объект в памяти.
+assertThat(actual).isNotSameAs(unexpected): Проверяет, что actual и unexpected - это разные объекты в памяти.
+assertThat(actual).isInstanceOf(expectedType): Проверяет, что actual является экземпляром класса expectedType.
+assertThat(actual).isNotInstanceOf(unexpectedType): Проверяет, что actual не является экземпляром класса unexpectedType.
+assertThat(actual).isIn(array): Проверяет, что actual содержится в массиве array.
+assertThat(actual).isNotIn(array): Проверяет, что actual не содержится в массиве array.
+assertThat(actual).isGreaterThan(expected): Проверяет, что actual больше чем expected.
+assertThat(actual).isLessThan(expected): Проверяет, что actual меньше чем expected.
+assertThat(actual).isGreaterThanOrEqualTo(expected): Проверяет, что actual больше или равно expected.
+assertThat(actual).isLessThanOrEqualTo(expected): Проверяет, что actual меньше или равно expected.
+assertThat(actual).isBetween(start, end): Проверяет, что actual находится между start и end.
+assertThat(actual).isNotBetween(start, end): Проверяет, что actual не находится между start и end.
+assertThat(actual).isExactlyInstanceOf(expectedType): Проверяет, что actual является точным экземпляром класса expectedType (и не его подклассом).
+assertThat(actual).isNotExactlyInstanceOf(unexpectedType): Проверяет, что actual не является точным экземпляром класса unexpectedType.
+assertThat(actual).hasSize(expectedSize): Проверяет, что коллекция actual имеет размер expectedSize.
+assertThat(actual).isEmpty(): Проверяет, что коллекция actual пуста.
+
+
+assertThat(actual).isNotEmpty(): Проверяет, что коллекция actual не пуста.
+assertThat(actual).contains(expected): Проверяет, что коллекция actual содержит элемент expected.
+assertThat(actual).doesNotContain(unexpected): Проверяет, что коллекция actual не содержит элемент unexpected.
+assertThat(actual).containsOnly(expected1, expected2, ...): Проверяет, что коллекция actual содержит только указанные элементы и не больше.
+assertThat(actual).containsExactly(expected1, expected2, ...): Проверяет, что коллекция actual содержит точно те же элементы, в том же порядке, что и указанные.
+assertThat(actual).containsAnyOf(expected1, expected2, ...): Проверяет, что коллекция actual содержит хотя бы один из указанных элементов.
+assertThat(actual).containsExactlyInAnyOrder(expected1, expected2, ...): Проверяет, что коллекция actual содержит те же элементы, но в любом порядке.
+assertThat(actual).startsWith(expected): Проверяет, что коллекция actual начинается с элемента expected.
+assertThat(actual).endsWith(expected): Проверяет, что коллекция actual заканчивается элементом expected.
+assertThat(actual).hasSameElementsAs(expectedCollection): Проверяет, что коллекция actual содержит те же элементы, что и коллекция expectedCollection, но в любом порядке.
+Это только небольшая часть возможных утверждений, предоставляемых AssertJ. Библиотека позволяет вам более гибко и точно формулировать проверки в ваших тестах, обеспечивая более читаемый и информативный код для тестирования вашего приложения.
+
+
+
+assertThat(actual).isCloseTo(expected, within(delta)): Проверяет, что actual близко к expected с учетом заданной погрешности delta.
+assertThat(actual).isBetween(start, end).excluding(start, end): Проверяет, что actual находится между start и end, исключая start и end.
+assertThat(actual).containsAllEntriesOf(map): Проверяет, что все пары ключ-значение в actual соответствуют парам ключ-значение в map.
+assertThat(actual).usingElementComparator(comparator).isEqualTo(expected): Позволяет определить собственный компаратор элементов для сравнения коллекций.
+assertThat(actual).filteredOn(property, value).isEmpty(): Проверяет, что коллекция actual после фильтрации по свойству property со значением value является пустой.
+assertThat(actual).hasFieldOrPropertyWithValue(fieldName, expectedValue): Проверяет, что объект actual имеет поле или свойство с именем fieldName, значение которого равно expectedValue.
+assertThat(actual).extracting("property").contains("value"): Проверяет, что из коллекции actual можно извлечь свойство "property", которое содержит "value".
+assertThat(actual).hasOnlyElementsOfType(expectedType): Проверяет, что все элементы в коллекции actual являются экземплярами класса expectedType.
+assertThat(actual).hasSameSizeAs(iterable): Проверяет, что коллекция actual имеет тот же размер, что и iterable.
+assertThat(actual).usingComparatorForType(comparator, type).isEqualTo(expected): Позволяет использовать компаратор для сравнения объектов определенного типа в коллекции.
+assertThat(actual).isNotEmptySatisfying(nonEmptyConsumer): Проверяет, что коллекция actual не пуста и удовлетворяет заданным условиям, определенным в nonEmptyConsumer.
+assertThat(actual).usingRecursiveComparison().isEqualTo(expected): Позволяет 

@@ -1,0 +1,43 @@
+Repository	//Это интрефейс метка и конфигурация Spring DATE смотрит на те классы, которые реализуют этот интерфейс и на основании их создает beanDefinition чтобы в дальнейшем создать полноценные бины.
+
+
+Как это работает под копотом:
+С помощью класса JpaRepositoriesAutoConfiguration, который ищет все классы, которые реализуют интерфейс Repository и на основании них, 
+создавать Proxy реализации.
+
+Пример кода:
+public interface CompanyRepository extends Repository<CompanyEntity, Integer> {
+
+    Optional<CompanyEntity> findById(Integer id);
+
+    void delete(CompanyEntity company);
+
+
+}
+
+
+Тест:
+@IT
+@RequiredArgsConstructor
+public class CompanyRepositoryTest {
+
+    private final CompanyRepository companyRepository;
+    private final EntityManager entityManager;
+    private static final Integer APPLE_ID = 4;
+
+    @Test
+    void findById(){
+        Optional<CompanyEntity> maybeCompany = companyRepository.findById(APPLE_ID);
+        Assertions.assertThat(maybeCompany).isPresent();
+    }
+
+    @Test
+    void delete(){
+        Optional<CompanyEntity> maybeCompany = companyRepository.findById(4);
+        Assertions.assertThat(maybeCompany).isPresent();
+
+        maybeCompany.ifPresent(companyRepository::delete);
+        entityManager.flush();
+    }
+
+}

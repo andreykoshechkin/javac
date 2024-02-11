@@ -1,0 +1,2 @@
+BIGSERIAL / SERIAL - инкрементит число, как правило это id, а так же создае sequence.
+По сути sequence - это и есть BIGSERIAL SERIAL 

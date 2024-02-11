@@ -1,0 +1,34 @@
+1. На каждый слой создается свой config Но при этом, у нас всегда должен быть основной/базовый config
+2. В класс @Configuration мы можем занджектить зависимости 3мя разными способоами:
+    1 С помощью полей
+    2 С помощью параметров метода
+    3 Когда мы в методе вызываем другой метод, который возвращает бин. Под копотом будет создаваться прокси 
+
+Создание базового config:
+@Configuration	 <--- указывает, что класс содержит методы определения @Bean
+@PropertySource("classpath:application-db.properties")	<-- Заменяет <context:property-placeholder> и дает возможность работать с property
+@ComponentScan(basePackages = "org.example.spring.*", scopedProxy = ScopedProxyMode.NO, useDefaultFilters = false, <---Заменяет <context:component-scan>
+        includeFilters = {
+                @Filter(type = FilterType.ANNOTATION, value = Component.class),
+                @Filter(type = FilterType.REGEX, pattern = "org\\..+Repository")
+        })
+public class ApplicationConfig {
+}
+
+
+
+
+
+Main:
+ public static void main(String[] args)  {
+
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        ConnectionPool pool = context.getBean("pool", ConnectionPool.class);
+        UserRepository userRep = context.getBean("userRep", UserRepository.class);
+
+        UserService userService = context.getBean("userService", UserService.class);
+
+
+        System.out.println();
+
+    }

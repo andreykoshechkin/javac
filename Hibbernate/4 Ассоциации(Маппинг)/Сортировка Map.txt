@@ -1,0 +1,38 @@
+Проиходит сортировка только по ключу
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString(of = "name")
+@EqualsAndHashCode(exclude = "users")
+@Builder
+@Entity
+@Table(name = "company")
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    @OneToMany(mappedBy = "company")
+    @MapKey(name = "username")		<-- Используем username, так как username = unique
+    @SortNatural
+    private Map<String, Users> users = new TreeMap();
+
+}
+);
+
+
+    @Test
+    void checkOrderByMap() {
+        @Cleanup SessionFactory sessionFactory = BuilderConfiguration.getBuilder();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.getTransaction();
+
+        Company company = session.get(Company.class, 1L);
+        company.getUsers().forEach((k, v)-> System.out.println(v));
+        session.beginTransaction().commit();
+    }

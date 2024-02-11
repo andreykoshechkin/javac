@@ -1,0 +1,42 @@
+ //Тест который, проверяет, выбрасывает ли наш метод исключение, если username or password is null(Тест будет пройдет только в том случает, если username or password == null)   
+ @Test 
+    void throwExceptionIfUsernameOrPasswordIsNull() {
+        try {
+            userService.login(ANDREY.getUsername(), ANDREY.getPassword());
+            fail();
+        } catch (IllegalArgumentException e) {
+            assertTrue(true);
+        }
+
+
+
+В этом примере ни username ни password не null, поэтому мы не должны проходить тест и чтобы это сделать нам нужно вызывать метод fail(). 
+
+========================================================================================================================================================================
+В случае, если нам необходимо в одном тесте проверять и username и password, то нам бы пришлось писать несколько try/catch блоков, что сделает код менее читабельным.
+И для решения этой проблемы, нам помодет  assertThrows. Его преимущество в том, что мы можем проверять сразу несколько тестКейсов в assertAll
+
+assertThrows (ИсключениеКотороеДолжныПоймать, ()-> ЧтоВызоветИсключение)
+
+Пример:
+@Test
+    void throwExceptionIfUsernameOrPasswordIsNull() {
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () -> userService.login(null, "dummy")),
+                () -> assertThrows(IllegalArgumentException.class, () -> userService.login("Andrey", null))
+        );
+    }
+========================================================================================================================================================================
+Большое преимущество в использование junit5, в том что мы можем тестировать само исключение. В примере, мы тестируем сообщение,которое должен выбросить наше исключение.
+Тест будет пройдет, только если message совпадает с ожидаемым
+ 
+@Test
+  void throwExceptionIfUsernameOrPasswordIsNull() {
+      assertAll(
+                () -> {
+                    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.login(null, "dummy"));
+                    assertThat(exception.getMessage()).isEqualTo("Username or pass is null");
+                },
+                () -> assertThrows(IllegalArgumentException.class, () -> userService.login("Andrey", null))
+        );
+    }

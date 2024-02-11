@@ -1,0 +1,51 @@
+RedirectAttributes - позволяет передавать аттрибуты между запросами. Таким образом, мы можем передавать аттрибут после редиректа.
+
+*********************************
+Пример: В примере ниже, происхоидт следующее:
+1) После успешной аутентификации, пользователь может перейти только на свою страницу.
+2) Если пользователь нажмет на страницу другого пользователя, то произайдет редирект на страницу employees, и аттрибут flashError будет доступен для других запросов
+3) В методе findAll() мы получаем flashError.
+
+
+
+    @GetMapping("/{id}")
+    public String findById(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+        String username = userDetails.getUsername();
+        return employeeService.findById(id)
+                .map(eml -> {
+                    if (username.equals(eml.getEmail())) {
+                        model.addAttribute("eml", eml);
+                        model.addAttribute("role", Role.values());
+                        model.addAttribute("position", Position.values());
+                        model.addAttribute("companies", companyService.findAll());
+                        return "view/employee";
+                    } else {
+                        redirectAttributes.addFlashAttribute("flashError", "У вас нет доступа к этим данным");
+                        return "redirect:/employees";
+                    }
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    }
+
+
+  @GetMapping
+    public String findAll(Model model,  RedirectAttributes redirectAttributes) {
+
+        if (redirectAttributes.getFlashAttributes().containsKey("flashError")) {
+            model.addAttribute("flashError", redirectAttributes.getFlashAttributes().get("flashError"));
+        }
+        model.addAttribute("employees", employeeService.findAll());
+        return "view/employees";
+    }
+
+
+
+
+<div th:each="eml:${employees}">
+    <a th:href="@{/employees/{employeeId}(employeeId=${eml.getId()})}">
+        <span th:text="${eml.getEmail()}"></span>
+    </a>
+</div>
+<div th:if="${flashError}">
+    <p th:text="${flashError}" style="color: red;"></p>
+</div>

@@ -1,0 +1,8 @@
+timeout - используются в основном при функциональном тестирование иногда и при интеграционном 
+     @Test
+        void testTimeoutLogin() {
+            Optional<UserDto> timeout = assertTimeout(Duration.ofMillis(200L), () -> {
+                Thread.sleep(300L);
+                return userService.login(ANDREY.getUsername(), "dummy");
+            });
+        }

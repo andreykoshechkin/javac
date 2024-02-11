@@ -1,0 +1,57 @@
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+public class Profile {
+
+    @Id
+    @Column(name = "user_id")
+    private Long id;
+
+    @OneToOne
+    @PrimaryKeyJoinColumn //Означает, что первичный ключ сущности Profile ипользуется для связи с таблицей user
+    private User user;
+
+    private String address;
+    private String lang;
+
+
+    /*
+    * id у Profile должен полностю совпадать с id user
+    * Для решения этой проблелймы, создаем метод.
+    * User должен быть сохранен в БД
+    * */
+    public void setUser (User user){
+        this.user = user;
+        this.id = user.getId(); //id Profile = id User
+    }
+}
+
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company companyId;
+
+    @Column(unique = true)
+    private String username;
+
+    @AttributeOverride(name = "birth_day", column = @Column(name = "birthday"))
+    private PersonInfo personInfo;
+
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+
+}

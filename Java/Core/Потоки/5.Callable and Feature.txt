@@ -1,0 +1,40 @@
+Callable and Future - скажем так, это два брата, которые работают вместе!
+
+Callable -позволяет что-то вернуть
+Future - позволяет получить то, что callable возвращает, Не блокируя основной поток
+
+Конструктор класса Thread не принимает на вход объекты классов, реализующих интерфейс Callable.
+При закрытие потока, можно не использовать awaitTermination
+Метод shutdown() лучше всего использовать в блоке finnale
+
+
+Методы:
+Future
+get() 							//позволяет получить значение которое нужно вернуть
+isDone							//Проверяет, завершен ли наше задание/таск. 
+
+
+
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        Future<Integer> future1 = executorService.submit(new Callable<Integer>() {
+        Random random1 = new Random();
+            @Override
+            public Integer call() throws Exception {
+                int resultRandom = random1.nextInt(10);
+                if (resultRandom < 5){
+                    throw new Exception("Error");
+                }else return resultRandom;
+            }
+        });
+        executorService.shutdown();
+        executorService.awaitTermination(1,TimeUnit.DAYS);
+        try {
+            System.out.println(future1.get());
+        } catch (ExecutionException e) {
+            Throwable throwable = e.getCause();
+            System.out.println(throwable.getMessage());
+        }
+    }
+}
+ 
+С помощью future мы можем проверить, завершен ли наш таск. 				

@@ -1,0 +1,31 @@
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "users", schema = "public")
+public class User {
+    @Id
+    private String username;
+    private String firstname;
+    private String lastname;
+    @Column(name = "birth_date")
+    private LocalDate birthdate;
+    private Integer age;
+}
+
+/*
+ *   Чтобы класс стал сущность, он должен быть POJO, для этого нужно выполнить следующие правила
+ *   1. Поля сущности должны быть private и иметь getter and setter
+ *   2. Поля сущности и класс не могут быть final
+ *   3. У него должен быть конструктор без параметров
+ *   4. Должны быть переопределены методы toString, equals, hashcode
+ *   5. Нас нужно сказать что Класс является сущностью hibernate, должен быть помечен аннотацией @Entity из javax.persistence
+ *   6. Каждая сущность должна иметь ID
+ * 
+ *   То, что пригодится в будущем при маппинге...
+ *   7. В будущем, когда мы захотим сохранить сущность в нашу БД, мы можем получить исключение ошибка синтаксиса,
+ *      что бы решить эту проблемы, нужно поставить аннотацию @Table
+ *   8. ОШИБКА: столбец "birthdate" в таблице "users" не существует, возникает из-за разных названий колонок в БД и в классе
+ *      в классе birthdate, а в бд birth_date. Решить эту проблему --> поставить над полем аннотацию @Column(name = "birth_date")
+ * */

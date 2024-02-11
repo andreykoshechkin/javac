@@ -1,0 +1,10 @@
+ @CookieValue		//Позволяет получить coockie по заданному параметру
+   
+ @GetMapping("hello")
+  public ModelAndView hello(ModelAndView modelAndView, HttpServletRequest httpServletRequest,
+                              @CookieValue("JSESSIONID") String jsessionid) {
+
+        modelAndView.setViewName("hello");
+        System.out.println();
+        return modelAndView;
+    }

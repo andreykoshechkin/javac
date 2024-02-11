@@ -1,0 +1,22 @@
+Мы можем встретить случай, когда три поля одной таблицы являются primary key(Составной первичный ключ )
+Для этого, нужно отметить аннотацией @EmbeddedId. В примере ниже, в PersonInfo находятся поля, который в базе данных являются первичныс ключем(их там 3 поля)
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "users")
+public class User {
+
+    @EmbeddedId
+    @AttributeOverride(name = "birthday", column = @Column(name = "birthday"))
+    private PersonInfo personInfo;
+
+}
+
+==================================================================================================================================================================
+
+2.Встраиваемая сущность PersonInfo должна реализовать интерфес Serializable.
+  Для автогенерации UID нужно зайти в sertting -> в поиске пишем serialV -> JVM language - и тут ставим галку 

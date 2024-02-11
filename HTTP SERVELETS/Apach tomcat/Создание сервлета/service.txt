@@ -1,0 +1,23 @@
+Service - являеться одним из уровней MVC архитектуры и нужен для соединения, DAO с DTO
+
+Пример класс:
+public class ServiceDTO {
+    private static ServiceDTO INSTANCE = new ServiceDTO();
+
+    private ServiceDTO() {
+      
+    }
+
+    public static ServiceDTO getINSTANCE() {
+        return INSTANCE;
+    }
+
+
+    private final CompanyDAO companyDAO = CompanyDAO.getINSTANCE();
+
+    public List<CompanyDTO> companyDTOList() {
+        return companyDAO.findAll().stream().map(companyEntity ->
+                new CompanyDTO(companyEntity.getId(), companyEntity.getName(), companyEntity.getData()) {
+                }).collect(Collectors.toList());
+    }
+}

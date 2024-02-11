@@ -1,0 +1,8 @@
+<ul>
+    <c:forEach var="flight" items="${requestScope.flight}">
+        <li>
+            <a href="${pageContext.request.contextPath}/ticket?flightId=${flight.id}"> ${flight.id}</a>
+        </li>
+    </c:forEach>
+
+</ul>

@@ -1,0 +1,36 @@
+1)Добавление ограничения NOT NULL:
+  ALTER TABLE employee
+  ALTER COLUMN email SET NOT NULL;
+
+1)Удаление ограничения NOT NULL:
+  ALTER TABLE employee
+  ALTER COLUMN email DROP NOT NULL;
+
+
+1)Добавление уникального ограничения:
+  ALTER TABLE employee
+  ADD CONSTRAINT employee_email_unique UNIQUE (email);
+
+1)Удаление уникального ограничения:
+  ALTER TABLE employee
+  DROP CONSTRAINT employee_email_unique;
+
+1)Добавление внешнего ключа:
+  ALTER TABLE orders
+  ADD CONSTRAINT fk_orders_employee
+  FOREIGN KEY (employee_id) REFERENCES employee(employee_id);
+
+
+1)Удаление внешнего ключа:
+  ALTER TABLE orders
+  DROP CONSTRAINT fk_orders_employee;
+
+
+1)Добавление ограничения CHECK:
+  ALTER TABLE employee
+  ADD CONSTRAINT chk_salary_range CHECK (salary >= 0 AND salary <= 100000);
+  
+
+1)Удаление ограничения CHECK:
+  ALTER TABLE employee
+  DROP CONSTRAINT chk_salary_range;

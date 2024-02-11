@@ -1,0 +1,51 @@
+UserController:
+    @GetMapping("/registration")
+    public String registration(Model model, UserCreateEditDto user) {
+        model.addAttribute("user", user);				<--- Устанавливаем аттрибут, в будущем провалидировать страницу
+        model.addAttribute("roles", Role.values());			<--- Устанавливаем аттрибут, чтобы на странице регистрации мы могли выбирать роли
+        model.addAttribute("company", companyService.findAll());	<--- Устанавливаем аттрибут, чтобы на странице регистрации мы могли выбирать компании
+        return "user/registration";					<--- forward на нашу html страницу
+    }
+
+    @PostMapping
+    public String create(UserCreateEditDto user) {
+        userService.create(user);
+        return "redirect:users";
+    }
+========================================================================================================================
+
+Registartion.html:
+<form action="/users" method="post" th:object="${user}">			<--- action="/users" отправить форму на users только методом пост
+    <label> Username:
+        <input type="text" name="username" th:value="*{username}">
+    </label><br>
+
+    <label> Firstname:
+        <input type="text" name="firstname" th:value="*{firstname}">
+    </label><br>
+
+    <label> Lastname:
+        <input type="text" name="lastname" th:value="*{lastname}">
+    </label><br>
+
+    <label> Birthdate:
+        <input type="date" name="birthdate" th:value="*{birthdate}">
+    </label><br>
+
+    <div th:each="role : ${roles}">
+        <input type="radio" name="role" th:value="${role}" th:checked="${role.name() == user.role}">
+        <label th:text="${role}">Role name</label>
+    </div>
+    <br>
+
+
+    <select name="companyId">
+        <option th:each="companies : ${company}"
+                th:value="${companies.id}"
+                th:text="${companies.name}"
+                th:selected="${companies.id == user.companyId}"></option>		<--- В CreateEditUserDto поле company имеет id;
+    </select><br>
+
+    <button type="submit">Registration</button>
+    <br>
+</form>

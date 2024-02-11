@@ -1,0 +1,40 @@
+   File filePath = Path.of("src","resources", "Task.txt").toFile();
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        byte[] bytes = fileInputStream.readAllBytes();
+        String string = new String(bytes);
+        System.out.println(string);
+
+
+===================================================================================================================
+.ready()  				<--- Возвращает bool. Если в потоке есть какие то байты то будет true. Если их нет то false
+.readLine() 				<--- Считывает каждую строчку
+
+  File filePath = Path.of("src", "resources", "Task.txt").toFile();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath));
+             BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\andre\\OneDrive\\Рабочий стол\\teeest.txt"));) {
+
+            while (br.ready()) {		
+                bw.write(br.readLine() + "\n");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+===================================================================================================================
+
+Метод: 
+.lines()					<--- Возвращает стрим и позволяет нам, применять все методы STREAM API к тексту который  мы получили.
+.collect(Collectors.joining("\n"));		<--- Соединяет stream в одно. Так же можно указать делиметр. В нашем случае делиметр будет переносить каждую строчку на новую 
+  
+ File filePath = Path.of("src", "resources", "Task.txt").toFile();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath));
+             BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\andre\\OneDrive\\Рабочий стол\\teeest.txt"));) {
+
+            String text = br.lines().collect(Collectors.joining("\n"));
+            System.out.println(text);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }

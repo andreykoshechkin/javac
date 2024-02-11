@@ -1,0 +1,47 @@
+1. public interface JdbcTemplateExample {
+ 	void insertBatch(UserEntity...userEntities);
+	}
+  
+
+2.
+  @Override
+    public void insertBatch(UserEntity... userEntities) {
+        List<Object[]> args = Arrays.stream(userEntities).map(user ->
+                new Object[]{
+
+                        user.getUsername(),
+                        user.getBirthDate(),
+                        user.getFirstname(),
+                        user.getLastname(),
+                        user.getRole().name(),
+                        user.getCompanyId().getId()
+                }).toList();
+        jdbcTemplate.batchUpdate(INSERT_USERS_BATCH, args);
+    }
+
+3.
+ @Test
+    @Commit
+    void testBatchJdbc() {
+        CompanyEntity company = entityManager.find(CompanyEntity.class, 1L);
+
+        UserEntity user1 = UserEntity.builder()
+                .username("richard@gmail.com")
+                .firstname("Richard")
+                .lastname("Koshechkin")
+                .role(Role.ADMIN)
+                .companyId(company)
+                .birthDate(LocalDate.of(2015,5,1))
+                .build();
+
+        UserEntity user2 = UserEntity.builder()
+                .username("vikad@gmail.com")
+                .firstname("Viktoria")
+                .lastname("Popova")
+                .role(Role.USER)
+                .companyId(company)
+                .birthDate(LocalDate.of(1999,6,19))
+                .build();
+
+        userRepository.insertBatch(user1, user2);
+    }

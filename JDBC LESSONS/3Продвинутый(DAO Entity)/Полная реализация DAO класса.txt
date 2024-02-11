@@ -1,0 +1,42 @@
+
+Statement.RETURN_GENERATED_KEYS <---- Устанавливает автогенерацию нашего id
+.getGeneratedKeys() <--- Получает Id. Должен быть прописан после выполнения запроса (executeUpdate)
+
+
+public class FlightDao {
+
+    FlightDao flightDao = new FlightDao();
+
+    public static FlightEntity insertFoTable(FlightEntity flight) {
+
+        final String sqlInsert = """
+                INSERT INTO flight.flight 
+                (flight_no, departure_date, departure_airport_code, arrival_date, arrival_airport_code, aircraft_id, status) 
+                VALUES (?,?,?,?,?,?,?);
+                """;
+        try (Connection connection = MyConnection.loadDriverFoConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert,Statement.RETURN_GENERATED_KEYS)) {
+
+            preparedStatement.setString(1, flight.getFlight_no());
+            preparedStatement.setTimestamp(2, flight.getDeparture_date());
+            preparedStatement.setString(3, flight.getDeparture_airport_code());
+            preparedStatement.setTimestamp(4, flight.getArrival_date());
+            preparedStatement.setString(5, flight.getArrival_airport_code());
+            preparedStatement.setInt(6, flight.getAircraft_id());
+            preparedStatement.setString(7, flight.getStatus());
+	    preparedStatement.executeUpdate();
+
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+           
+            if(resultSet.next()){
+                flight.setId(resultSet.getLong("id"));
+            }
+
+            return flight;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+}

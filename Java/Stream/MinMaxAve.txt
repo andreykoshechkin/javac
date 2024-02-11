@@ -1,0 +1,28 @@
+ int[] massive = {123, 32, 311, 0, 32, 994};
+        
+	int max = Arrays.stream(massive).max().getAsInt();
+        int min = Arrays.stream(massive).min().getAsInt();
+        double ave = Arrays.stream(massive).average().getAsDouble();
+        
+	System.out.println(max + " " + min + " " + ave);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        List<Integer> listMinMax = new ArrayList<>();
+        listMinMax.add(332);
+        listMinMax.add(31);
+        listMinMax.add(2);
+        listMinMax.add(1);
+        listMinMax.add(9);
+        listMinMax.add(13);
+
+Max     Integer listMax = listMinMax.stream().max((o1, o2) -> o1 - o2).get();
+        int b = studentExamples.stream().map(student -> student.getAge()).reduce((acc, value) ->  Math.max(acc,value)).get();
+        System.out.println(b);
+
+Min     Integer listMin = listMinMax.stream().min((o1, o2) -> o1 - o2).get();
+
+AVG     Double  listAve = listMinMax.stream().mapToDouble(o1 -> o1).average().getAsDouble();
+        System.out.println(listMax + " " + listMin + " " + listAve);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

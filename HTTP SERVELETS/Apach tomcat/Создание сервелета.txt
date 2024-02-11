@@ -1,0 +1,51 @@
+Для создания сервелеа нужно:
+			
+		1: В intellij idead создаем директорию lib
+		2: Далее нам нужно скопировать servelet-api.jar, которая находиться в директории apache\lib 
+			в ранее созданную директорию lib java проекта(можно сделать через powershall методотом cp) 
+			в  intellij idead в  директории lib должен появится servlet-api.jar
+			Пример: cp .\servlet-api.jar C:\Users\andre\IdeaProjects\http-servelets-project\lib
+
+		3: Создаем класс и extands httpServlet.
+			httpServlet создержит три основных метода, который нам нужно переопределить:
+			Методы httpServlet:
+			init() - для проинициализировать servelet. 
+			destroy() - для удаление ресурсов.
+			service () - внутри этого метода будет основной наш код. Но у service есть много if/else  других методов, это doGET()  doPost() doDelete()  doPUT()  doOPTIONS()  doTRACE() и именно их 
+			нужно переопределять.
+			
+			Пример, мы переопределили метод doGet и внутри метода нам нужно вызвать метод contentType  у response и указать MIME TIPE 
+			    @Override
+				    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+				  resp.setContentType("text/html");
+    				    try (PrintWriter writer = resp.getWriter()) {
+       				     writer.write("Hello from my first servlet");
+   					     }
+					    }		
+		
+		
+		4:Нужно смапить url на наш сервлет. Для этого нам достаточно поставить  аннотацию @WebServlet("/first") На созданном классе.
+==========================================================================================================================================================
+
+Реализация:
+
+@WebServlet("/first")
+public class FirstServlet extends HttpServlet {
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html");
+        try (PrintWriter writer = resp.getWriter()) {
+            writer.write("Hello from my first servlet");
+        }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+    }
+}

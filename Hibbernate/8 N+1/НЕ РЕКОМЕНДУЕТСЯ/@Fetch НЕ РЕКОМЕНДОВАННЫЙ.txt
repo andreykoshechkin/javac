@@ -1,0 +1,24 @@
+SELECT   - для маппинга @ManyToOne(доступен только для одной сущности)
+JOIN     - для маппинга @OneToMany(доступен только для одной сущности)
+SUBSELECT - для маппинга @OneToMany(доступен только для коллекций) <-- делает подзапрос
+
+Аннотация @Fetch: Не совсем подходит для решения проблелмы N+1. Дело в том FetchMode.JOIN и FetchMode.SELECT
+не работаю тогда, когда мы получаем несколько записей с помощью HQL, Qarydsl, то есть, FetchMode.JOIN и FetchMode.SELECT работает только тогда, когда мы получаем одну сущность
+с помощью метода sessio.find(), session.get(). А FetchMode.SUBSELECT, который рабоате и с HQL и Qarydsl и решает проблему N+1 предназначен только для коллекций.
+
+Общая работа аннотации @Fetch заключается в том, что создается доп.запрос:
+ select
+        payments0_.employee_id as employee3_5_1_,
+        payments0_.id as id1_5_1_,
+        payments0_.id as id1_5_0_,
+        payments0_.amount as amount2_5_0_,
+        payments0_.employee_id as employee3_5_0_ 
+    from
+        Payments payments0_ 
+    where
+        payments0_.employee_id in (
+            select
+                employee0_.id 
+            from
+                Employee employee0_
+        )

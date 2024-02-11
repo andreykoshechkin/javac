@@ -1,0 +1,8 @@
+1. Установить Docker 
+2. Добавить в dependency --> Testcontainers :: JDBC :: PostgreSQL
+3. Нам нужно сконфигурировать hibernate.config.xml но только для директории Test
+   Создаем ресурсную директорию -> копируем hibernate.config.xml из main/resources
+   и вставляем в только что созданную директрию resources из директории Test
+4. То как должен выглядеть hibernate.config.xml будет написано в следующем txt файле
+5. Создаем класс HibernateTestUtil в Test(Описание того, как должен выглядеть HibernateTestUtil будет в другом txt файле)
+ 

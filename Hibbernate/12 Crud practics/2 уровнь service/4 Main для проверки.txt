@@ -1,0 +1,20 @@
+public class Main {
+    public static void main(String[] args) {
+
+
+        @Cleanup SessionFactory sessionFactory = ConfigurationBuilder.getBuilder();
+        Session session = (Session) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{Session.class},
+                (proxy, method, args1) -> method.invoke(sessionFactory.getCurrentSession(), args1));
+
+        session.beginTransaction();
+
+        var repositoryGame = new RepositoryGame(session);
+
+        var mapperCompanyToDto = new MapperCompanyToDto();
+        var mapperGameToDto = new MapperGameToDto(mapperCompanyToDto);
+        var gameService = new GameService(repositoryGame, mapperGameToDto);
+        gameService.findById(1L).ifPresent(System.out::println);
+
+        session.getTransaction().commit();
+    }
+}

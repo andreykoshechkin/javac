@@ -1,0 +1,16 @@
+1. Динамическое создание proxy, не используется, так как для его реализации нужно передавать интерфесы сущности
+
+public class HibernateProxyTest {
+
+    @Test
+    void testDynamic (){
+
+        Company company = new Company();
+        Proxy.newProxyInstance(company.getClass().getClassLoader(), company.getClass().getInterfaces(), new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                return method.invoke(company, args);
+            }
+        });
+    }
+}

@@ -1,0 +1,22 @@
+@Sql 		#Данная аннотация ставиться только над классом или методов. Эта аннотация позволяет по переданному пути, найти файл с sql скриптом и запустить сам скрипт.
+
+
+@Sql("classpath:sql/data-init.sql")			#classpath - это директория resources.
+@IntegrationTestRun
+public abstract class TestContainerRunner {
+
+    private final static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:16.0");
+
+    @BeforeAll
+    public static void startContainer() {
+        container.start();
+    }
+
+
+    @DynamicPropertySource
+    public static void propertyRegistry(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", container::getJdbcUrl);
+    }
+
+}
+

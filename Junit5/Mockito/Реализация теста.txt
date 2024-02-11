@@ -1,0 +1,7 @@
+    @Test
+    void testDelete() {
+        userService.add(ANDREY);
+        Mockito.doReturn(true).when(userDao).delete(ANDREY.getId());   <-- Верни true у объекта userDao при вызове метода delete
+        boolean delete = userService.delete(ANDREY.getId());
+        assertThat(delete).isTrue();
+    }

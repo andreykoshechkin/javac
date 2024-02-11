@@ -1,0 +1,35 @@
+1: Нужно создать переменную среды -> системные переменный в path -> добавить C:\Program Files\PostgreSQL\15\bin
+В терминале = psql --host=localhost --port=5432 --username=postgres --password=postgres --dbname=flight_repository
+
+
+Как установить уровень изоляции транзакции в терминале: begin начнет ранзакцию
+begin transaction isolation level repeatable read;
+
+В терминале нам достаточно просто писать ключевые слова для работы с транзацией.
+begin - открывает транзакицю 
+rollback -откатывает транзакцию
+commit - применить изменения
+
+show transaction isolation level	//Покажет текущий уровень изоляции
+show default_transaction_isolation;	//Покажет уровень изоляции по умолчанию
+=======================================================================
+psql --help 		//Список команд
+\! cls			//Очистить 
+\! 			//Вызов команды консоли
+exit 			//Выйти из бд
+\l 			//Позволяет отобразить все базы данных на текущем хосте(на хосте localhost)
+\d 			//Показать все таблицы(в том числе и sequence)
+\d flight		//Показывает информацию о таблице, в том числе и связть таблиц(FORGEN KEY)
+\dt			// Показать только таблицы без sequence)
+\c имяДругойБазы 	// позволяет поменять одну базу данных на другую 
+
+
+Пример dump'a: выгрузили fligh_repository в файл dump_test.sql
+pg_dump --dbname=flight_repository --host=localhost --password=postgres --username=postgres > dump_test.sql 
+
+
+type file.txt считать файл
+
+
+psql -d ИмяБдВкоторуюХотимНакатитьSqlСкрипт -f названиеСкрипта.sql
+=======================================================================

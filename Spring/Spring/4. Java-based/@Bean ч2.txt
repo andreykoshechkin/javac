@@ -1,0 +1,19 @@
+Мы так же можем внедрять зивисимости в метод
+
+    @Bean(initMethod = "init", destroyMethod = "destroy", value = "connectionPoolBean")
+    public ConnectionManager pool1(
+            @Value("${db.username}")
+            String username,
+            @Value("${db.password}")
+            String pass,
+            @Value("${db.poolSize}")
+            Integer poolSize) {
+        return new ConnectionManager(username, pass, poolSize);
+    }
+    
+    
+    
+    @Bean
+    public UserRepository userRepository(ConnectionManager connectionPoolBean){
+        return new UserRepository(connectionPoolBean);
+    }

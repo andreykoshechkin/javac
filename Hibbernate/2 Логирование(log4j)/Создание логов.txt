@@ -1,0 +1,20 @@
+Логирование нужно делать для каждого класса отдельно. 
+Чтобы начать использовать логи нужно:
+1. Создать переменную  private final Logger log = LoggerFactory.getLogger(УказатьКлассЛогирования.class) <-- создатл переменную не в методе, а в классе  
+   Пример:
+	public class Main {
+	private final Logger log = LoggerFactory.getLogger(Main.class);
+	public static void main(String[] args) throws NoSuchMethodException {
+  	  }
+	}
+
+2. Для того, чтобы наптсать сообщение использем методы:
+	    log.trace(); <--- Создает сообщение уровня trace
+            log.debug(); <--- Создает сообщение уровня debug
+            log.info();  <--- Создает сообщение уровня info
+            log.warn();	 <--- Создает сообщение уровня warn
+            log.error(); <--- Создает сообщение уровня error
+   Пример:
+   log.info("User entity is in transient state, object: {}", user);  <<- Фигурные скобки, озночают параметры, сколько фигурных скобок будет, столько параметров должно быть 
+   log.trace("Transaction is created {}", transaction);
+   log.warn("User is in persistent state: {}, session {}, closed", user, session);

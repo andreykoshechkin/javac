@@ -1,0 +1,20 @@
+    //Мы создаем не optional а целую сущность,
+    //Если нам не удалось ее создать, то это исключительная ситуация
+    public UserReadDto create(UserCreateEditDto userDto) {
+        return Optional.of(userDto).map(createEditMapper::transferToEntity) //На этом этапе мы маппим сущность, которая пришла от клиента в entity
+                .map(userRepository::save)                                  //На этом этапа, мы сохраняем сущность с помощью метода save
+                .map(usersMapper::transferToDto)                            //На этом этапе, мы entity маппим в userReadDto
+                .orElse(null);                                         //Если у нас не получилось, верни null
+    }
+  
+
+
+ 
+1. Если у на id у сущности не автогенерируемый, то вместо обычного save нужно использовать saveAndFlush
+
+    public UserReadDto create(UserCreateEditDto userDto) {
+        return Optional.of(userDto).map(createEditMapper::transferToEntity) 
+                .map(userRepository::saveAllAndFlush)                               
+                .map(usersMapper::transferToDto)                          
+                .orElse(null);                                          
+    }

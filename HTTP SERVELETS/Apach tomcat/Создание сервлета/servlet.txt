@@ -1,0 +1,57 @@
+Описание сервлета для CRUD PROJECT с методом findAll: 
+
+@WebServlet("/company")
+public class CrudProject extends HttpServlet {
+    private final ServiceDTO serviceDTO = ServiceDTO.getINSTANCE(); //Добавление зависимости нв serviceDTO
+
+    //<li> </li> Значение списка
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html");
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        try (PrintWriter writer = resp.getWriter()) {
+            writer.write("<div><b> Список компаний </b></div>");
+            writer.write("<ul>");
+            serviceDTO.companyDTOList().forEach(companyDTO -> {
+                writer.write(
+                        """
+                                <li>
+                                                                
+                                <a href="/employee?company_id=%d">%s,%tD</a>	<-- создали ссылку она предствлена ввиде http://localhost:8080/employee?company_id 
+                                 </li>
+                                """.formatted(companyDTO.getId(),companyDTO.getName(), companyDTO.getDate()));
+
+            });
+            writer.write("</ul>");
+        }
+
+    }
+}
+========================================
+В коде выше мы созадли ссылку 
+Этот сервелет описывает что будет перейдя по ссылке
+
+
+@WebServlet("/employee")
+public class EmployeeServlets extends HttpServlet {
+
+    private final ServiceEmployeeDTO serviceEmployeeDTO = ServiceEmployeeDTO.getINSTANCE();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      int company_id = Integer.parseInt(req.getParameter("company_id"));
+        resp.setContentType("text/html");
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        try (PrintWriter writer = resp.getWriter()) {
+            writer.write("<div> Список работников: </div>");
+            writer.write("<ul>");
+            serviceEmployeeDTO.findByCompanyId(company_id).forEach(employeeDTO ->
+                    writer.write("""
+                             <li>
+                              %s, %s, %d, %s
+                            </li>
+                               """.formatted(employeeDTO.getFirstName(), employeeDTO.getLastName(), employeeDTO.getSalary(), employeeDTO.getDepartment())));
+            writer.write("</ul>");
+        }
+    }
+}

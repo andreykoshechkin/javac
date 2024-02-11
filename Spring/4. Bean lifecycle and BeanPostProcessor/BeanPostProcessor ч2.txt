@@ -1,0 +1,15 @@
+BeanPostProcessor в жизненном цикле бина включен всегда по умолчанию в Spring.
+Когда вы создаете бин в контексте Spring, контейнер вызывает все зарегистрированные BeanPostProcessor, если они есть.
+
+Если у вас нет собственных кастомных BeanPostProcessor, Spring все равно использует встроенные по умолчанию, например:
+
+CommonAnnotationBeanPostProcessor: Обрабатывает аннотации, такие как @PostConstruct и @PreDestroy.
+AutowiredAnnotationBeanPostProcessor: Обрабатывает внедрение зависимостей (@Autowired, @Value, @Inject).
+InitDestroyAnnotationBeanPostProcessor: Обрабатывает аннотации @PostConstruct и @PreDestroy для инициализации и завершения бинов.
+RequiredAnnotationBeanPostProcessor: Выполняет проверку обязательных (required) зависимостей.
+
+BeanPostProcessor представляет из себя интерфейс с двумя методами:
+
+postProcessBeforeInitialization(Object bean, String beanName): Вызывается перед инициализацией бина.
+postProcessAfterInitialization(Object bean, String beanName): Вызывается после инициализации бина.
+Когда вы создаете собственные реализации BeanPostProcessor и регистрируете их в контексте Spring, они будут применять свою логику для бинов, проходящих через контейнер. Это позволяет вам влиять на их создание и инициализацию

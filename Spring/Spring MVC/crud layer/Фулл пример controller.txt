@@ -1,0 +1,52 @@
+@Controller
+@RequestMapping("/users")
+@RequiredArgsConstructor
+public class UserController {
+
+    private final UserService userService;
+
+    @GetMapping
+    public String findAll(Model model) {
+        model.addAttribute("users", userService.findAll());
+        return "user/users";
+    }
+
+    @GetMapping("/{id}")
+    public String findById(Model model, @PathVariable("id") Long id) {
+        return userService.findById(id)                                                     //Если пользователь найден
+                .map(user -> {                                                              //То положи его в модель
+                    model.addAttribute("user", user);                            //И сделай forward "user/user"
+                    return "user/user";
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    }
+
+    @PostMapping    //http://localhost:8080/users Но с методом POST
+    @ResponseStatus(HttpStatus.CREATED)
+    public String create(@ModelAttribute UserCreateEditDto user) {
+        return "redirect:/users/" + userService.create(user).getId(); //Перенаправляем на http://localhost:8080/users/поId
+    }
+
+
+    // @PutMapping("/{id}")  Мы не можем пока что использовать, потому что страница jsp отправить форму, а у формы есть только методы Get/Post
+    @PostMapping("/{id}/update")    //http://localhost:8080/users/id/update
+    public String update(@PathVariable("id") Long id, @ModelAttribute UserCreateEditDto user) {
+        return userService.update(id, user)
+                .map(it -> "redirect:/users/{id}")
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    }
+
+
+    // @DeleteMapping("/{id}") Мы не можем пока что использовать, потому что страница jsp отправить форму, а у формы есть только методы Get/Post
+    @PostMapping("/{id}/delete")
+    public String delete(Long id) {
+        if (!userService.delete(id)) {  //Если мы не нашли entity то пробрось exception
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return "redirect:/users";   //Если тут использовать forward и перенаправлять на jsp страницу users.jsp,
+                                    //то нам придется создавать Model. Лучше использовать redirect и просто перенаправить на Get запрос (в этом примере это метод findAll)
+
+    }
+
+}

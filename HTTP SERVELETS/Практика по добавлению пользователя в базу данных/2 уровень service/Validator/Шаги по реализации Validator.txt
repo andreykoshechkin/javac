@@ -1,0 +1,45 @@
+1: Создаю класс ValidatorError где будет два string поля, это code ошибки и  messenger описание ошибки. Чтобы создавать класс через of
+
+@Value(staticConstructor = "of")<--- объекты класса мы будем создавать с помощью метода of(как list.of())
+public class ValidationError {
+    String code;
+    String messenger;
+}
+
+
+
+2: Создаем параметризованный interface <T> + метод. Если мы сделаем метод который возвращает boolean, то мы сможем узнать, прошел ли валидатность наш obj или нет и это не совсем хорошо. 
+Так  как нам нужно знать, что именно(какое поле) не прошло валидатность. поэтому метод должен возвращатль какой-то validatorResult
+
+
+3: создаем класс validatorResult где будет хранится список ошибок. В этом классе будет два метода: 1-метод по добавление ошибок, 2-метод на проверку
+
+    @Getter
+    private final List<ValidationError> errorList = new ArrayList<>();	<--- тут будем хранить ошибки
+
+
+    public void addError(ValidationError validationError) {		<--- метод по добавлению ошибок. 
+     this.errorList.add(validationError);
+    }
+
+    public boolean isValid(){					<--- метод по проверки. Если errorList пустой то ошибок нет(вернет true иначе false)
+        return errorList.isEmpty();
+    }
+
+4: Создаем сам валидатор, который должен имплементить интерфейс шаг2 и быть синглтоном
+реализация метода;
+  @Override
+    public ValidatorResult isValid(CreateUserDTO obj) {
+        ValidatorResult validatorResult = new ValidatorResult();
+        if (Genders.valueOf(obj.getGenders()) == null) {
+            validatorResult.addError(ValidationError.of("invalid.genders", "Genders is error"));
+        }
+
+        return validatorResult;
+    }
+
+
+ПРОВЕРКА ДАТЫ  В ВАЛИДАТОРЕ
+      if (!DataTimeFormatterUtil.isValidData(obj.getBirthday())) {
+            validatorResult.addError(ValidationError.of("invalid.date", "date is invalid"));
+        }

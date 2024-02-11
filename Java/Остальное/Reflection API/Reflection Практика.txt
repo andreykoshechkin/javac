@@ -1,0 +1,26 @@
+      Class<Car> carClass = Car.class;
+
+        String table = carClass.getAnnotation(Table.class).table();
+        String schema = carClass.getAnnotation(Table.class).schema();
+
+
+
+        Field[] declaredFields = carClass.getDeclaredFields();
+
+        String brand = Arrays.stream(declaredFields)
+                .filter(field -> field.isAnnotationPresent(Column.class))      //Фильтруем, чтобы получить только те поля, которые отмечены аннотацией Column
+                .map(field -> field.getAnnotation(Column.class))  //Берем поля отмеченные аннотацией Column
+                .map(Column::column)
+                .collect(Collectors.joining(", "));
+
+        String valus = Arrays.stream(declaredFields)
+                .filter(field -> field.isAnnotationPresent(Column.class))
+                .peek(bool->bool.setAccessible(true))
+                .map(field -> {
+                    try {
+                        return String.valueOf(field.get(car));
+                    } catch (IllegalAccessException e) {
+                         e.printStackTrace();
+                         return "";
+                    }
+                }).collect(Collectors.joining(", "));

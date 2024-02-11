@@ -1,0 +1,27 @@
+USE book_repository			 --Указывает какую базу данных мы используем
+CREATE TABLE author (
+id INT IDENTITY PRIMARY KEY,		--IDENTITY=Автоинкремент, Primary Key= первичный ключ
+first_name VARCHAR (32),
+last_name VARCHAR(32)
+);
+
+
+Если возникла ошибка Недопустимое имя столбца/объекта (Подчеркнутый текст) то нужно обновить локальный кеш Ctrl+Shift+R
+
+SELECT TOP 2							--Top 2, аналог LIMIT 2
+a.id,									--Мы можем обращаться к полям через Альяс
+a.first_name,
+[last_name]								--Мы можем обращаться к полям через квадратные скобки
+FROM book_repository.dbo.author AS a	--AS ставим альяс 
+
+
+
+SELECT
+b.name,
+b.pages,
+b.year,
+a.first_name + ' ' + a.last_name			--Объединение строк
+FROM [book_repository].[dbo].[book] AS b
+JOIN author a ON a.id = b.author_id
+
+

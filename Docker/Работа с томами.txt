@@ -1,0 +1,7 @@
+docker run -d --rm -p 8081:80 c20060033e06					# Параметр --rm значит, что после остановки контейнера, контейнер удалится (Может быть в произвольном месте) 
+ 
+docker run -v pwd:/usr/share/nginx/html						# Позволяет создавать связи между файловой системой моего ПК и файловой системой внутри контейнера
+
+										  Пример: Заменит index.html в файловой системе контейнера nginx, на то index.html на моем ПК
+										  Терминал:   docker run -v C:\Users\Andrey\Desktop\example:/usr/share/nginx/html -p 8100:80 -d c20060033e06			
+										  PowerShell: docker run -d -v ${pwd}:/usr/share/nginx/html -p 9090:80 --rm c20060033e06

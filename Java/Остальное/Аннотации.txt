@@ -1,0 +1,62 @@
+
+public @interface nameAnnotation {
+
+}
+
+Аннотации могут иметь свои поля(переменные,методы,классы..)поля нужно объявлять как методы String name(); int numbers(); но используются как поля
+
+public @interface nameAnnotation {
+String name();
+int numbers();
+{
+
+Так же у полей можно задать значение по умолчанию (Поля должны быть без ;)String name() defualt "Some name" or int numbers() defualt 1000;
+
+
+Аннотации о Аннотациях:
+@Target  - аннотация которая позволяет указать к чему конкретно будет привязана наша аннотация (к методы или полю) ---
+
+@Target(ElementType.METHOD) - нашу аннотацию можно применять только к методам;
+public @interface nameAnnotation {
+String name();
+int numbers();
+{
+
+
+В качестве переменных не могут быть ссылочные типы 
+
+
+@FILED - к полю
+@METHOD - к методу
+@TYPE - к интерфесу, перечислению, класса
+******************************
+@Retention - удержание аннотаций(до какого этапа компилирования аннотация будет видна ) Значения лежат в RetentionPolicy.
+Retention(RetentionPolicy.RUNTIME)
+параметры @Retention
+RUNTIME - Это одно из значений @Retention, сохраняет нашу аннотацию в байт код и доступна во время работы программы(при помощи рефликции).
+CLASS - Это одно из значений @Retention, сохраняет нашу аннотацию в байт код но не доступна во время работы программы
+SOURCE -Это одно из значений @Retention,которое отбрасывается при компиляции
+
+
+Создание нескольких таргеторв: 			//@Target({ElementType.METHOD, ElementType.METHOD}) - несколько таргетов помещаем в фигурные скобки
+						   public @interface nameAnnotation {	
+
+
+Переменные нужны либо для дефолтного значения либо для того, чтобы явно указать, что нужно их заполнить
+					
+Дефолт:						//@Target(ElementType.METHOD) - 
+						  public @interface nameAnnotation {
+						   String name() defualt "text";
+						   int numbers() defualt "321";
+						{
+@Target(ElementType.METHOD) 
+public @interface nameAnnotation {
+String name();
+int numbers();
+{
+
+
+
+
+
+

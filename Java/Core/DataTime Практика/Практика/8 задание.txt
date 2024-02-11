@@ -1,0 +1,7 @@
+/**
+ * 7. Написать свою реализацию интерфейса TemporalAdjuster, которая бы
+ * прибавляла к дате 42 дня
+ */      
+LocalDateTime localDateTime = LocalDateTime.now();
+        LocalDateTime with = localDateTime.with(temporal -> temporal.plus(42L, ChronoUnit.DAYS));
+        System.out.println(with);

@@ -1,0 +1,34 @@
+1. Подключить зависимости:
+     <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>6.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.0.2</version>
+        </dependency>
+
+
+2. создать application.xml <<-- в нем описываем Definition
+
+	Внутри прописать:
+	<bean name="p1" class="указатьПолныйПуть_К_Классу_которыйДолженБытьБином"></bean>. 	//По умолчанию вызывается конструктор без параметров
+
+	Пример:
+            <bean name="connectionPoolBean" class="org.example.connection.ConnectionExample">	<-- Создали бин на класс ConnectionExample
+
+             </bean>
+
+
+Если у нас несколько бинов одного и тоже типа мы не сможем получить been по классу, нам нужно обращаться через ключ:
+В примере выше мы указали id="pool1" это и есть ключ, а name ="p1" альяс
+
+
+
+
+3. в Main:
+        var application = new ClassPathXmlApplicationContext("application.xml");
+        System.out.println(application.getBean("p1",ConnectionPool.class));

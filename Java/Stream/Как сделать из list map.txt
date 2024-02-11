@@ -1,0 +1,21 @@
+     List<Person> list = List.of(
+                new Person("Andrey", "Koshechkin", 27),
+                new Person("Ivan", "Ivanov", 35),
+                new Person("Svetlana", "Svetikova", 20),
+                new Person("Anna", "Stepanova", 39),
+                new Person("Vlad", "Demidov", 29)
+        );
+
+ Map<Integer, Person> collect = list.stream().collect(Collectors.toMap(Person::getAge, Function.identity()));
+
+        for (Map.Entry<Integer, Person> integerPersonEntry : collect.entrySet()) {
+            System.out.println(integerPersonEntry);
+        }
+
+
+Ответ консоля:
+35=Person{firstName='Ivan', lastName='Ivanov', age=35}
+20=Person{firstName='Svetlana', lastName='Svetikova', age=20}
+39=Person{firstName='Anna', lastName='Stepanova', age=39}
+27=Person{firstName='Andrey', lastName='Koshechkin', age=27}
+29=Person{firstName='Vlad', lastName='Demidov', age=29}

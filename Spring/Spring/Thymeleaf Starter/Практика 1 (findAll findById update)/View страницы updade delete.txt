@@ -1,0 +1,65 @@
+<form th:action="@{/users/{userId}/update(userId=${user.id})}" method="post" th:object="${user}">	<--Если не использвать th:object то в th:value 
+  									      			           нужно обращаться у полям через ${user.username}
+    <label> Username:
+        <input type="text" name="username" th:value="*{username}">
+    </label><br>
+
+    <label>Firstname:
+        <input type="text" name="firstname" th:value="*{firstname}">
+    </label><br>
+
+    <label>Lastname:
+        <input type="text" name="lastname" th:value="*{lastname}">
+    </label><br>
+
+    <label>Birthdate:
+        <input type="date" name="birthdate" th:value="*{birthdate}">
+    </label><br>
+
+    <div th:each="roleExample : ${roles}">
+        <input type="radio" name="role" th:value="${roleExample}" th:checked="${roleExample.name() == user.role}">
+        <label th:text="${roleExample}">Role name</label>
+    </div>
+    <br>
+    <label> Company:
+        <div>
+            <select name="companyId">
+                <option th:each="company :${companies}"
+                        th:value="${company.id}"		<--Значение. Мы должны в базу данных отправлять id компании
+                        th:text="${company.name}"		<-- Для отображения названия компании
+                        th:selected="${company.id == user.company.id}">Company		
+                </option>
+            </select>
+        </div>
+    </label>
+    <button type="submit">update</button>
+</form>
+
+<form th:action="@{/users/{userId}/delete(userId=${user.id})}" th:if="${user.role =='ADMIN'}" method="post">
+<button type="submit">Remove</button>
+</form>
+===========================================================
+
+th:checked="${roleExample == user.role}">		<-- Чтобы при переходе на страницу, роль уже стояла (У dto будет стоять та роль, которая указанно в бд)
+th:selected="${company.id == user.company.id}">Company	<-- Чтобы при переходе на страницу, компания уже стояла (У dto будет указанна та компания, которая стоит в бд)
+th:if="${user.role =='ADMIN'}"				<-- Если user админ то отобрази кнопку remove
+
+Для Добавление роли нужно в controller в attribut добавить массив ролей:
+   model.addAttribute("roles", Role.values());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==================================================================

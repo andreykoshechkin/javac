@@ -1,0 +1,32 @@
+Мы можем ссылать Переменную Родительского класса на объект потомка: 
+SuperClass sb = new SubClass:
+Но мы не может на прямую ссылать переменную класса потомка на родителя, нужен downcasting
+SubClass sC = new SuperClass: - нельзя.
+SubClass cs = new SuperClass: - можно.
+
+Потомок обязан вызывать конструктор родителя
+
+Референс переменная  может ссылвать только на те  переменные и методы чей тип данных у нее указан 
+1.04
+
+Позднее связывание (Binding) - Если метод переопределен, то вне зависимости от того какая реализация этого метода  
+есть у родителя, впервую очередь будет исполненна та реализация, которая указана у потомка
+
+Compile time Binding - относится private, finale, static методы, так как static, private, final методы не могут быть переопределенны
+
+Run time Binding - Относится динамичный выбор метода, который задействован именно у экземпляра класса
+
+upcasting - происходит автоматически
+downCasing осуществляется по принципу IS A
+Пример:
+Figura figura = new Kvadrat(4,"Kvadrat");
+Kvadrat kvadrat = (Kvadrat) figura;
+System.out.println(kvadrat.abc);
+
+Figura figura = new Kvadrat(4,"Kvadrat");
+System.out.println(((Kvadrat)figura).testString);
+
+Figura figura = new Kvadrat(4,"Kvadrat");
+ ((Kvadrat)figura).testMethod();
+
+оператор instanceof - проверяет взаимосвязь объектов (Принадлежит ли объект2 instanceof объекту1)

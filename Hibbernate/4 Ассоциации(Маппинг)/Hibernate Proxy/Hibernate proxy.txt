@@ -1,0 +1,31 @@
+Hibernate использует прокси через наследования для реализации ленивой загрузки (lazy load) cвязи ManyToOne. Подставляет proxy объект вместо нашего объекта
+Hibernate с помощью  Byte Buddy генерирует прокси класс на основании нашей сущности, далее, cгенерированный прокси перехватывает все вызовы методов
+Если это происходит без активной Session, то бросается исключение LazyInitializationException.
+
+HibernateProxy <--- интерфейс, который реализует все наши прокси объекты 
+
+Каждый proxy объект хранит session
+
+
+Метод: 
+session.getReference(Class, id) <--- получает прокси, класса который мы передали в параметр
+
+    @Test
+    void getCompanyId() {
+        Company company = null;
+        try (SessionFactory sessionFactory = ConfigurationBuilder.getBuilder();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            company = session.getReference(Company.class, 1); <--- оборачивает объект Company в Прокси
+
+
+            Set<Game> gameSet = company.getGameSet();
+            System.out.println(gameSet.size());
+            session.getTransaction().commit();
+        }
+
+
+    }
+=======================
+

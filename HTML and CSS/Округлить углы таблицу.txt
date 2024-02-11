@@ -1,0 +1,12 @@
+.table_block {
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border: 1px solid #000;
+    display: block;
+
+    border-bottom-right-radius: 0px; Округлить низ справа
+    border-bottom-left-radius: 0px;  Округлить вверх слева
+
+}

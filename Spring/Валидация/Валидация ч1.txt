@@ -1,0 +1,49 @@
+Аннотации для валидации лежат в jakarta.validation.constraints;
+
+1. Подключаем соответствующий стартер:
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+    <version>3.0.4</version>
+</dependency>
+
+
+2. Идет к тому dto, которое мы хотим провалидировать и ставим соответствующие аннотации
+@Value
+@Builder
+@FieldNameConstants
+public class UserCreateEditDto {
+    Long id;
+
+    @Email			<--- username должен быть строго в формате email (usernam@gmail.con)
+    String username;
+    LocalDate birthdate;
+
+    @NotBlank			<--- firstname не может быть пустым(лучше ствавить @NotBlank or @NotEmpty, если поставвить @NotNull то строк с пробелом сохранится)
+    @Size(min = 3, max = 64)	<--- длина имени не должны быть меняше 3 символов (Если в firstname передать 'ad' то валидация не пройдет)
+    String firstname;
+
+    @NotNull			<--- username не может быть пустым(лучше ствавить @NotBlank or @NotEmpty, если поставвить @NotNull то строк с пробелом сохранится)
+    @Size(min = 2, max = 64)   <--- длина фамилии не должны быть меняше 3 символов (Если в firstname передать 'ad' то валидация не пройдет)
+    String lastname;
+}
+
+3. BindingResult - должен идти строго после той dto, которую мы валидируем
+
+    @PostMapping
+    public String create(@Validated UserCreateEditDto user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()){			<--- Если есть ошибки, перенаправь снава на страницу users/registration
+
+            redirectAttributes.addFlashAttribute("user", user);			
+            redirectAttributes.addFlashAttribute("error", bindingResult.getAllErrors());		<--- addFlashAttribute позволит Spring сохранить этот объект между перенаправлениями, что полезно для отображения ошибок в представлении.
+            return "redirect:/users/registration";
+        }
+        userService.create(user);
+        return "redirect:/users";
+    }
+
+4. Отобразить клиенту:
+Идем в html страницы регистрации и вне форма пишем
+<div th:if="${error}">
+    <p style="color: red" th:each="errors : ${error}" th:text="${errors.defaultMessage}"></p>
+</div>

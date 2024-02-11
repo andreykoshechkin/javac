@@ -1,0 +1,11 @@
+@Access:
+  - @Access(AccessType.FIELD) 	  - Стоит по умолчанию и говорит о том, что Hibernate будет использовать рефлексию для доступа к полям сущности.
+  - @Access(AccessType.PROPERTY)  - говорит о том, что Hibernate будет использовать рефлексию для доступа к геттерам.
+ 
+@Transient -  используется для указания на то, что поле не должно сохраняться в базе данных, т.е. их семантика отличается.transient
+
+@Temporal(TemporalType.TIMESTAMP): - Говорит в какой тип данных преобразовать
+  - @Temporal(TemporalType.TIMESTAMP) - Еслм мы хотим хранить и дату и время
+  - @Temporal(TemporalType.Date) - Если мы хотим хранить только дату
+  - @Temporal(TemporalType.LocalTime) - Если мы хотим хранить только время 
+     private Birthdate birthdate;

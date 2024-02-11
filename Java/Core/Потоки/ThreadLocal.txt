@@ -1,0 +1,30 @@
+/*
+ * ThreadLocal<Integer> threadLocal = new ThreadLocal<>();  <--- Хранят для каждого потока свое значение
+ * threadLocal.set(integer == null ? 1 : ++integer);        <--- если значение переменной integer  null, то установи 1 иначе инкременть
+ *
+ * */
+
+  Scanner scanner = new Scanner(System.in);
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ThreadLocal<Integer> threadLocal = new ThreadLocal<>();
+
+
+        while (scanner.hasNextInt()) {
+            int seconds = scanner.nextInt();
+            if (seconds < 0) {
+                break;
+            }
+            executorService.submit(() -> {
+                Integer integer = threadLocal.get();
+                threadLocal.set(integer == null ? 1 : ++integer);	<--- считает сколько раз выполнил задание поток
+                System.out.printf("Поток %s, выполнил %d задач%n", Thread.currentThread().getName(), threadLocal.get());
+
+                Thread.sleep(seconds * 1000L);
+                System.out.println(Thread.currentThread().getName() + " Я спал = " + seconds);
+                return seconds;
+            });
+
+
+        }
+
+        executorService.shutdown();

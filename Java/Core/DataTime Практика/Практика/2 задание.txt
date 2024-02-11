@@ -1,0 +1,10 @@
+/**
+ * 2. Создать объект LocalDate, представляющий собой сегодняшнюю
+ * дату. Преобразовать дату в строку вида "05.05.2017". Вывести эту строку на
+ * консоль.
+ */
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MM yyyy");
+        LocalDate localDate = LocalDate.now();
+
+        String format = localDate.format(dateTimeFormatter);
+        System.out.println(format);

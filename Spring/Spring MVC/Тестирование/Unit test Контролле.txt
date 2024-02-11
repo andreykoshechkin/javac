@@ -1,0 +1,57 @@
+@WebMvcTest
+@ExtendWith(MockitoExtension.class)
+public class EmployeeControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private EmployeeService employeeService;
+
+    @MockBean
+    private CompanyService companyService;
+    @Test
+    @SneakyThrows
+    void findAll() {
+
+        CompanyReadDto companyReadDto = new CompanyReadDto(1L, "testCompany");
+
+        List<CompanyReadDto> companyReadDto1 = List.of(companyReadDto);
+        // Создаем объект EmployeeReadDto, который мы ожидаем получить от сервиса
+        EmployeeReadDto expectedEmployee = EmployeeReadDto.builder()
+                .id(1L)
+                .email("unit@gmail.com")
+                .firstname("Unit")
+                .lastname("Test")
+                .birthdate(LocalDate.now())
+                .role(Employee.Role.USER)
+                .position(Employee.Position.DEVELOPER)
+                .image(null)
+               // .companyReadDto(companyReadDto)
+                .build();
+
+        Mockito.doReturn(Optional.of(expectedEmployee)).when(employeeService).findById(1L);
+        Mockito.doReturn(Optional.of(companyReadDto)).when(companyService).findById(1L);
+
+        // Выполняем GET-запрос на эндпоинт /employees/1
+        mockMvc.perform(get("/employees/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("view/employee"))
+                .andExpect(model().attribute("employee", notNullValue()))
+                .andExpect(model().attribute("employee", instanceOf(EmployeeReadDto.class)))
+                .andExpect(model().attribute("employee", hasProperty("id", equalTo(1L))))
+                .andExpect(model().attribute("employee", hasProperty("email", equalTo("unit@gmail.com"))))
+                .andExpect(model().attribute("employee", hasProperty("firstname", equalTo("Unit"))))
+                .andExpect(model().attribute("employee", hasProperty("lastname", equalTo("Test"))))
+                .andExpect(model().attribute("employee", hasProperty("birthdate", equalTo(LocalDate.now()))))
+            .andExpect(model().attribute("employee", hasProperty("companyes", equalTo(companyReadDto))))
+                   .andExpect(model().attribute("employee", hasProperty("role", equalTo(Employee.Role.USER))))
+                .andExpect(model().attribute("employee", hasProperty("position", equalTo(Employee.Position.DEVELOPER))))
+                .andExpect(model().attribute("employee", hasProperty("image", nullValue())));
+
+        // Проверяем, что сервис был вызван с нужным параметром
+        verify(employeeService, times(1)).findById(1L);
+        // Проверяем, что не было других вызовов сервиса
+        verifyNoMoreInteractions(employeeService);
+    }
+}

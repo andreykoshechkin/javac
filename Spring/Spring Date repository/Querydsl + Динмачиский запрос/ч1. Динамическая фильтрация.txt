@@ -1,0 +1,56 @@
+1. Создать класс Qpredicate
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class QPredicate {
+    List<Predicate> predicates = new ArrayList<>();
+   
+ public static QPredicate builder(){
+        return new QPredicate();
+    }
+    public <T> QPredicate add(T object, Function<T, Predicate> function) {
+        if (object != null) {
+            predicates.add(function.apply(object));
+        }
+        return this;
+    }
+
+    public Predicate buildAnd() {
+        return ExpressionUtils.allOf(predicates);
+    }
+
+    public Predicate buildOr() {
+        return ExpressionUtils.anyOf(predicates);
+    }
+}
+
+
+2. UserFilterRepositoryImpl
+@RequiredArgsConstructor
+public class UserFilterRepositoryImpl implements UserFilterRepository {
+
+    private final EntityManager entityManager;
+
+    @Override
+    public List<UserEntity> getFilter(UserFilter userFilter) {
+
+        Predicate predicate = QPredicate.builder()
+                .add(userFilter.firstname(), userEntity.firstname::containsIgnoreCase)
+                .add(userFilter.lastname(), userEntity.lastname::containsIgnoreCase)
+                .buildAnd();
+
+        List<UserEntity> userEntities = new JPAQuery<UserEntity>(entityManager)
+                .select(userEntity)
+                .from(userEntity)
+                .where(predicate).fetch();
+        return userEntities;
+    }
+}
+
+
+3. Тест
+
+UserFilter userFilter = new UserFilter("a", null);
+        List<UserEntity> users = userRepository.getFilter(userFilter);
+
+        System.out.println(users);
+

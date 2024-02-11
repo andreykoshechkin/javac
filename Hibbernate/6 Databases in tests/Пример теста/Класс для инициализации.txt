@@ -1,0 +1,67 @@
+@UtilityClass
+public class InitData {
+
+    public void initializeTestData(Session session) {
+        Customer alex = InitData.getDataCustomer(session, 1L, "Alex", "Test");
+        Customer bob = InitData.getDataCustomer(session, 2L, "Bob", "Test");
+
+        InitData.getDataOrder(session, 1L, alex, OrderStatus.PROCESSING, 1000.0, LocalDateTime.now());
+        InitData.getDataOrder(session, 2L, alex, OrderStatus.COMPLETED, 1000.0, LocalDateTime.now());
+        InitData.getDataOrder(session, 3L, bob, OrderStatus.EXIST, 1000.0, LocalDateTime.now());
+    }
+
+    private AddProductInOrder getDataAddProductInOrder(Session session, Order order, Product product) {
+        AddProductInOrder addProductInOrder = AddProductInOrder.builder()
+                .order(order)
+                .product(product)
+                .build();
+
+        session.save(addProductInOrder);
+        return addProductInOrder;
+    }
+
+    private Order getDataOrder(Session session, Long id, Customer customer, OrderStatus status, Double cost, LocalDateTime date) {
+        Order order = Order.builder()
+                .id(id)
+                .customer(customer)
+                .orderStatus(status)
+                .totalCost(cost)
+                .dateOfCreation(date)
+                .build();
+        session.save(order);
+        return order;
+
+    }
+
+    private Customer getDataCustomer(Session session, Long id, String firstName, String lastName) {
+        Customer customer = Customer.builder()
+                .personalInformation(PersonalInformation.builder()
+                        .firstName(firstName)
+                        .lastName(lastName)
+                        .build())
+                .customerInformation("""
+                        {
+                        "info": "test"
+                        }
+                        """)
+                .build();
+        session.save(customer);
+        return customer;
+    }
+
+    private Product getDataProduct(Session session, String productName, Double price, Order order) {
+        Product product = Product.builder()
+                .productName(productName)
+                .productPrice(price)
+                .orders(order)
+                .productDescription("""
+                        {
+                        "info":"test"
+                        }
+                        """)
+                .build();
+
+        session.save(product);
+        return product;
+    }
+}

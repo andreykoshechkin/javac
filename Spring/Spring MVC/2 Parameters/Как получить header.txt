@@ -1,0 +1,11 @@
+@RequestHeader	 //Аннотация которая дает возможность получить header страницы, в качестве параметров нужно передать mime type
+
+
+  @GetMapping("hello")
+    public ModelAndView hello(ModelAndView modelAndView, HttpServletRequest httpServletRequest, 
+                             			         @RequestHeader("accept") String accept) {
+
+        modelAndView.setViewName("hello");
+        System.out.println();
+        return modelAndView;
+    }

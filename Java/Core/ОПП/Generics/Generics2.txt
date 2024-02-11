@@ -1,0 +1,27 @@
+есть интерфейс Weapon
+есть интерфейс RangeWeapon который является потомком Weapon
+Есть класс Bow который имлементит RangeWeapon 
+
+public class Archer<T extends RangeWeapon> extends Hero<T>  <--- теперь, параметры класса Archer, могут быть только те,
+ кто имплементит интерфейс RangeWeapon>. В том числе и класс Bow
+
+
+
+public class Archer<T > extends Hero<T> 				// Archer стал параметризовн и в качестве параметров может принимать любые объекты в тч String
+public class Archer<T extends RangeWeapon> extends Hero<T>  		//Archer стал параметризовн и в качестве параметров может принимать только те объекты, 
+									  которые имплементят интерфейс RangeWeapon> 
+
+
+Несмотря на то что я написал выше, мы все еще можем задать Archery параметрв string public class Archer<T extends String> и это не есть хорошо
+что бы этого избежать, нужно сделать так чтобы базовый класс(Класс hero) в кеачестве параметров принмал только те объекты которые являеются потомками Weapon
+public abstract class Hero <T extends Weapon>{
+
+Теперь мы не можем сделать так: 	public class Archer<T extends String>
+Теперь у нас строгое ограничение на параметры
+
+
+WILDCARD: Принимай только того героя, которой параметризован Weapon или является наследнкиов Weapon
+public static void printDamage (Hero <? extends Weapon> hero){		<-- в качестве параметра, может быть только hero или его потомки НО только те потомки 
+									    у которых в качестве generics указан интерфейс-потомок Weapon
+    System.out.println(hero.getWeapon().getDamage());			    К примеру warrior, ведь у него в качестве generics стоит MeelsWeapon, а MeelsWeapon потомок Weapon> 
+}

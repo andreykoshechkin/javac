@@ -1,0 +1,23 @@
+@RequiredArgsConstructor
+public class JdbcTemplateNamedImpl implements JdbcTemplateNamed {
+
+    private final NamedParameterJdbcTemplate jdbcTemplateNamed;
+
+    private static final String INSERT_BATCH_NAMED = """
+            INSERT INTO users (username, birth_date, firstname, lastname, role, company_id) 
+            VALUES (:username, :birth_date, :firstname, :lastname, :role, :company_id)
+            """;
+
+    @Override
+    public int insertIntoBatch(UserEntity... userEntities) {
+        MapSqlParameterSource[] array = Arrays.stream(userEntities).map(it -> Map.of(
+                        "username", it.getUsername(),
+                        "birth_date", it.getBirthDate(),
+                        "firstname", it.getFirstName(),
+                        "lastname", it.getLastName(),
+                        "role", it.getRole().name(),
+                        "company_id", it.getCompany().getId()
+                )).map(MapSqlParameterSource::new)
+                .toArray(MapSqlParameterSource[]::new);
+        return jdbcTemplateNamed.batchUpdate(INSERT_BATCH_NAMED,array).length;
+    }

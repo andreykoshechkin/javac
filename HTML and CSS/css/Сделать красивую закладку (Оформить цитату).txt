@@ -1,0 +1,20 @@
+HTML:
+<blockquote> Именно кондиционирование воздуха! Именно оно было основой для стремительного
+    роста Хьюстона в 1950 году, когда он стал наиболее оснащённым кондиционерами
+    городом в мире. Именно это стимулировало многие корпорации переместить свои штаб-
+    квартиры в Хьюстон.</blockquote>
+
+CSS:
+blockquote {  
+
+    color: white;
+    padding: 15px 10px 15px 20px;
+    margin: 40px 50px;
+    border-left: 9px solid chartreuse;
+    border-radius: 5px;
+
+    font-family: Roboto, Poppins, Arial, Helvetica, sans-serif;
+    font-style: italic;
+    font-weight: 200;
+    letter-spacing: 1.5px;
+}

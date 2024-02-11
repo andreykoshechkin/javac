@@ -1,0 +1,52 @@
+Reflection API Представления каждого класса как объект класса Класс.
+
+МЕТОД - ЭТО КЛАСС, А ВСЕ НОВЫЙ МЕТОДЫ, КОТОРЫЕ МЫ СОЗДАЕТ, ЯВЛЯЮТСЯ ОБЪЕКТАМИ КЛАССА METHOD.
+ПОЛЯ - ЭТО КЛАСС, А ВСЕ НОВЫЕ ПОЛЯ, КОТОРЫЕ МЫ СОЗДАЕТ, ЯВЛЯЮТСЯ ОБЪЕКТАМИ КЛАССА FIELD. (FIELD - СОБЛЮДАЕТ ИНКАПСУЛЯЦИЮ И ПОЭТУ ПО УМОЛЧАНИЮ ВОЗВРАЩАЕТ ТОЛЬКО
+PUBLIC ПОЛЯ, ДЛЯ ДОСТУПА К PRIVATE НУЖНО ИСПОЛЬЗОВАТЬ  getDeclaredFields();
+
+
+
+1) класс person является экземпляром класса Класс
+2) конкретный человек - это экземпляр класса person
+
+Служебный класс уже реализован в java
+
+
+ПОЛУЧЕНИЕ ДОСТУПА:
+
+ПОЛУЧЕНИЕ ДОСТУПА К КЛАССУ:		//Class name = имяКлассаККоторомуНужноПолучитьОбъект.class;
+
+ПОЛУЧЕНИЕ ДОСТУПА К ОБЪЕКТУ:		//Class name = имяОбъектаКотороеМыХочемПолучить.getClass;
+
+ПОЛУЧЕНИЕ ДОСТУПА К МЕТОДУ:		//Method[] methods = className.getMethods();
+					for (Method x: methods) {
+   					System.out.println(x.getName())
+    					System.out.println(x.getReturnType()); - выводит то что возвращает метод
+					System.out.println(x.getParameterTypes()); - выводит те параметры которые метод должен получить
+							}
+
+метод: 
+getParameterTypes()			//Возвращает тот тип, который  принимает метод  
+getDeclaredMethods()			//Позволяет получить только мои методы(методы Object будут проигнорированны) в том числе и приватные методы
+
+ПОЛУЧЕНИЕ ДОСТУПА К ПЕРЕМЕННОЙ: 	Получить одно поле, имя поля указывать в параметрах:
+					//Field[] fields = className.getField();	 ----- если учитываем инкапсуляцию
+					//Field[] fields = className.getDeclaredField(); 
+
+Получить все поля: 			//Field[] fields = className.getFields();	 ----- если учитываем инкапсуляцию
+					//Field[] fields = className.getDeclaredFields(); -  ----- если не учитываем инкапсуляцию
+
+класс Modifier:				//Позволяет задать какой-то условие, к примеру: мы можем получить только те public методы, которые есть у класса 
+					 Пример:if Modifier.isPublic(name.getModificator)): :(через getMethods - мы видел все методы  в том числе и методы класса Object). 
+ПРОВЕРК АНОТАЦИЙ
+Annotation[] annotation = className.getAnnotations();
+for (Annotation an : annotation) {
+   if (an instanceof ShowInfo) {
+   System.out.println("YES");
+
+}
+
+Получение конструктора с помощью рефликиции:
+       Class employee = Employee.class;
+        Constructor constructor = employee.getConstructor(String.class, String.class, int.class);
+        System.out.println(Arrays.toString(constructor.getParameters()));

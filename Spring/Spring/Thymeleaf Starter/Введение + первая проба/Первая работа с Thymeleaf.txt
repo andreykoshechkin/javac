@@ -1,0 +1,55 @@
+@Controller
+@RequestMapping("/app")
+@SessionAttributes("user")
+public class FirstController {
+
+    @GetMapping("/hello")
+    public String hello(@SessionAttribute("user") UserReadDto user){
+        return "/greeting/hello";
+    }
+
+    @GetMapping("/bye")
+    public String bye(@SessionAttribute("user") UserReadDto user){
+        return "/greeting/bye";
+    }
+
+    @GetMapping("/init")
+    public String init(Model model, UserReadDto user){
+        model.addAttribute("user", user);
+        return "greeting/init";
+    }
+
+}
+==========================================================================================
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">		<-- th="http://www.thymeleaf.org" нужно чтобы обращаться к th
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<span th:text="|init user${user.username}|"></span>		<---Устанавливаем username в сессию. RequsetScope включен поумолчанию			
+</body>
+</html>
+==========================================================================================
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<span th:text="|Hello${session.user.username}!|">username</span>	<---Получаем username из сессии
+</body>
+</html>
+==========================================================================================
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>				
+</head>
+<body>
+<span th:text="|Bye ${session.user.username}|">username</span>		<---Получаем username из сессии
+</body>
+</html>

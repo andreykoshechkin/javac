@@ -1,0 +1,33 @@
+surefire-plugin 	//Позволяет вызвать тесты. Будут вызваны Только те тесты, чье название соответствует <includes>. 
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<version>2.22.1</version>
+</plugin>
+
+==========================================================================================================================================================================    
+<skip>true</skip>     // Позволяет нам пропустить тесты чье название соответствует <includes>. 
+			То есть, при запуски test, классы которые называются NameClass.TestCase, NameClass.Test, Test.NameClass, не будут выполнятся. 
+			Пишется в  </configuration>.
+
+Пример:
+      <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.22.1</version>
+                 <configuration>
+                     <skip>true</skip> <---Теперь все классы по тестированию, которые соответствуют </includes> будут пропущены
+                  </configuration>
+      </plugin>
+
+
+
+
+
+==========================================================================================================================================================================
+<includes></includes> 	 // позволяет вызвать те классы которые тестируют наш функционал. По умолчанию мы можем вызвать те классы  которые пишутся **.Test, **.TestCase, Test.**.
+			Пример: У нас есть три класс AppTes, AppTest, AppTestCase, исходя из <includes> будут вызваны только два последних 
+			НО мы можем <includes> позволяет нам самим задать 
+
+Для запуска теста через терминал: mvn surefire:test
+

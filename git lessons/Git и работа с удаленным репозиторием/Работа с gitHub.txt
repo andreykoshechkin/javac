@@ -1,0 +1,25 @@
+Как отправить(push) файлы в удаленный репозиторий: 
+git remote add origin адрессУдаленногоРепозитория		# Синхронизирует локальный и удаленный репозиторий
+git push -u origin master					# Отправить файлы на удаленный репозиторий на ветку master(ветка может отличаться)
+ 
+
+Как получить фалы с удаленного репозитория: 
+git remote add origin https://github.com/Koshechkin-Andrey/first-repository.git  # Синхронизирует локальный и удаленный репозиторий
+git pull origin master								 # Получили файлы с удаленного репозитория в локальный
+
+git remote -v		  <--- Покажет те адреса удаленного репозитория который синхронизированы с нашим локальным репозиторием.
+git remote remove origin  <--- Удалит привязанный ssh ключи к репозиторию
+
+
+======================================
+Если у нас возникала ошибка:
+error: failed to push some refs to 'github.com:Koshechkin-Andrey/testrepository.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+Дело в том, что кто-то изменил ветку master у удаленного репозитория и для того чтобы мы могли запушить в удаленный репозиторий наши изменения, нам нужно актуализировать данные
+делается это с помощью команды git pull origin master
+

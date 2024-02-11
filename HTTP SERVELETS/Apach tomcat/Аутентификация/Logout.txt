@@ -1,0 +1,24 @@
+@WebServlet("/logout")
+public class LogoutServlets extends HttpServlet {
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getSession().invalidate();          //Берем сессию и методом invalidate() удаляем ее
+        resp.sendRedirect("/login");         //Когда нажмем logout то попадем в на страцицу login
+    }
+}
+
+=======================================================================================================================================
+2: Создаем Header
+<div>
+<c:if test="${not empty sessionScope.user}">
+    <form action="${pageContext.request.contextPath}/logout" method="post">
+
+        <button type="submit"> Выйти</button>
+    </form>
+</c:if>
+</div>
+
+=======================================================================================================================================
+3: Нам нужно отобразить logout из header на страницу company для этого в jstl company Используем include для отображение 
+

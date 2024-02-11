@@ -1,0 +1,39 @@
+Пример использование метода forward:
+forward позволяет устанавливать загаловки, атрибуты
+	@WebServlet("/redirect")
+	public class Redirect extends HttpServlet {
+   	 @Override
+   	 protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        req.getRequestDispatcher("/company").forward(req, resp);    //Перенаправление запроса через forward, но в отличие от других методов, то что будет написанно после forward не будет проинициализированно
+        PrintWriter writer = resp.getWriter();	  <----------Это не будет проинициализированно
+        writer.write("Hello");
+
+    }
+}
+======================================
+Пример использование метода include: 	
+include проинициализирует то что будет после него
+
+
+@WebServlet("/redirect")
+public class Redirect extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/company").include(req, resp);
+        PrintWriter writer = resp.getWriter();		<--- Проинициализируется и выведет текст Hello
+        writer.write("Hello");
+    }
+}
+
+======================================
+sendRedirect   - перенаправит запрос на заданый url. Возвразает 302 статус(перенаправление запроса)
+
+@WebServlet("/redirect")
+public class Redirect extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+     resp.sendRedirect("/company");
+    }
+}
+

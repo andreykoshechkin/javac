@@ -1,0 +1,62 @@
+#root.event или event для ссылок на ApplicationEvent.
+#root.args или args для ссылок на массив аргументов метода.
+Доступ к аргументам метода можно получить по индексу. Например, доступ к первому аргументу можно получить через #root.args[0], args[0], #a0 или #p0.
+==================================================================================================================================
+public class CustomEvent extends ApplicationEvent {
+
+    private final OperationEntity operation;	<--- 1ый параметр
+    private final LocalDate date;		<--- 2ой Параметр
+
+    public CustomEvent(Object source, OperationEntity operation, LocalDate date) {
+        super(source);
+        this.operation = operation;
+        this.date = date;
+    }
+
+    public OperationEntity getOperation() {
+        return operation;
+    }
+
+    public enum OperationEntity {
+        CREATE, DELETE, UPDATE, FIND
+    }
+}
+
+
+==================================================================================================================================
+@Component
+public class CustomListener {
+
+    //root.args[0] - Обратимся к первому параметру, в нашем случае это customEvent.operation
+ 
+    @EventListener(condition = "#root.args[0].operation.name()=='CREATE'")  // определяет, в каких случаях соответствующий listener должен быть вызван.
+    public void acceptEntity(CustomEvent customEvent, LocalDate date){
+        System.out.println("Object: " + customEvent.getOperation() + " " + customEvent.getTimestamp());
+
+    }
+}
+
+==================================================================================================================================
+@Service
+public class BaseService {
+
+    private final BaseRepository baseRepository;
+    private final ApplicationEventPublisher publisherAware;
+
+    @Autowired
+    public BaseService(BaseRepository baseRepository, ApplicationEventPublisher publisherAware) {
+        this.baseRepository = baseRepository;
+        this.publisherAware = publisherAware;
+    }
+
+
+    public Optional<UserDto> findById(Long id) {
+        return baseRepository.findById(id)
+                .map(entity -> {
+                    //Вызывается mapper
+                    //А тут мы должны перехватить event(какой-то действие) и добавить его в слушатель
+                    publisherAware.publishEvent(new CustomEvent(entity, CustomEvent.OperationEntity.CREATE));
+                    return new UserDto(entity.getId());
+                });
+    }
+}

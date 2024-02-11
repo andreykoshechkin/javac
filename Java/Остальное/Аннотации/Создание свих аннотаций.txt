@@ -1,0 +1,9 @@
+@Target({
+        ElementType.TYPE,		<--Может ставить над классом
+        ElementType.FIELD		<--Может ставить над полем
+})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MinAge {
+
+    int minAge () default 18;		<--Утверждаем, что возраст не может быть меньше 18
+}

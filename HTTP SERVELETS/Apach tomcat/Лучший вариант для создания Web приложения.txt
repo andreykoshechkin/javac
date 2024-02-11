@@ -1,0 +1,6 @@
+
+1:  В intellij Idead нажимаем file -> Project Structure -> Modules -> нажиамем Плюсик и выбираем Web -> create artifact
+2:  Переходим в Artifacats -> жмем плюсик и выбираем web Application arcive. Для удобства меняем имя (в дереве проектов должны появится папка WEB) <----так мы создаем war 
+3:  Внутри папки WEB создаем файл index с расширением html. в этом файле в теле пишем hello world
+4: жмем run -> edit configuratins -> жем плюсик и выбираем apach tomcat (если вкладка application server пустая то нам нужно указать вручную прямой путь где лежит apachtomcat ) - > жмем fix и указываем нужный артифакт
+  application contex название которое будет идти после localhost:8080 и если мы не хотим то просто ставим /

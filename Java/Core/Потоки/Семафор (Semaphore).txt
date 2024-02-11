@@ -1,0 +1,59 @@
+Семафор (Semaphore) - это класс синхронизатор, который  ограничивает доступ к ресурсу большому количеству потоков одновременно. Делить ресурс между всеми потоками 
+Semaphore semaphore = new Semaphore(3); - в аргумента мы указываем сколько потоков могут использовать ресурс. Это некое разрешение на использование потоков
+
+release(); - метод который отпускает один поток. Мы можем взять ресурс и вернуть его обратно (всегда ИСПОЛЬЗУЕМ В FINNALE блоке)
+semaphore.acquire(); - используется когда мы начинаем проводить операции с ресурсом. Мы можем взять ресурс но не возвращаем его обратно
+semaphore.availablePermits() - возврощает количество потоков(разрешений который свободны).
+
+
+
+public class Magazine {
+
+    public static void main(String[] args) {
+        Semaphore semaphore = new Semaphore(2);
+
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        executorService.submit(new Race("BMW", semaphore));
+        executorService.submit(new Race("Lada", semaphore));
+        executorService.submit(new Race("Mercedes", semaphore));
+        executorService.submit(new Race("Lifan", semaphore));
+        executorService.submit(new Race("Nissan", semaphore));
+
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class Race extends Thread {
+
+    String name;
+    Semaphore semaphore;
+
+    public Race(String name, Semaphore semaphore) {
+        this.name = name;
+        this.semaphore = semaphore;
+
+    }
+
+    @Override
+    public void run() {
+        System.out.println("Участники готовы к гонке " + name);
+        try {
+            Thread.sleep(2000);
+            semaphore.acquire();
+            System.out.println(Thread.currentThread().getName() + " Участнки " + name + " начал гонку");
+            Thread.sleep(2000);
+            System.out.println("Участник " + name + " завершил гонку");
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        semaphore.release();
+
+
+    }
+}

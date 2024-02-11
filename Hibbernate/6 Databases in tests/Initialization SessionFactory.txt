@@ -1,0 +1,39 @@
+1. SessionFactory инициализируются один раз для всех тестов, так как они представляют собой ресурсоемкий инициализируемый компонент. 
+   Вы можете использовать аннотацию @BeforeAll для создания SessionFactory до запуска всех тестов в классе. 
+
+2. Session, с другой стороны, должны быть созданы и закрыты для каждого теста или группы тестов, чтобы избежать мешанины данных между тестами. 
+   Вы можете использовать аннотацию @BeforeEach для создания новой Session перед каждым тестом. 
+
+3. Вам также следует закрыть Session после завершения каждого теста. Вы можете использовать аннотацию @AfterEach для закрытия Session.
+   
+Итог: Таким образом, SessionFactory инициализируется один раз перед всеми тестами, 
+      а Session создается перед каждым тестом и закрывается после него, 
+      чтобы обеспечить изоляцию данных между тестами.
+
+Пример инициализации:
+ @BeforeAll
+    static void setUp() {
+        // Инициализация SessionFactory
+        sessionFactory = TestContainerRunner.runContainer();
+    }
+
+    @BeforeEach
+    void openSession() {
+        // Создание новой Session для каждого теста
+        session = sessionFactory.openSession();
+        // Начать транзакцию, если необходимо
+        session.beginTransaction();
+    }
+
+    @AfterAll
+    static void closeSessionFactory() {
+        //Закрытие sessionFactory
+        sessionFactory.close();
+    }
+
+    @AfterEach
+    void closeSession() {
+        // Закрытие Session после каждого теста
+        session.getTransaction().rollback(); // откат транзакции
+        session.close();
+    }

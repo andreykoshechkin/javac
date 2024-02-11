@@ -1,0 +1,8 @@
+      Map<String, Integer> stringMap = new HashMap<>();
+        stringMap.put("string1", 1);
+        stringMap.put("strin2", 2);
+        stringMap.put("string3", 3);
+        stringMap.put("string4", 5);
+        stringMap.put("strin5", 5);
+        long result = stringMap.entrySet().stream().filter(key -> key.getKey().length() < 7).mapToInt(value -> value.getValue()).sum();
+        System.out.println(result);

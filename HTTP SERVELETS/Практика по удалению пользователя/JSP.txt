@@ -1,0 +1,36 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<html>
+<head>
+    <title>Delete</title>
+</head>
+<body>
+<c:if test="${not empty param}">
+    <form action="${pageContext.request.contextPath}/delete" method="post">
+        <div>User is delete </div>
+        <%
+            response.sendRedirect("/findAll");
+        %>
+    </form>
+</c:if>
+</body>
+</html>
+
+
+Ticket.jsp
+
+    <c:forEach var="ticket" items="${requestScope.ticket}">
+        <tbody>
+        <tr class="contentView">
+            <td>${ticket.id}</td>
+            <td>${ticket.flightId}</td>
+            <td>${ticket.seatNo}</td>
+            <td>${ticket.cost}</td>
+            <td ><a href="${pageContext.request.contextPath}/delete?id=${ticket.id}">
+                <button class="buttonDelete" type="submit">delete</button>
+            </a></td>
+
+        </tr>
+        </tbody>
+
+    </c:forEach>

@@ -1,0 +1,53 @@
+Exception in thread main java.lang.StackOverflowError  <--- ислючение, которое мы получим, из-за зацикливания, 
+зацикливание происходит из-за того, что две сущности, ссылаются друг на друга(User and Company) + в сущности, которая реализует @OneToMany user's хранятся в Set.
+
+При маппинге сущностей, когда между сущностями есть by directinal связь, у нас может быть зацикливание + stackoverflow exception. Чтобы это избежать нужно в сущностях поставить:
+@EqualsAndHashCode(of = "")	<-- в параметрах, лучше использовать уникальное поле
+@ToString(exclude = ""company") <-- в параметрах пишем маппинг(byDirectional)
+
+Пример:
+Сущность users
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "username")
+@ToString(exclude = "company")
+@Builder
+@Entity
+@Table(name = "users")
+@TypeDef(name = "myJsnob", typeClass = JsonBinaryType.class)
+public class Users {
+
+    @Id
+    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+}
+Сущность company
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "name")
+@ToString(exclude = "usersList")
+@Builder
+@Entity
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+
+    @OneToMany(mappedBy = "company")
+    private List<Users> usersList = new ArrayList<>();
+}

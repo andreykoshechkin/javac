@@ -1,0 +1,28 @@
+public void producer() throws InterruptedException {
+        int value = 0;
+        synchronized (lock1) {
+            while (true) {
+                if (queue.size() == LIMIT) {
+                    lock1.wait();
+
+                } else queue.offer(value++);
+                lock1.notify();
+            }
+        }
+
+    }
+
+    public void consumer() throws InterruptedException {
+        while (true) {
+            synchronized (lock1) {
+                if (queue.size() == 0) {
+                    lock1.wait();
+                }
+                int value = queue.poll();
+                System.out.println(value + " queue size:" + queue.size());
+                lock1.notify();
+                Thread.sleep(1000);
+            }
+        }
+
+    }

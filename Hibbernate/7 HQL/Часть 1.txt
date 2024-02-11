@@ -1,0 +1,17 @@
+    @Test
+    void checkHQL() {
+        @Cleanup SessionFactory sessionFactory = ConfigurationBuilder.getBuilderSession();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.getTransaction();
+
+        String nameGame = "Dota 2";
+        String nameCompany = "Valve";
+
+        List<Game> list = session.createQuery("select g from Game  g " +
+                        "join g.company c " +
+                        "where g.name = :gameName and c.name = :companyName", Game.class)
+                .setParameter("gameName", nameGame)
+                .setParameter("companyName", nameCompany).list();
+        list.forEach(System.out::println);
+
+    }

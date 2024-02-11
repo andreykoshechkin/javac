@@ -1,0 +1,14 @@
+lead() 			// Обращение к следующему элементу
+lag()			// Предыдущий элемент
+COALESCE(213,2)		// Заменяет null значение, на число которое мы указали после запятой.
+
+
+SELECT
+    t1.*,
+    COALESCE(lead(sum_cost) OVER (ORDER BY t1.sum_cost),0)
+
+FROM (
+SELECT
+    t.flight_id,
+    sum(t.cost1) sum_cost
+FROM ticket t GROUP BY t.flight_id  ORDER BY 2 DESC) t1;

@@ -1,0 +1,10 @@
+AtomiInteger 				//Класс, который дает возможность работать с целыми числами используя атомарные операции. синхронизован. В параметры нужно передать число 
+
+Методы:					//incrementAndGet() - увеличивает переменную
+					//AddAndGet(n) - увеличивает переменную в n количество раз
+					//decrementAndGet() - уменьшает переменную
+  
+
+        AtomicInteger atomicInteger = new AtomicInteger(1);
+        atomicInteger.incrementAndGet();
+        System.out.println(atomicInteger.addAndGet(2));

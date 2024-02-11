@@ -1,0 +1,139 @@
+1: Создать jspl страницу ну и заполнить ее. В action должен быть указана метод post
+2: В dao создать метод, который будет возвращаеть Одну сущность
+3: Создать mapper. Так как базы данных работаю с сущностью, а сервер с DTO, то нам нужно сделать из сущности DTO
+4: На уровне сервиса. создать метод, который возвращал одного пользователя (у нас в бд emil уникальный и только один пользователь может иметь такой email), В качестве параметров использовать String email, String pass
+5: На уровне сервелета переопределить два метода doGet(для перенаправления на jspl страницу) и doPost (для проверки, есть ли такой пользователь)
+
+==================================================================================================================================================================
+1: Создать jspl страницу ну и заполнить ее. В action должен быть указана метод post
+
+<form action="${pageContext.request.contextPath}/login" method="post">
+ <label for="emailID"> Логин:
+        <input type="text" name="email" id="emailID" value="${param.error}" required>
+    </label><br>
+ <label for="passwordID"> Пароль:
+        <input type="text" name="password" id="passwordID" required>
+    </label><br>
+    <button type="submit"> Войти</button>
+    <br>
+ <a href="${pageContext.request.contextPath}/registration">
+        <button type="button"> Регистрация</button>
+    </a>
+    <br>
+   <c:if test="${param.error!=null}">
+        <div style="color: darkred">
+            <span>email or password is not correct</span>
+  </div>
+    </c:if>
+</form>
+==================================================================================================================================================================
+2: В dao создать метод, который будет возвращаеть Одну сущность
+    @SneakyThrows
+    public Optional<UsersEntity> findUserByEmailOrPassword(String email, String password) {
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(SEARCH_EMPLOYEE_BY_EMAIL_PASSWORD)) {
+            preparedStatement.setObject(1, email);
+            preparedStatement.setObject(2, password);
+
+            UsersEntity user = null;
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                user = getBuild(resultSet);
+            }
+
+
+            return Optional.ofNullable(user);
+        }
+    }
+==================================================================================================================================================================
+3: Создать mapper. Так как базы данных работаю с сущностью, а сервер с DTO, то нам нужно сделать из сущности DTO
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class UserMapper implements Mapper<UsersEntity, User>{
+
+    @Getter
+    private static final UserMapper instance = new UserMapper();
+
+    @Override
+    public User transfer(UsersEntity obj) {
+        return User.builder()
+                .id(obj.getId())
+                .firstName(obj.getFirstName())
+                .lastName(obj.getLastName())
+                .email(obj.getEmail())
+                .birthday(obj.getBirthday())
+                .gender(obj.getGender())
+                .role(obj.getRole())
+                .image(obj.getImage())
+                .build();
+    }
+}
+==================================================================================================================================================================
+4: На уровне сервиса. создать метод, который возвращал одного пользователя (у нас в бд emil уникальный и только один пользователь может иметь такой email)
+    public Optional<User> login(String email, String password) {
+        return createUsersDao.findUserByEmailOrPassword(email, password).map(userMapper::transfer);
+
+    }
+
+==================================================================================================================================================================
+5: На уровне сервета переопределить два метода doGet(для перенаправления на jspl страницу) и doPost (для проверки, есть ли такой пользователь)
+
+@WebServlet("/login")
+public class LoginServlets extends HttpServlet {
+    public static final UserService user = UserService.getUserService();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher(HelperJSPL.getPath("login")).forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        user.login(req.getParameter("email"), req.getParameter("password"))
+                .ifPresentOrElse(user->
+                    onLoginSuccess(user, req, resp),	
+                    ()-> onLoginFail(req,resp)
+                );
+    }
+
+    @SneakyThrows
+    private void onLoginFail(HttpServletRequest req, HttpServletResponse resp) {
+        resp.sendRedirect("/login?error=email" + req.getParameter("email"));
+    }
+
+    @SneakyThrows
+    private void onLoginSuccess(User user, HttpServletRequest req, HttpServletResponse resp ){
+        req.getSession().setAttribute("user", user);
+        resp.sendRedirect("/company");
+    }
+}
+
+
+
+
+
+
+в случает если email или password не верен то выдаст ошибку
+<div style="color: red">
+        <c:if test="${param.error != null}">
+            <span>Email or password is not corrected</span>
+        </c:if>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

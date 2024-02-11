@@ -1,0 +1,29 @@
+Вариант того, как достать значение из application.properties через bean(НЕ АКТУАЛЬНО) 
+   <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="locations" value="classpath:application.properties"/>
+
+    </bean>
+
+
+    <bean id="connectionPool" class="org.example.spring.database.connection.ConnectionPool"
+          init-method="prepare"
+          destroy-method="destroy">
+
+        <constructor-arg name="username" value="${db.username}"/>
+        <constructor-arg name="password" value="${db.password}"/>
+        <constructor-arg>
+            <list>
+                <value>12.3</value>
+                <value>100.31</value>
+                <value>44.98</value>
+            </list>
+        </constructor-arg>
+
+        <constructor-arg>
+            <map>
+                <entry key="1" value="driver1"/>
+                <entry key="2" value="driver2"/>
+                <entry key="3" value="driver3"/>
+            </map>
+        </constructor-arg>
+    </bean>

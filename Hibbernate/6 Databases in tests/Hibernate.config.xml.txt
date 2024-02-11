@@ -1,0 +1,15 @@
+testconteiners представляет нам url,username,password динамически, поэтому мы удалем url,username,password 
+
+Так должен выглядеть hibernate.config.xml 
+
+  <session-factory>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
+        
+        <mapping class="org.example.entity.Company"/>
+        <mapping class="org.example.entity.Game"/>
+        <mapping class="org.example.entity.Profile"/>
+    </session-factory>

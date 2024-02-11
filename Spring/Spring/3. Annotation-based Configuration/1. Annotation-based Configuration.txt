@@ -1,0 +1,23 @@
+==============================Зависимости==============================
+<dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.1.1</version>
+</dependency>
+======================================================================= 
+
+1. Annotation-based Configuration - позволяет задать Bean Difenition с помощью аннотаций. 
+   Пример: В жизненном цикле бина, есть этапы когда инициализируется callback(init) и закрываеться callback(destroy) и ранее мне приходилось в конфигурационном файле явно
+           устанавливать init-method и destroy-method. Теперь же мы можем воспользоваться соответствующеми аннотациями. Для init @PostConstruct. Для Destoy  @PreDestroy
+  
+
+С помощью бина: <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"></bean>
+С помощью  <context:annotation-config/>
+
+========================================================================================================================================================================
+<context:annotation-config/> Добавляет в наш xml 5 бинов:
+1. CommonAnnotationBeanPostProcessor 		// обрабатывает аннотаций.  @PostConstruct, @PreDestroy, @Resource      <---Является BeanPostProccesor
+2. AutoiredAnnotationBeanPostProcessor		// обрабатывает аннотаций.  @Autowired, @Value				<---Является BeanPostProccesor
+3. EventListenerMethodProcessor			// обрабатывает аннотаций.  @EventListener 				<---Является BeanFactoryPostProccesor
+4. ConfigurationClassPostProcessor		// обрабатывает аннотаций.  @Configuration 				<---Является BeanFactoryPostProccesor
+5. PersistenceAnnotationBeanPostProsessor	// обрабатывает аннотаций.  @PersistentContext, @PersistentUnit		<---Является BeanPostProccesor

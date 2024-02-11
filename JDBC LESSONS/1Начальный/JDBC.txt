@@ -1,0 +1,43 @@
+Java.sql* - пакет где лежит все, что связанно с sql(Класса, Интерфейсы).
+JDBC Driver manager(Класс) - Определяет с какой из баз данных мы будем работать. 
+
+
+1: Нужно создать DriverManager(). Drivermanager возвращает объект типа Connection, а в параметрах нужно передать url,passord,username.
+2: Так как в параметрах DriverManager требует указать url,passord,username то мы создаем три переменные типа String 
+	url - адресс базы данных.
+	username - тот user который был указа при создании базы данных.
+	password - пароль, который был указан при создании базы данных.
+	Пример:
+	String url = "jdbc:postgresql://localhost:5432/flight_repository";
+        String username = "postgres";
+        String password = "postgres";
+
+        Connection connection = DriverManager.getConnection(url, username, password);
+
+Примечание:
+       	  Для удобства, лучше создать отдельный класс, который будет хранить url, username, password, а так же метод в котором будет описан наш Connection
+	  private static final String URL = "jdbc:postgresql://localhost:5432/flight_repository";
+  	  private static final String USERNAME = "postgres";
+ 	  private static final String PASSWORD = "postgres";
+	  public ConnectionManager() {
+  		  }
+
+	   static {
+        loadDriver();
+   	 }
+
+  	  private static void loadDriver(){
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+      	  }
+   	 }
+
+
+	   public static Connection getCon () throws SQLException {
+        return DriverManager.getConnection(URL,USERNAME,PASSWORD);
+   	 }
+	}
+
+	Для старых верисий нужно явно указывать загрузку драйверов базыДанных   Class.forName("org.postgresql.Driver");

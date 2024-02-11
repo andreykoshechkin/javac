@@ -1,0 +1,41 @@
+public class MyList<T> implements Iterable<T>{          //Имплементим интерфейс Iterable
+    private T[] massive;
+    private int size;
+
+    public MyList(int initialSize){                     //Конструктор, в котором мы проинициализируем длину нашей коллекции
+        this.massive = (T[])new Object[initialSize];    //
+    }
+
+    public void add (T element){                        //Метод add, в параметры принимает элемент типа T
+        massive[size++]=element;                        //присваиваем переменнрй элемент и увеличиваем размер
+    }
+
+    public T get (int index){                           //Метод get, в параметры принимает index типа int
+        return massive[index];                          //Возвращаем элемент по индексы
+    }
+
+    public int getSize() {                              //Getter для Получения размера
+        return size;
+    }
+
+
+    @Override
+    public Iterator<T> iterator() {                        //Вызываем метод Iterator, который должен вернуть новый итератор
+        return new ListIterator();                         //Возвращаем класс, который имплементит iterator
+    }
+
+    private class ListIterator implements Iterator <T>{     //Создаем класс в котором будет описан iterator
+
+        private int currentIndex;
+        @Override
+        public boolean hasNext() {
+            return currentIndex < size;
+        }
+
+        @Override
+        public T next() {
+            return massive[currentIndex++];
+        }
+    }
+
+}

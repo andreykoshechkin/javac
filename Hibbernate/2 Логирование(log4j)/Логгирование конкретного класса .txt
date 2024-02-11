@@ -1,0 +1,24 @@
+Если мы хотим, чтобы логги конкретного класса лежали не в общем файле с логами а в отдельном, то нам нужно
+1. Создать в log4j.xml еще один appender
+2. Указать logger
+
+<appender name="loggerForTests" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="tests-logger.log"/>
+        <param name="append" value="true"/>
+        <param name="maxFileSize" value="100KB"/>
+        <param name="maxBackupIndex" value="10"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="conversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss,SSS}] %p [%c: %L] %m %n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="ALL"/>
+        </filter>
+    </appender>
+
+    <logger name="ПолныйПутьККлассу">
+        <level value="DEBUG"/>
+        <appender-ref ref="loggerForTests"/>
+    </logger>
+

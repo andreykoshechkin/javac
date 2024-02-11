@@ -1,0 +1,12 @@
+       
+/**
+ * 4. Создать объект LocalDate, представляющий собой сегодняшнюю
+ * дату. Создать объект LocalDate, представляющий собой дату
+ * 07.07.2018. Используя созданные объекты, найти количество дней между
+ * этими двумя датами.
+ */
+
+LocalDate now = LocalDate.now();		<-- текущая дата
+LocalDate prevDate = LocalDate.of(2020,8,10);   <-- пердыдущая дата
+long between = ChronoUnit.DAYS.between(prevDate, now); <-- количество дней от пердыдущей по текущей дате
+System.out.println(between);

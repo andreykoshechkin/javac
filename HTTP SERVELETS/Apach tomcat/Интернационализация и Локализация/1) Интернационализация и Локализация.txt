@@ -1,0 +1,19 @@
+Интернационализация: Общемировое использваоние
+Локализация: Региональное использваоние
+Locale locale = new Locale("ru", "RU");  //ru - язык  RU - страна
+ ResourceBundle translation = ResourceBundle.getBundle("translation", locale);//нужен для вытягивания переводов из properties file. В параметрах передаем название properties
+    System.out.println(translation.getString("page.login.password"));
+
+==========================================================================================================================================================
+Реализация:
+1) В ресурсной папке нужно создать пропертиес файл. Это будет базовый пропертиес файл с языком. Далее, нужно создать еще один пропертиес с точно таким же названием 
+как у базового но с приставкой язык_Страна.
+
+Пример:  translation.properties и translation_ru_RU.properties
+translation.properties тут будет английские словоа
+translation_ru_RU.properties тут будет перевод английских слов из translation.properties
+
+
+Locale locale = new Locale("en", "US");
+ResourceBundle translation = ResourceBundle.getBundle("translation", locale); парм1 - Передаем имя пропертиес файла, парам2 - local в которой задаем язык и страну 
+System.out.println(translation.getString("page.login.password"));

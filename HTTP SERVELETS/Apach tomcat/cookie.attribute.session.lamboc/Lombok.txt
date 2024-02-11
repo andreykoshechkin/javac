@@ -1,0 +1,63 @@
+Lombok - библиотека, которая позволяет убать весь рутиный код. Под рутинным кодом имеется ввиду getter,setter,constructor, hashcode&equals, toString метод.
+Вообщем, аннотации которые есть у Lombok заменит то, что мы привыкли писать  в классе. Lombok регенирирует код до компиляции
+
+Установка Lombok:
+1) Скачиваем Lombok https://www.projectlombok.org/download
+2) Копируем Lombok.jar в lib папку нашего проекта.   cp .\lombok.jar C:\Users\andre\IdeaProjects\CrudProjectsExample\lib
+3)Заходим в setting -> plugins и ищем lombok (или заходим в installed  проверяем есть ли lombok тут "у lombok имеет значек перца")
+
+=================================================================================================================================================================
+Аннотации:
+@Data			//Одна аннотация, которая создаст все нижеперечисленное
+@Value			//Такая же как и @Data но генерирует еще больше рутиного кода(к примеру, генерирует модификаторы доступа) ДЕЛАЕТ КЛАСС НЕ ИЗМЕНЯЕМЫМ
+@Getter			//Создаем Getter
+@Setter			//Создает Setter
+@ToString			//Создаст переопределит метод toString
+@EqualsAndHashCode	//Создаст переопределит методы hashcode&equals
+@AllArgsConstructor	//Создает конструктор с параметрами
+@NoArgsConstructor	//Создаст конструктор без параметров
+@Builder 			//Генерирует паттерн проектирование для нашей сущности
+@UtulityClass		//Делает из обычного класса, util class (класс с приватным конструктором)
+@SneakyThrows		//Позволяет обработать исключения
+@Cleanup		//Заменит try/whith. ставиться над методм
+
+
+@Value(staticConstructor = "of")	//статик конструктор, Теперь объекты класса можно создавать через of()
+ 
+
+Мы так же можем посмотреть, какой код сгенерирует та или инная аннотация:
+refactor -> delambok
+=================================================================================================================================================================
+Пример:
+А так теперь выглядет класс CompanyDTO
+@Data
+@Builder
+public class CompanyDTO {
+    private int id;
+    private String name;
+    private Date date;
+
+}
+===========================
+
+Пример:
+В данном коде мы использовали паттерн builder (в классе CompantDTO стоит аннотация @builder)
+  public List<CompanyDTO> findAllMethods() {
+        return companyDao.findAll()
+                .stream()
+                .map(companyEntity -> CompanyDTO.builder().id(companyEntity.getId())
+                        .name(companyEntity.getName()).date(companyEntity.getDate()).build()).collect(Collectors.toList());
+    }
+
+==========================
+
+Пример: Раньше мы обрабатывали исключения в try catch блоке, теперь мы меожем указать @SneakyThrows и java сделает это за нас
+@SneakyThrows
+  public static Connection get() {
+            return DriverManager.getConnection
+                    (PropertiesUtil.getKey(URL),
+                    PropertiesUtil.getKey(USERNAME),
+                    PropertiesUtil.getKey(PASSWORD));
+    }
+
+=================================================================================================================================================================

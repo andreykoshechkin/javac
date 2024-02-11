@@ -1,0 +1,26 @@
+subGraph - помогает нам подтянуть дополнительные сущности:
+
+
+  @Cleanup SessionFactory sessionFactory = HibernateUtil.getBuilder();
+        @Cleanup Session session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        RootGraph<?> entityGraph = session.createEntityGraph(Employee.class);
+        entityGraph.addAttributeNodes("companyId", "employeeChats");
+   
+        SubGraph<EmployeeChat> subGraph = entityGraph.addSubgraph("employeeChats", EmployeeChat.class);	<-- В сущности Employee, перейди в EmployeeChat.class
+        subGraph.addAttributeNodes("chatId"); <--  и подтяни еще и маппинг с названием chatId
+
+        Map<String, Object> graph = Map.of(
+                GraphSemantic.LOAD.getJpaHintName(), entityGraph);
+
+
+        List<Employee> list = session.createQuery("select e FROM  Employee e", Employee.class)
+                .setHint(GraphSemantic.LOAD.getJpaHintName(), entityGraph)
+                .list();
+
+        list.forEach(it -> it.getCompanyId().getName());
+        list.forEach(it -> it.getEmployeeChats().size());
+
+        session.getTransaction().commit();

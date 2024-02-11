@@ -1,0 +1,1 @@
+configuration.configure() - позволяет загрузить настройки из hibernate.xml

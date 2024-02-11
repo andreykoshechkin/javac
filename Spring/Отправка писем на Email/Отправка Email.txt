@@ -1,0 +1,77 @@
+По поводу username и pass:
+
+https://www.baeldung.com/spring-email
+https://stackoverflow.com/questions/72930539/javax-mail-authenticationfailedexception-535-5-7-8-username-and-password-not-ac
+
+=================================================================================================================================================
+Интеграция с электронной почтой на Java может быть достигнута с использованием JavaMail API, который предоставляет средства для отправки,
+получения и управления электронными сообщениями через различные протоколы, такие как SMTP, IMAP и POP3.
+В сочетании с Spring Framework вы можете упростить этот процесс, используя Spring Mail.
+=================================================================================================================================================
+Вот простые шаги по интеграции JavaMail API с Spring Framework:
+=================================================================================================================================================
+Добавьте зависимости:
+
+Добавьте следующую зависимость в ваш файл pom.xml, если вы используете Maven:
+
+xml
+Copy code
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
+================================================================================================================================================= 
+В файле application.properties (или application.yml) укажите параметры вашего почтового сервера, такие как хост, порт, имя пользователя и пароль:
+
+properties
+Copy code
+spring.mail.host=smtp.example.com
+spring.mail.port=587
+spring.mail.username=your_username
+spring.mail.password=your_password
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+=================================================================================================================================================
+
+Создайте сервис для отправки почты:
+
+Создайте Java-класс, который будет использовать Spring Mail для отправки электронных писем. Пример:
+
+java
+Copy code
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+
+@Service
+public class EmailService {
+
+    private final JavaMailSender mailSender;
+
+    @Autowired
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
+    public void sendEmail(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        mailSender.send(message);
+    }
+}
+Используйте сервис для отправки писем:
+
+В своем коде, где вам нужно отправить письмо, внедрите EmailService и вызовите метод sendEmail:
+
+java
+Copy code
+@Autowired
+private EmailService emailService;
+
+// ...
+
+emailService.sendEmail("recipient@example.com", "Subject", "Message text");

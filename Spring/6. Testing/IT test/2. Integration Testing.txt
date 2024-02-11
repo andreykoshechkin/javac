@@ -1,0 +1,29 @@
+Spring Integration test должен соблюдать 3 правила:
+- DI(Spring context beans): для того, чтобы поднимать context и внедрять бины в качестве зависимостей 
+- Context caching: кеширование context, чтобы переиспользовать существующий context
+- Transaction management: 
+
+Напоминание: Жизненный цикл тестов: BeforeAll --> BeaforeEach --> Test --> AfeterEach --> AfterAll 
+
+==============================================================================================================================================================================
+
+TestContext Framework 	- фреймворк для написания integration test, который представляет Spring.
+
+
+SpringExtension		- дает возможноть реализовать TestContext Framework. Все что нам нужно сделать, это добавить SpringExtension в @ExtendWith и этого будет достаточно
+			  чтобы синтегрировать junit5 с TestContext Framework. 
+                 	  Под копотом, SpringExtension создает TestContextManager для каждого тест-класса.
+	
+TestContextManager 	- Содержит два основных поля TestContext и TestExecutionListeners.
+		    	- TestContext: знает про application context, а значит может внердять зависимости + реализовано кеширование
+			- TestExecutionListeners: позволяет внедриться в жизненный цикл тестов, а если быть точнее, то TestContextManager перенаправляет все callback в 
+			  TestExecutionListeners
+
+TestContextManager	- Будет создан для каждого тестового класса
+ 
+ 
+
+UserServiceIT -> SpringExtension -> TestContextManager -> TestContext
+
+
+==============================================================================================================================================================================

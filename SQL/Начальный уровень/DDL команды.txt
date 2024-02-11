@@ -1,0 +1,29 @@
+CREATE DATABASE имяБазыДанных:			// создать базу данных.
+DROP DATABASE имябазы: 				// Удалить базу данных.
+
+
+CREATE SCHEMA имяСхемы: 			// создать схему.
+DROP SCHEMA имяСхемы: 				// Удалить схему.
+
+
+
+CREATE TABLE имяТаблицы():			//Создать таблицу. В фигурных скобках пишем поля
+								   --id INT 
+								   --name VARCHAR(или текст или CHAR)	
+
+Пример:							           --data DATA (или TIME или TIMESTAMP) DATA - только дата, TIME - только время, TIMESTAMP - и дата и время.
+=========================================================
+CREATE DATABASE company_repository;
+CREATE SCHEMA company_storage;
+CREATE TABLE company_table (
+    id INT,
+    name varchar,
+    data TIMESTAMP
+
+);
+
+=========================================================
+
+-- CREATE TABLE (); две черточки это коментарии
+
+SCHEMA - это как пакеты в java, таблиц может быть много и чтобы их как-то разделять у нас и есть схемы

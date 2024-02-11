@@ -1,0 +1,48 @@
+req.getHeaderNames()  - Позволяет получить все header сервелета. Возвращает Enumeration<String> .
+
+==============================================================================================================================
+Пример:
+ @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html");
+
+        Enumeration<String> headerNames = req.getHeaderNames();    <--- получили все header
+        while (headerNames.hasMoreElements()){		<---Прошли циклом и вывели все header
+            System.out.println(headerNames.nextElement());
+        }
+        try (PrintWriter writer = resp.getWriter()) {
+            writer.write("Hello from my first servlet"); 
+	}
+        }
+==============================================================================================================================  
+
+
+ req.getHeader("user-agent") - Позволяет получить  информацию от куда пришел запрос(с какого устройства)
+Пример:
+ @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html");
+
+        String header = req.getHeader("user-agent");
+        System.out.println(header);
+        try (PrintWriter writer = resp.getWriter()) {
+            writer.write("Hello from my first servlet");
+        }
+ }
+==============================================================================================================================    
+
+Зачастую нам нужно будет указывать кодировку и это делается двумя способами 
+
+1: С помощью метода resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+ @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("text/html");
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        String header = req.getHeader("user-agent");
+        System.out.println(header);
+        try (PrintWriter writer = resp.getWriter()) {
+            writer.write("Hello from my first servlet");
+        }
+    }
+
+2:  Или задать chartes в contentType      resp.setContentType("text/html : chartes=UTF-8");

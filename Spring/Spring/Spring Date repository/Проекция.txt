@@ -1,0 +1,21 @@
+Проекция(Projection): Проекция описывает, какие столбцы мы выбираем из своей базы данных и в какой форме Hibernate предоставляет их вам
+
+
+1. Создаем интерфес с нужными геттерами 
+   public interface PersonalInfo2 {
+
+    String getFirstname();
+    String getLastname();
+    String getBirthDate();
+
+    @Value("#{target.firstname +' '+ target.lastname}")	 <-- Проекция также позволяет создавать какие-то методы
+    String getFullName();
+}
+
+target - позволяет обращаться к полям проекции  
+
+
+2. UserRepository:
+@Query(value = "SELECT firstname, lastname, birth_date birthDate FROM Users " +
+                                     "WHERE company_id = :companyId ", nativeQuery = true)
+    List<PersonalInfo2> findAllByCompanyId(Integer companyId);

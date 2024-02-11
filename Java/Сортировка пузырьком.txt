@@ -1,0 +1,14 @@
+    public static int[] countChar(int[] array) {
+
+        for (int i = 0; i < array.length; i++) {
+            for (int j = i + 1; j < array.length; j++) {
+                if(array[i] > array[j]){
+                   int tmp = array[j];//4
+                    array[j] = array[i];
+                    array[i] = tmp;
+                }
+            }
+        }
+        return array;
+
+    }

@@ -1,0 +1,21 @@
+
+Сегмент - каждый элемент массива.
+
+ConcurrentHashMap - Делит все элементы коллекции на сегменты но изменять эти элементы может только один поток. Если мы меняем элемент в сегменте, то этот сегмент будет залочен и 
+доступ к нему будет только у одного потока. При этом считывать элементы могут несколько потоков.
+
+у map нет метода iterator, но у keySet() он есть 	//Iterator<Integer> iterator = map.keySet().iterator(); 
+
+
+  while (iterator.hasNext()){
+              try {
+                  Thread.sleep(100);
+                  Integer x = iterator.next();
+                  System.out.println(x + " : " + map.get(x));
+              } catch (InterruptedException e) {
+                  e.printStackTrace();
+              }
+
+          }
+        };
+ConcurrentHashMap ключ/значение не может быть null

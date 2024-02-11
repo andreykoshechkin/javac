@@ -1,0 +1,7 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 20   # Размер пакета для update, insert, delete
+        default_batch_fetch_size: 50   # Размер пакета для select

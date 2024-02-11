@@ -1,0 +1,22 @@
+"\\d{5}" - найдет только цифру длинною в 5 символов
+
+() разбивает по группам (\\d{4})
+       String cards = "89339991741711310325111; 89339991741711310325111; 89339991741711310325111 ";
+        Pattern pattern = Pattern.compile("(\\d{4})(\\d{4})(\\d{4})(\\d{4})(\\d{2})(\\d{2})(\\d{3})");
+        Matcher myMatcher = pattern.matcher(cards);
+
+        String str = myMatcher.replaceAll("$5/$6 $1 $2 $3 $4 ($7)");
+        System.out.println(str);
+  
+
+
+
+String t = "25555524398 ";
+        Pattern pattern = Pattern.compile("(\\d{3})(\\d{3})(\\d{3})(\\d{2})");
+        Matcher myMatcher = pattern.matcher(t);
+
+        String str = myMatcher.replaceAll("$1.$2.$3.$4");
+        System.out.printlnt
+
+
+в параметрах метода group() можно указывать номер группы и тогда выведется только те элементы, которые в этой группу

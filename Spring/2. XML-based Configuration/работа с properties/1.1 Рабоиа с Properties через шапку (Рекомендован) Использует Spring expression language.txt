@@ -1,0 +1,33 @@
+Spring expression language: более функциональный вариант expression language, который позволяет обращаться к бинам или задавать какую-то логику
+Синтаксис: #{value}
+
+ 
+ <bean id="connectionPool" class="org.example.spring.database.connection.ConnectionPool"
+          init-method="prepare"
+          destroy-method="destroy">
+
+         <constructor-arg name="username" value="#{'${db.username}'}"/>	<-- Теперь username будет иметь то значение, которое указанно в application.properties
+        <constructor-arg name="password" value="#{'${db.password}'}"/>	<-- Теперь password будет иметь то значение, которое указанно в application.properties
+        <constructor-arg>
+            <list>
+                <value>12.3</value>
+                <value>100.31</value>
+                <value>44.98</value>
+            </list>
+        </constructor-arg>
+
+      <constructor-arg>
+            <map>
+                <entry key="1" value="#{driver * 10}"/>
+                <entry key="2" value="#{'${db.url}'}"/>
+                <entry key="3" value="#{'${db.url}'}"/>
+		<entry key="4" value="#{systemProperties['user.name']}"/>	<---Мы можем обращаться и к системной конфигурации
+            </map>
+        </constructor-arg>
+    </bean>
+
+   <bean id="userService" class="org.example.spring.service.UserService">
+        <constructor-arg ref="#{'userRepository'}"/>		<-- Берем бин userRepository только через SEL
+    </bean>
+
+        

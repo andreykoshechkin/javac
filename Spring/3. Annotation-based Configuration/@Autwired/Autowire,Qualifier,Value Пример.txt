@@ -1,0 +1,38 @@
+Если у нас есть несколько бинов с одним и тем же типом, то @Qualifier дает возможность указать id того бина, который мы хотим использовать 
+
+
+============================================================================================================
+Пример: У нас есть в xml два бина с разным id
+
+@Autowired
+@Qualifier(value = "connectionPool") <-- Будет использован бин с id connectionPool
+private final ConnectionPool pool;
+
+@Autowired
+@Qualifier(value = "connectionPool2") <-- Будет использован бин с id connectionPool2
+private final ConnectionPool pool;
+============================================================================================================
+
+@Value 			//Дает возможность использовать значения properties
+public class ConnectionPool {
+
+    private final String username;
+    private final String password;
+    private final Map<Integer, String> properties;
+
+
+    public ConnectionPool(
+            @Value("${db.username}")		
+            String username,
+            @Value("${db.password}")
+            String password,
+            Map<Integer, String> properties) {
+        this.username = username;
+        this.password = password;
+        this.properties = properties;
+    }
+
+}
+
+
+============================================================================================================

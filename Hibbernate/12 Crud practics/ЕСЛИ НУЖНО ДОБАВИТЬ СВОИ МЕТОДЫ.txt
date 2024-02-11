@@ -1,0 +1,13 @@
+public class RepositoryGame extends RepositoryBase<Long, Game> {
+    private EntityManager entityManager;
+    public RepositoryGame(EntityManager entityManager) {
+        super(entityManager, Game.class);
+        this.entityManager = entityManager;
+    }
+
+    public List<Game> findAllByGenre(Genre genre) {
+
+        return entityManager.createQuery("select g FROM Game g where g.genre=:genre", Game.class)
+                .setParameter("genre", genre).getResultList();
+    }
+}

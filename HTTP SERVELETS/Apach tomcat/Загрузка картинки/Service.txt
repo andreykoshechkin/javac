@@ -1,0 +1,20 @@
+@NoArgsConstructor(access = PRIVATE)		<--private конструктор 
+public class ImageService {
+
+public static final String PATH =PropertiesUtil.getKey("db.image.url");;	<--Указываем на переменную propertiesFile
+
+    @Getter
+    private static ImageService imageService = new ImageService();		<-- каждый сервис должен быть singlton
+
+    public void upload(String imagePath, InputStream imageInputStream){	<--Метод, в imagePath мы передадим путь куда сохранять,  imageInputStream сама картинка
+          Path fullPath = Path.of(PATH, imagePath);
+
+   
+        try (imageInputStream){
+            Files.createDirectories(fullPath.getParent());  			 <--Если директорию куда мы сохраняем будет не созадана то getParent() ее создаст
+            Files.write(fullPath, imageInputStream.readAllBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+}
+     //StandardOpenOption.CREATE                 Создаст папку imagePath
+       //StandardOpenOption.TRUNCATE_EXISTING      Если такая папка есть, то перезапишет ее

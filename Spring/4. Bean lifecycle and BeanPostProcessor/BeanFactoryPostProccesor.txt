@@ -1,0 +1,10 @@
+
+BeanFactoryPostProcessors 	//пост-обработчик, который в первую очередь извлекает и обрабатывает только те бины, которые нужны для инициализации других бинов.
+				 Пример: подставляет значения из properties в наш SPEL, EL.
+
+visitBeanDefinition		//Занимается тем, что устанавливает значения в бины
+
+Как спринг узнает 		//Задача спринга узнать, являеться ли атрибут class у Bean Difinition объектом типа BeanFactoryPostProcessors.
+				  Делается это с помощью рефликсии с помощтю метода: 
+				  Под капотом у спринга существует утилитный класс который вызывает метод isAssignableFrom
+				  BeanFactoryPostProcessor.class.isAssignableFrom(clazz)

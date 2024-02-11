@@ -1,0 +1,15 @@
+GROUP BY 	// Позволяет работать с агригируещими функциями, групирует строки
+HAVING		//Позволяет задать условия для тех строк, которые сгрупировались (WHERE - условие для строк до групировки)
+
+SELECT
+    c.name,
+    count(c.id)
+FROM company c JOIN employee e ON c.id = e.company_id GROUP BY c.name
+HAVING  count(c.id) < 2;
+
+
+
+SELECT
+    c.name,
+    count(e.id)
+FROM company c JOIN employee e ON c.id = e.company_id WHERE c.name = 'Google' GROUP BY c.name 

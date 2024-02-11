@@ -1,0 +1,28 @@
+Глобальный обработчик валидации(HandlerExceptionResolver) - что используется в Rest. Чтобы реализовать, нужно поставить аннотацию @ExceptionHandler().
+							    Глобальный обработчик нужен, чтобы обрабатывать ошибки ВО ВСЕХ КОНТРОЛЛЕРАХ.
+ @ExceptionHandler() - Если в параметрах не указать конкретный excpetion, то в таком случае будут обрабатываться все исключения. Если же мы в параметрах укажем
+                       конкретный exception. То наш HandlerExceptionResolver сработает только в том случае, если у нах возникнет этот exception.
+		      
+
+1. Создаем класс: 
+
+@Slf4j
+@ControllerAdvice
+public class HandlerExceptionExample {
+
+    @ExceptionHandler(Exception.class)
+    public String handlerException(Exception exception){
+        log.error("Error message!!!", exception);
+        return "error/error500";
+    }
+}
+
+
+2. в UserController ставим аннотацию @validated
+
+  @PostMapping("/{id}/update")
+    public String update(@PathVariable("id") Long id, @Validated UserCreateEditDto user) {
+        return userService.update(id, user)
+                .map(it -> "redirect:/users/{id}")
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }

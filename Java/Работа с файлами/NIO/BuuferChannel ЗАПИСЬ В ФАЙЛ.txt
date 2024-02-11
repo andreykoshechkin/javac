@@ -1,0 +1,20 @@
+1:  try (RandomAccessFile random = new RandomAccessFile("C:\\Users\\79964\\Desktop\\BufferAndChannel.txt", "rw")) {
+
+            String txt = "Hello my friend";
+            FileChannel channel = random.getChannel();
+            ByteBuffer byteBuffer = ByteBuffer.allocate(txt.getBytes().length); - пробразуем в массив
+            byteBuffer.put(txt.getBytes()); - добавляем в буффер наш текст
+            byteBuffer.flip(); - переворачивам для считывания
+            channel.write(byteBuffer); - записываем из буффера в файл
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+2: 	    String txt = "Hello my friend";
+            FileChannel channel = random.getChannel(); - установили нить между файлом и channel
+
+            ByteBuffer buffer = ByteBuffer.wrap(txt.getBytes()); - записываем в буффер массив байтов
+            channel.write(buffer); - записывам из буфера в канал

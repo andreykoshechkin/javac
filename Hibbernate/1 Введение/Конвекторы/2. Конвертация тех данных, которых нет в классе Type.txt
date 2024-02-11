@@ -1,0 +1,47 @@
+До этого, мы создавали конвектор, но в том примере, мы использваоли те типы данных, который по умолчанию есть в BasicType
+В этом примере, мы будем создавать конвектор на основании такого типа данных, которого нет в BasicType. Но лучше всего поискать библиотеки которые заточены на конвертацию
+не стандартных типо данных
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Когда в в базе данных колонка представляет из себя JSONB - тогда используем JsonBinaryType
+Когда в в базе данных колонка представляет из себя JSON  - тогда используем JsonType
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Предварительно: 
+1. В базе данных, в таблице создаем поле с типом данных JSONB(JsonBinary)
+2. В сущности создаем поле с типом String и отмечаем аннотацией (@Type)
+
+
+1. Подключаем зависимости
+ <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.14.0-rc2</version>
+</dependency>
+        <dependency>
+            <groupId>com.vladmihalcea</groupId>
+            <artifactId>hibernate-types-52</artifactId>
+            <version>2.20.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+
+2. У сущности добавим поле и отметим аннотациией. Так как в SQL у нас  колонка info имеет тип JSONB(JsonBinaryType) то в аннотации нам нужно указать полный путь к этому классу
+В любом месте пишем JsonBinaryType ---> Copy referens
+  @Type(type = "com.vladmihalcea.hibernate.type.json.JsonBinaryType")
+    private String info;
+
+
+3. В методе main добавить    configuration.registerTypeOverride(new JsonBinaryType());
+Должно все выглядеть так:
+
+ Configuration configuration = new Configuration();
+        configuration.addAttributeConverter(BirthdayConverter.class, true); <<< мы можем устанавливать неограниченное число конвертеров и TypeOverride
+        configuration.registerTypeOverride(new JsonBinaryType());
+        configuration.configure();

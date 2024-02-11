@@ -1,0 +1,73 @@
+doGet - возвращает jsp страницу doPost - обрабатываем запрос 
+
+<form action="/registration" method="post"> 			//action -  мы указваем URL сервлета.
+</form>							// methods - так как мы хотим заполнит форму и отправить на сервер, нам нужно использовать post (по умолчанию используется метод get)
+
+ <label for="usernameID"> Name:				//for - ссылаем на id, чтобы устанавливать связь между lable и input (это делать не обязятельно)
+<input type="text" name="username" id="usernameID">		//name - в этом поле мы указываем имя параметра, чтобы в дальнейшем обращаться по заданому имени но уже в сервлете
+</lable>							//id - нужен для javaScript(в параметах просто пишем какой-то текст, который, в дальнейшнем будет id)
+							//Примечание: все input передаются как параметры
+
+<label for="birthdayId"> Birthday:
+        <input type="date" name="birthday" id="birthdayId">		//на форме теперь будет календарь, где пользвователь может выбрать дату рожденья
+   </label>
+
+<button type="submit"> submit </button>			//кнопка которая отправит
+
+
+<select name="role" id="roleID">      				  //select делает выпадающий список
+        <option value="USER">USER:</option>      			  //option тут пишем элементы выпадающего списка
+        <option value="ADMIN">ADMIN:</option>
+</select>
+
+
+<input type="radio" name="gender" value="MALE"> M		//radio - позволяет пользователю выбрать одно из пердлагаемых значений
+
+========================================================================================
+========================================================================================
+Полность код JSTL страницы:
+
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+<form action="/registration" method="post">
+
+    <label for="usernameID"> Name:
+        <input type="text" name="Username" id="usernameID">
+    </label> <br>
+
+
+    <label for="birthdayId"> Birthday:
+        <input type="date" name="birthday" id="birthdayId">
+    </label> <br>
+
+
+    <label for="emailID"> Email:
+        <input type="text" name="Email" id="emailID">
+    </label> <br>
+
+
+    <label for="passwordID"> Password:
+        <input type="password" name="Password" id="passwordID">
+    </label> <br>
+
+    <select name="role" id="roleID">
+        <c:forEach var="role" items="${requestScope.roles}">
+
+            <option value=${role}> ${role}:</option>
+        </c:forEach>
+    </select> <br>
+
+    <c:forEach var="gen" items="${requestScope.genders}">
+        <input type="radio" name="gen" value=${gen}>${gen}
+
+    </c:forEach>
+
+
+    <button type="submit"> submit</button>
+
+</form>
+</body>
+</html>

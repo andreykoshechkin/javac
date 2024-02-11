@@ -1,0 +1,37 @@
+	 private final String UPDATE_COMPANY_AND_ROLE = """				<--- Обычный запрос
+            update users set company_id = ?, role = ? where id = ?
+            """; 
+
+
+    private final String UPDATE_COMPANY_ID_AND_ROLE = """				 <--- Наименованный запрос
+            update users set company_id =:comId, role =:role where id =:id
+            """;
+
+  @Override
+    public void updateCompanyAndRole(List<UserEntity> userEntities) {		<--- 1 Вариант
+        List<Object[]> args = userEntities.stream()
+                .map(user -> new Object[]{user.getCompanyId().getId(), user.getRole().name(), user.getId()})
+                .toList();
+        jdbcTemplate.batchUpdate(UPDATE_COMPANY_AND_ROLE, args);
+    }
+
+ @Override
+    public void updateCompanyAndRoleByUsers(List<UserEntity> userEntities) {	<--- 2 Вариант с использованием наименованных параметров
+        MapSqlParameterSource[] args = userEntities.stream()
+                .map(user -> Map.of(
+                        "comId", user.getCompanyId().getId(),
+                        "role", user.getRole().name(),
+                        "id", user.getId()))
+                .map(MapSqlParameterSource::new)
+                .toArray(MapSqlParameterSource[]::new);
+
+        namedParameterJdbcTemplate.batchUpdate(UPDATE_COMPANY_ID_AND_ROLE, args);
+    }
+
+  @Test
+    void checkJDBCTemplate() {
+        List<UserReadDto> users = userRepository.findUsersByCompanyIdAndRole(1, Role.ADMIN);
+        Assertions.assertThat(users).isNotEmpty();
+        Assertions.assertThat(users.get(0).getFirstname()).isEqualTo("Ivan");
+        System.out.println();
+    }

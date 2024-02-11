@@ -1,0 +1,9 @@
+Spring date jpa				//Предоставляет обертку вокруг jdbc для работы с базой данных на низком уровне.
+
+JdbcTemplateAutoConfiguration		//Основной класс, который занимаеться конфигурацией jdbc 
+
+Jdbc template 				//Основной класс для работы с jdbc, этот класс реализует интерфейс JdbcOperations в котором содержаться ряд методов для работы с бд.
+			  		  Jdbc template являеться одним из вариантов по работе с dto(Именно с DTO).
+
+NamedParameterJdbcTemplateConfiguration	//Такое же что и Jdbc template, отличие заключается в том, что NamedParameterJdbcTemplateConfiguration использует именнованные запросы 
+

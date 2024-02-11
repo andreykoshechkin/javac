@@ -1,0 +1,43 @@
+**
+ * Задача:  Реализовать трансфер средст с одного аккаунта на другой с использованием многопочетности
+ *
+*/
+public class Account {
+
+    private int id;
+    private int money;
+    private static int generation = 1;
+
+
+    public Account(int money) {
+        this.id = generation++;
+        this.money = money;
+    }
+
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void addMoney(int money) {
+        this.money += money;
+
+    }
+
+    public boolean takeOff(int money) {
+        if (this.money >= money) {
+            this.money -= money;
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", money=" + money +
+                '}';
+    }
+}

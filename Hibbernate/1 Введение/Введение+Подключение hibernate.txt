@@ -1,0 +1,45 @@
+Hibbernate -  это ORM, которая автоматизирует процес преобразования объекто-ориентированной модели в реляционную и наоборот.
+Hibbernate помогает решить следующие проблемы:
+1. Несоответствий двух моделей. Java использует объекто-ориентированную модель, где объекты храняться в памяти и взаимодействую 
+   друг с другом, в свою очередь субд использует реляционную модель, где все хранится на диске. 
+2. Кеширование. Hibernate позволяет использовать кеширование из под коробки.
+3. Управление транзакциями 
+==================================================================================================================================================
+Настройка зависимостей: 
+
+В pom.xml добавить следующие зависимости:
+
+      <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.6.10.Final</version>
+        </dependency>
+
+ <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate</artifactId>
+            <version>3.0</version>
+        </dependency>
+Если при компиляции мы видим ошибку void org.hibernate.annotations.common.reflection.java.Java Reflection Manager.injectClassLoaderDelegat
+то нужно добавить зависимость.
+
+ <dependency>
+     <groupId>org.hibernate</groupId>
+     <artifactId>hibernate-annotations</artifactId>
+     <version>3.5.6-Final</version>
+ </dependency>
+
+ <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+
+ВСЕ ЗАВИСИМОСТИ ВЫШЕ ЕСТЬ В hibernate-core именно в версии 5.6.10
+      <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.6.10.Final</version>
+        </dependency>
+==================================================================================================================================================

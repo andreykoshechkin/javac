@@ -1,0 +1,18 @@
+package org.example;
+
+import org.example.connection.ConnectionExample;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Main {
+    public static void main(String[] args) {
+
+        // ClassPathXmlApplicationContext - это класс, который предоставляет возможность создать контейнер на основе XML.
+        // Является наследником ApplicationContext.
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
+
+        //Вызываем метод getBean(), в параметры метода, передает тот класс, бин которого мы хотим получить
+        ConnectionExample bean = context.getBean(ConnectionExample.class);
+
+        System.out.println(bean);
+    }
+}

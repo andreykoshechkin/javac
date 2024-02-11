@@ -1,0 +1,37 @@
+Spring MVC	//Это шаблон который разбит на 3 модуля: В Spring реализован паттерн Front Controller.
+		  1. VIEW:
+		     HTML/JSP - Для визульного отображения данных клиенту	    
+		  2. Controller:
+		     Dispetcher servlets - Сервлет через который проходят все запросы чтобы в дальнейшем перенаправить эти запросы уже на контроллеры.
+ 		     Controller - 
+		 3. Model:
+		     Service - на этом уровне лежит вся логика приложения
+		     DAO - для взаимодействия с базой данных
+
+Как только мы подключили Spring web - У нас будет создаваться WebApplicationContext
+ 
+
+
+
+
+Spring boot  				//Собирает архив в jar и внутри этого архива будет встроен tomcat(embedded tomcat). 
+					  и этот встроенный tomcat, в отличие от стандартного tomcat, хранит в себе лишь catalina(контейнер сервлетов) и coyote(Http connector).
+					  В тоже время, стандартный Tomcat server содержал в себе еще 
+			 		  jasper(JSP engine - работа с jsp страницами).
+
+					  Если нам нужно явно работать с jasper, то нам нужно его в ручную подключить
+					  <dependency>
+   						<groupId>org.apache.tomcat.embed</groupId>
+  						<artifactId>tomcat-embed-jasper</artifactId>
+  						<version>11.0.0-M4</version>
+			 		 </dependency>
+
+
+WebMvcAutoConfiguration			//Класс, который занимается конфигурацией нашего веб приложения. 
+					  Он включается когда в classpath есть Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class
+	
+WebProperties.class			//Properties по настройки по настройки spring web
+
+ServletWebServerFactoryAutoConfiguration //Настройка серверов, по умолчанию используеться Tomcat. Этот конфиг предоставляет нам возможность настраивать Tomcat
+
+ 

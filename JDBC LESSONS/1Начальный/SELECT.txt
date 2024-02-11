@@ -1,0 +1,14 @@
+executeQuery (sql) 	//Позвоялет получить  выборку из запроса в JDBC. Возвращает ResultSet у которого есть метод next() 
+
+    String sql = """
+                SELECT * FROM game_info 
+                """;
+
+        try (Connection connection = ConnectionManager.getCon();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql)){
+            while (resultSet.next()){
+                System.out.println(resultSet.getString("name"));
+            }
+        }
+ 

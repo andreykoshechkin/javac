@@ -1,0 +1,97 @@
+в этом примере, мы создаем два логга. 1 rootLogger - где будут лежать основные логги, 2 - loggerForTests где храняться логги для тестов
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+    <appender name="rootLogger" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="logger/loggerRoot/hibernate-logger.log"/>
+        <param name="append" value="true"/>
+        <param name="maxFileSize" value="100KB"/>
+        <param name="maxBackupIndex" value="10"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="conversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss,SSS}] %p [%c: %L] %m %n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="ALL"/>
+        </filter>
+    </appender>
+
+
+    <appender name="loggerForTests" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="logger/loggerForTest/tests-logger.log"/>
+        <param name="append" value="true"/>
+        <param name="maxFileSize" value="100KB"/>
+        <param name="maxBackupIndex" value="10"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="conversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss,SSS}] %p [%c: %L] %m %n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="ALL"/>
+        </filter>
+    </appender>
+
+    <logger name="org.example.integration.CoursesIT" additivity="false">		// <logger name="org.example.integration.CoursesIT" additivity="false"> Создаем логгер конкретного класса. additivity="false означает, что логги этого класса не попадут в root логгер	
+        <level value="info"/>
+        <appender-ref ref="loggerForTests"/>
+    </logger>
+
+    <root>
+        <level value="WARN"/>
+        <appender-ref ref="rootLogger"/>
+    </root>
+
+</log4j:configuration>
+
+================================================================================
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+    <appender name="rootLogger" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="logger/loggerRoot/hibernate-logger.log"/>
+        <param name="append" value="true"/>
+        <param name="maxFileSize" value="100KB"/>
+        <param name="maxBackupIndex" value="10"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="conversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss,SSS}] %p [%c: %L] %m %n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="ALL"/>
+        </filter>
+    </appender>
+
+
+    <appender name="loggerForTests" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="logger/loggerForTest/tests-logger.log"/>
+        <param name="append" value="true"/>
+        <param name="maxFileSize" value="100KB"/>
+        <param name="maxBackupIndex" value="10"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="conversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss,SSS}] %p [%c: %L] %m %n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="ALL"/>
+        </filter>
+    </appender>
+
+    <logger name="org.example.integration.CoursesIT" additivity="false">		
+        <level value="info"/>
+        <appender-ref ref="loggerForTests"/>
+    </logger>
+
+    <root>
+        <level value="WARN"/>
+        <appender-ref ref="rootLogger"/>
+    </root>
+
+</log4j:configuration>

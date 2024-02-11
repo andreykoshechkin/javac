@@ -1,0 +1,5 @@
+public class RepositoryGame extends RepositoryBaseDao<Long, Game> {
+    public RepositoryGame(EntityManager entityManager) {
+        super(entityManager, Game.class);
+    }
+}

@@ -1,0 +1,48 @@
+@Override
+    public Optional<FlightEntity> findById(Long id) {
+        try (Connection connection = ConnectionManager.getCon()) {
+            return findById(id, connection);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public Optional<FlightEntity> findById(Long id, Connection connection) {
+        FlightEntity flight = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_FLIGHT_ID)) {
+            preparedStatement.setObject(1, id);
+
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                flight = new FlightEntity(
+                        resultSet.getLong("id"),
+                        resultSet.getString("flight_no"),
+                        resultSet.getTimestamp("departure_date").toLocalDateTime(),
+                        resultSet.getString("departure_airport_code"),
+                        resultSet.getTimestamp("arrival_date").toLocalDateTime(),
+                        resultSet.getString("arrival_airport_code"),
+                        resultSet.getLong("aircraft_id"),
+                        resultSet.getString("status")
+                );
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.ofNullable(flight);
+
+    } 
+
+
+   private static TicketEntity builderTicket(ResultSet resultSet) throws SQLException {
+
+        return new TicketEntity(
+                resultSet.getLong("id"),
+                resultSet.getString("passenger_no"),
+                resultSet.getString("passenger_name"),
+                flightDao.findById(resultSet.getLong("flight_id"), resultSet.getStatement().getConnection()).orElse(null), <--- Если есть connectionPool 
+                resultSet.getString("seat_no"),
+                resultSet.getBigDecimal("cost")
+        );
+    }

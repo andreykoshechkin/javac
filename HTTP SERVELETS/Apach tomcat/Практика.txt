@@ -1,0 +1,26 @@
+1: Нам нужно установить в JSP список employee и через JSTL пройтись по всему списку employee
+   в соответствующем сервлете в методе doget()
+   Integer id = Integer.valueOf(req.getParameter("id"));
+   req.setAttribute("employee",employeeService.findById(id));
+
+2: нужно перенаправить запрос на JSP страницу(туда где мы хотим все отобразить)
+  req.getRequestDispatcher(JspHelper.getPath("JasperExample")).forward(req,resp);
+
+фулл пример:
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Integer id = Integer.valueOf(req.getParameter("id"));
+        req.setAttribute("employee",employeeService.findById(id));
+        req.getRequestDispatcher(JspHelper.getPath("JasperExample")).forward(req,resp);
+    }
+
+================================================================================
+JSPL
+
+<ul>
+    <c:forEach var="test" items="${requestScope.employeeEx}">
+        <li> ${test.firsName}, ${test.lastsName},${test.salary},${test.department} </li>
+    </c:forEach>
+
+</ul>
+================================================================================

@@ -1,0 +1,46 @@
+Задача: Вернуть первые (Limit)сотрудников, упорядоченных по дате рожденья.
+session.createQuery("select u FROM User u order by u.birthday asc ", User.class)
+.setMaxResults(3).list()
+=====================================================================================
+
+Задача: Вернуть всех сотрудников конкретной компании.
+session.createQuery("select u from User u " + "join u.company c " + "where c.name=:nameComany", User.class)
+.setParameter("nameCompany", "Google").list();
+
+=====================================================================================
+
+Задача: Вернуть все выплаты, полученные сотрудником конкрентной компании с указанным именем, упорядоченные по имени и размеру выплаты
+session.createQuery("select p from Payment p " + <-- select на выплаты
+"join p.reciver r " + 	<-- у Payment есть поле типа User 
+"join r.company c " +	<-- join с компанией
+"where c.name=:companyName order by r.name, p.amount").setParameter("companyName", "Valve").list();
+
+=====================================================================================
+
+Задача: Вернуть среднию зарплату сотрудников с указанными именем и фамилией
+ session.createQuery("select avg (p.amount) from Paymant p " +
+                        "join p.recevier r " +
+                        "where r.firstName=:firstName " +
+                        "and r.lastName=:lastName", Double.class)
+                .setParameter("firstName", "Oleg")
+                .setParameter("lastName", "ivanov")
+                .uniqueResult();
+
+=====================================================================================
+
+Задача: Вернуть для каждой компании ее название, среднию зарплату всех ее сотрудников
+
+session.createQuery("select c.name, avg(p.amount) FROM Company c " +		<--Получаем название компании и среднию
+                "join c.users u " +						<--Через компанию получаем Users
+                "join u.payments p " +						<--Через Users получаем среднию
+                "group by c.name order by c.name", Object[].class).list();
+
+=====================================================================================
+Задача: Возвращает список: сотрудник (объект User), средний размер выплат, но только для тех сотрудников, чей средний размер выплат
+        больше среднего размера выплат всех сотрудников
+        Упорядочить по имени сотрудника
+   
+  session.createQuery("select u, avg(p.amount) FROM User u " +
+                "join u.payments p " +
+                "having avg (p.amount) > (select avg (p.amoutn) from Payments p) " +
+                "order by u.name").list();

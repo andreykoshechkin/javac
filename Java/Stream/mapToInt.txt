@@ -1,0 +1,28 @@
+mapToInt -  возращает intStream. Для записил значение в отдельный лист, нужно использовать метод boxed();
+	
+	List<Integer> listAve = listMinMax.stream()
+				.mapToInt(o->o)
+				.boxed().toList();
+        System.out.println(listAve)
+
+======================================================================================================
+mapToInt(value -> value.intValue())	 <--- Получаем(Снимаем оболочку) из Integer приметив int
+
+
+Получаем средний 
+ List<Integer> list = List.of(2,3,4,5,6,7,8);
+        double x = list.stream().mapToInt(value-> value.intValue()).average().getAsDouble();	
+        System.out.println(x);
+
+======================================================================================================
+
+ Scanner scanner = new Scanner(System.in);
+        int num1 = scanner.nextInt();
+        int num2 = scanner.nextInt();
+        int num3 = scanner.nextInt();
+        int num4 = scanner.nextInt();
+        int num5 = scanner.nextInt();
+        int num6 = scanner.nextInt();
+
+        IntStream.of(num1, num2, num3, num4, num5, num6).filter(o1 -> o1 % 2 == 0).forEach(System.out::println);
+======================================================================================================

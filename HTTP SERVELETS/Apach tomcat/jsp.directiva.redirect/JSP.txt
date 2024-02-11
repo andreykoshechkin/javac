@@ -1,0 +1,23 @@
+JSP(Java server pages) - это сервелет который генерирует HTML страницу, при этом, JSP выглядит как html страница. Работает на уровне представления и должен лежать в папке web. 
+Для преобразования jsp страницы в servlets используют Jasper.
+
+Создание JSP:
+Создаем в папке web файл с расширением JSP
+
+<div> Список работников:</div>
+<ul>
+    <%
+
+        EmployeeService employeeService = EmployeeService.getEmployeeService();
+        Integer id = Integer.parseInt(request.getParameter("id"));
+        List<EmployeeDTO> byId = employeeService.findById(id);
+        for (EmployeeDTO e : byId) {
+            out.write(String.format("<li> %s, %s, %d, %d, %s</li>",
+                    e.getFirsName(),
+                    e.getLastsName(),
+                    e.getCompanyId(),
+                    e.getSalary(),
+                    e.getDepartment()));
+        }
+
+    %>

@@ -1,0 +1,71 @@
+Транзакции:			//Единица рабода в рамках соединения с базой данных. Имеет два основных статуса
+				  commit(Выполнить) и rollback(Откатить).
+				  Транзакции открываются при любый sql операциях(INSERT, UPDATE, SELECT).
+
+
+
+
+
+Batch запросы			//Позволяют отправлять разом все запросы на сервер где расположенна база данных. 	
+				  Без Batch запросов операции INSERT,UPDATE, DELETE будут отправляться по одному,
+				  что скажется на времени выполнения.
+
+Методы: 
+addBatch()			//Делает из обычного запроса, Batch запрос. Вызывается на Statement.
+executeBatch()			//Позволяет выполнить sql запрос. Возвращает int[].  Вызывается на Statement.
+
+==============================================================================================================================
+#1 Пример:
+      String sql = """
+                UPDATE flight.aircraft  SET model = 'Boing 9999' WHERE id = 5; 
+                """;
+        try (Connection connection = ConnectionManager.loadDriverLoad();
+             Statement statement = connection.createStatement();) {
+
+            statement.addBatch(sql);
+            statement.executeBatch();
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+==============================================================================================================================
+#2 Пример:
+  int employee_and_company_ID = 8;
+        String deleteToCompany = "DELETE FROM company_storage.company WHERE id = " + employee_and_company_ID ;
+
+        String deleteToEmployee = "DELETE FROM company_storage.employee WHERE company_id = " + employee_and_company_ID;
+
+
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            connection = ConnectionToDateBase.open();
+            connection.setAutoCommit(false);
+
+
+            statement = connection.createStatement();
+
+            statement.addBatch(deleteToEmployee);
+            statement.addBatch(deleteToCompany);
+            statement.executeBatch();
+
+            connection.commit();
+
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback();
+            }
+            throw e;
+        } finally {
+            if (connection != null)
+                connection.close();
+            if (statement != null) {
+                statement.close();
+            }
+        }
+==============================================================================================================================

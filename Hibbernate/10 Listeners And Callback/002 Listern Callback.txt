@@ -1,0 +1,51 @@
+1:
+public class AuditListener {
+
+    @PrePersist
+    public void prePersist(AuditablePayment obj) {
+        obj.setCreateIn(Instant.now());
+        obj.setCreateBy("ADMIN");
+    }
+
+    @PreUpdate
+    public void preUpdate(AuditablePayment obj) {
+        obj.setCreateIn(Instant.now());
+        obj.setCreateBy("ADMIN");
+    }
+
+}
+
+2:
+
+@Getter
+@Setter
+@MappedSuperclass
+@EntityListeners(AuditListener.class)		<--- листерн AuditListener мы будем использовать над всеми сущностями, который наследуются от AuditablePayment 
+public abstract class AuditablePayment implements GenerationId<Long> {
+
+    private Instant createIn;
+    private String createBy;
+
+
+}
+
+3:
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+public class Payment extends AuditablePayment{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    private Double amount;
+
+
+}

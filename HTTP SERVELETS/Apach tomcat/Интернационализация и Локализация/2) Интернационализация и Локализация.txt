@@ -1,0 +1,37 @@
+<%@include file="Header.jsp"%>		<-- на jstl странице на которой мы хотим менять язык	
+
+Устанавливаем, на jstl страницы наши бандлы:
+
+<label for="emailId"> <fmt:message key="page.login.email"/> 	<--- Теперь эта страница может быть как и на англ так и на ру
+        <input type="text" name="email" id="emailId">
+</label><br>		
+===================================================================================================================================================	
+
+Нам нужно менять язык по кнопке(Динамически). Так как мы хотим менят язык на всех страницах, то кнопки по смени языка должны быть в HEADER	
+
+<div>
+    <form action="${pageContext.request.contextPath}/locale" method="post">
+    <button type="submit" name="lang" value="ru_RU"> RU </button>
+    <button type="submit" name="lang" value="en_US"> EN </button>
+    </form>
+   <fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : (param.lang != null ? param.lang : 'ru_RU')}"/>
+    <fmt:setBundle basename="translation"/>		<---  в basename должно быть имя бандла
+</div>
+
+===================================================================================================================================================	
+Сервлет
+
+@WebServlet("/locale")
+public class LocaleServlets extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String lang = req.getParameter("lang");
+        req.getSession().setAttribute("lang", lang);
+
+        String prevPage = req.getHeader("referer");
+        String page = prevPage != null ? prevPage : "/login";
+
+        resp.sendRedirect(page + "?lang=" + lang);
+    }
+}
+===================================================================================================================================================	

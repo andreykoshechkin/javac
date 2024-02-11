@@ -1,0 +1,27 @@
+HINT_TIMEOUT: Указывает максимальное время выполнения запроса. Значение - время в миллисекундах.
+
+SPEC_HINT_TIMEOUT и JAKARTA_SPEC_HINT_TIMEOUT: Эти подсказки также устанавливают максимальное время выполнения запроса. Однако SPEC_HINT_TIMEOUT соответствует стандарту JPA, а JAKARTA_SPEC_HINT_TIMEOUT - стандарту Jakarta Persistence (новое название JPA).
+
+HINT_COMMENT: Позволяет добавить комментарий к запросу для целей логирования и отладки.
+
+HINT_FETCH_SIZE: Устанавливает размер выборки (fetch size) для результата запроса. Это может быть полезно при извлечении большого объема данных.
+
+HINT_CACHEABLE: Указывает, должен ли запрос кэшироваться. Значение - true или false.
+
+HINT_CACHE_REGION: Устанавливает регион кэширования для запроса.
+
+HINT_READONLY: Указывает, что результат запроса является только для чтения (read-only).
+
+HINT_CACHE_MODE и HINT_FLUSH_MODE: Управляют режимами кэширования и флаша для запроса.
+
+HINT_NATIVE_LOCKMODE: Устанавливает режим блокировки для запроса.
+
+HINT_FETCHGRAPH и HINT_LOADGRAPH: Используются в контексте работы с Entity Graphs для загрузки связанных сущностей.
+
+JAKARTA_HINT_FETCHGRAPH и JAKARTA_HINT_LOADGRAPH: Аналогично HINT_FETCHGRAPH и HINT_LOADGRAPH, но в контексте Jakarta Persistence.
+
+HINT_FOLLOW_ON_LOCKING: Указывает, должна ли операция блокировки следовать за запросом.
+
+HINT_PASS_DISTINCT_THROUGH: Указывает, следует ли передавать оператор DISTINCT в SQL-запрос.
+
+HINT_NATIVE_SPACES: Используется в контексте запросов, представленных на уровне языка SQL.

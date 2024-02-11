@@ -1,0 +1,44 @@
+Path filePath = Paths.get("C:\\Users\\79964\\Desktop\\filePath.txt");			//Создаст файл.
+Path directoryPath = Paths.get("C:\\Users\\79964\\Desktop\\directory Path"); 		//Создаст директорию.
+
+
+
+.getFileName()			//Узнать имя файла/директории.
+.getParent()			//Узнать родителя файла/директории.
+.getRoot()			//Показывает корен от куда начинает свой путь файл/директория.
+.isAbsolute()			//Показывает, является ли путь к файлу/директории абсолютным.
+.toAbsolutePath()		//Выводи абсолютный путь
+.toUri()			//Выводи ссылку на файл/директорию.
+.resolve			//Объединяет два пути в одно (directoryPath.resolve(filePath))
+.relativize			//Выводит относительный путь относительно той директории, которую мы указали в пареметрах(показывает разницу пути)d
+				  irectoryPath.relativize(anotherPath)
+
+
+Класс Files так же работает и с Path.
+
+Files.exists(filePath)				//Существует ли наш файл/директория. Возвращает boolean.
+Files.creatDirectory(имяПапки)			//Создает файл/директорию
+Files.isReadable(filePath)			//Есть ли у нас права на файл/директорию.
+Files.isWritable(filePath)			//Проверяет, доступен ли файл для записи.
+Files.isExecutable(filePath)			//Можем ли мы запускать этот файл
+Files.size(filePath)				//Размер файла/директории в байтах
+Files.readAllLines(filePath)			//Считывает все файлы и возвращает List(можем записать все данные в List)
+Files.getAttribute(filePath,"ИмяАтрибута")	//Узнать атрибут файла.	Список атрибутов можно узнать погуглив Interface FileAttributeView
+Files.readAttributes(filePath, "*")		//Узнать все атрибуты, возвращает Map. В качестве атрибута можно указать "*";
+Files.readString(filePath)			//Считывает строку, Возвращает string	
+
+
+copy() - Копирует только папку но не копирует содержимое
+Files.copy(filePath, directoryPath.resolve("SASasfmlks.txt"));								//Копирует файл в указанную директорию
+Files.copy(filePath, directoryPath.resolve("filePath.txt"), StandardCopyOption.REPLACE_EXISTING);			//Если файл уже есть, то замени его.
+Files.move(filePath, directoryPath.resolve("LessonTestCOPE.txt"));							//Перемещает файл
+Files.delete(delFile);													//Удаляет
+
+String str = "Apple, Lenovo";
+Files.write(newFile, str.getBytes());											//Записываеи в текст в файл ввиде массива байт
+
+
+
+
+
+

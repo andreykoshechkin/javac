@@ -1,0 +1,9 @@
+    @SneakyThrows
+    //Если это картинка, то использовать byte[], в другом случаи(видео, аудио) лучше использовать inputStream
+    public Optional<byte[]> getImage(String imagePath){ //Передаем путь к картинке и достаем ее из bucket
+        Path fullPath = Path.of(bucket, imagePath);
+
+        return Files.exists(fullPath) //Если картинка существует, то считай все байты иначе верни empty
+                ? Optional.of(Files.readAllBytes(fullPath))
+                : Optional.empty();
+    }

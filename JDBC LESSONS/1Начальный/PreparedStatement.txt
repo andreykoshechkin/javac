@@ -1,0 +1,35 @@
+PreparedStatement - почти такой же как и Statement. Имеет все методыд Statement но так же имеет и свои методы.
+у PreparedStatement есть метод prepareStatement, это аналог createStatement заисключением того, что prepareStatement необходимо сразу передать sql, за счет этого нам теперь 
+необязательно передавать sql в executeQuery, как мы делали с Statement.
+
+В самом запросе при фильтрации теперь используем "?".
+
+Пример:
+
+	//List<String> stringList = new ArrayList<>();
+      	  String sql = """							<--- В sql создаем запрос то, что хотим получить.
+                 SELECT passenger_name FROM flight.ticket WHERE flight_id = ?;	<--- тот самый ?.
+                """;
+        
+	try (Connection connection = ConnectionManager.getCon();			
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) { 	<---тут сразу указываем наш sql.
+
+            preparedStatement.setLong(1,flightId);			<--- устанавливает значение вместо "?" который есть у запроса. Первым параметром должны быть 1 (но это не точно)
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+
+            while (resultSet.next()) {
+
+
+                stringList.add(resultSet.getString("passenger_name"));
+
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+preparedStatement.setLong - зависит от того значения, который мы передали в качестве WHERE в SELECT (В нашем случаи flight_id является BigInt).
+preparedStatement.setObject - делает то же самое что и setLong. только тут мы не получим значение null
+
+preparedStatement.setLong(1,flightId); ДОЛЖЕН БЫТЬ ПЕРЕД preparedStatement.executeQuery();

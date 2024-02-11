@@ -1,0 +1,11 @@
+
+Nontransactional Data Access - Это обычные autoCommitMode и он значит, что нам не нужно явно открывать транзакции, 
+			       Т.е Открытие и закрытие транзакции будет происходить автоматический.
+
+session.doWork(connection -> connection.setAutoCommit(true));   - когда мы хотим чтобы открытие, закрытие транзакции было автоматически.
+session.doWork(connection -> connection.setAutoCommit(false));  - когда мы хотим работать с транзакциями в ручную. Стоит по умолчанию, по этой причине мы делаем 
+								  session.beginTransaction() и session.getTransaction().commit();
+ 
+Мы можем сохранять сущность в бд, делать select из бд, даже без открытия транзакций но только тогда, когда у сущности id=Identity. 
+
+

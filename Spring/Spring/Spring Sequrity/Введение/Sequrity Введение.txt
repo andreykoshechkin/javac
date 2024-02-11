@@ -1,0 +1,33 @@
+В Spring есть filter chain, который содержит в себе цепочку фильтров абсолютно такую же что и servlet, заисключением, что в случаи spring 
+есть спепциальный фильтер, который называется DelegationFilterProxy, который хранит в себе бин FilterChainProxy и уже этот бин предоставляет SequrityFilterChain,
+в котором реализована своя цепочка вызова фильтров
+Порядок фильтров важен!
+
+SecurityFilterAutoConfiguration - Класс для автоконфигурации.
+SecurityProperties		- Класс, который содержит в себе настройки для properties.
+FitlerChainProxy		- Это бин.
+
+====================================================================================================================================
+DelegatingFilterProxyRegistrationBean - главный класс, который занимается тем, что создает DelegationFilterProxy.
+DelegationFilterProxy - не является бином, так как подчиняется сервлет контейнеру, но при этом DelegationFilterProxy содержит в себе бин FilterChainProxy 
+
+SpringBootWebSecurityConfiguration - класс, который создает SequrityFilterChain.
+
+====================================================================================================================================
+SequrityFilterChain
+
+		@Bean
+		@Order(SecurityProperties.BASIC_AUTH_ORDER)
+		SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+			http.authorizeHttpRequests().anyRequest().authenticated();
+			http.formLogin();
+			http.httpBasic();
+			return http.build();
+		}
+
+
+====================================================================================================================================
+Жизненный цикл филтра в сервлетах 
+1. init() - инициализация фильтра 
+2. doFilter() - метод в котором описана логика для авторизации, аутнентификации
+3. deStroy() - завершение 

@@ -1,0 +1,41 @@
+Annotation-based Configuration - позволяет задать Bean Difenition с помощью аннотаций. Чтобы подключить Annotation-based нам нужно добавить дополнительные бины, 
+но только те бины, которые являются beanPostProcessor, именно эти бины будут осматривать классы на наличие тех или иных аннотаций. Добавить дополнительные бины можно двумя способами:
+ 1. Явно прописать в xml тот бын который нам нужен. Пример <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"></bean> 
+ 2. Более предпочтительный вариант, это добавить <context:annotation-config/> который сам, автоматически добавить все необходимые бины
+
+
+
+Пример: В жизненном цикле бина, есть этапы когда инициализируется callback(init) и закрываеться callback(destroy) и ранее мне приходилось в конфигурационном файле явно
+           устанавливать init-method и destroy-method. Теперь же мы можем воспользоваться соответствующеми аннотациями. Для init @PostConstruct. Для Destoy  @PreDestroy
+   
+====================================================================================================================================================================================================================================
+ 1. Подключить зависиомость: 
+    
+     <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.1.1</version>
+     </dependency>
+
+
+ 2. Чтобы конфигурировать бины с помощью Annotation-based: Нужно добавить дополнительные бины, которые являются beanPostProcessor, именно эти бины будут осматривать классы на наличие тех или иных аннотаций.
+     1. CommonAnnotationBeanPostProcessor 		// обрабатывает аннотаций.  @PostConstruct, @PreDestroy, @Resource      <---Является BeanPostProccesor
+     2. AutowiredAnnotationBeanPostProcessor		// обрабатывает аннотаций.  @Autowired, @Value				<---Является BeanPostProccesor
+     3. EventListenerMethodProcessor			// обрабатывает аннотаций.  @EventListener 				<---Является BeanFactoryPostProccesor
+     4. ConfigurationClassPostProcessor		        // обрабатывает аннотаций.  @Configuration 				<---Является BeanFactoryPostProccesor
+     5. PersistenceAnnotationBeanPostProsessor	        // обрабатывает аннотаций.  @PersistentContext, @PersistentUnit		<---Является BeanPostProccesor
+
+
+ 3. В application.xml добавить <context:annotation-config/> <------ Автоматически добавить все необходимые бины
+
+ 
+
+====================================================================================================================================================================================================================================
+Чтобы заиспользовать Annotation-based, нам нужно добавить те бины, которые являются beanPostProcessor. Чтобы это сделать, нужно в xml добавить один из следующих бинов:
+
+ 1. С помощью бина: <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"></bean> <--- Добавить в xml
+ 2. С помощью  <context:annotation-config/>	<--- Добавить в xml
+
+====================================================================================================================================================================================================================================
+
+

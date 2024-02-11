@@ -1,0 +1,46 @@
+Чтобы параметры отображались ввиде констант (username, firstname и.т.д) нужно над DTO Поставить @FieldNameConstants
+
+@AutoConfigureMockMvc
+@RequiredArgsConstructor
+public class UserControllerIT extends TestContainerRunner {
+
+    private final MockMvc mockMvc;
+
+    @Test
+    void findAll() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/users"))
+                .andExpectAll(
+                        MockMvcResultMatchers.status().is2xxSuccessful(),
+                        MockMvcResultMatchers.view().name("/users"),
+                        MockMvcResultMatchers.model().attributeExists("users"));
+    }
+
+    @Test
+    void findById() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/1"))
+                .andExpectAll(
+                        MockMvcResultMatchers.model().attributeExists("user", "role"),
+                        MockMvcResultMatchers.view().name("/user"),
+                        MockMvcResultMatchers.status().is2xxSuccessful());
+    }
+
+    @Test
+    void createPage() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/registration"))
+                .andExpect(MockMvcResultMatchers.view().name("/registration"))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+    }
+
+    @Test
+    void create() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/registration")
+                        .param(username, "test@gmail.com")
+                        .param(firstname, "Bob")
+                        .param(lastname, "Jos")
+                        .param(birthdate, "2000-01-01")
+                        .param(companyId, "1"))
+                .andExpectAll(
+                        MockMvcResultMatchers.status().is3xxRedirection(),
+                        MockMvcResultMatchers.view().name("redirect:/users"));
+    }
+}

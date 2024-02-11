@@ -1,0 +1,382 @@
+/**
+ * This class contains a list of unit test methods that are presented in the {@link AccountingForOrdersService} class
+ */
+@ExtendWith(MockitoExtension.class)
+public class AccountingForOrdersServiceTest {
+
+    @Mock
+    private AccountingForOrdersRepository accountingForOrdersRepository;
+
+    @Mock
+    private OrderMapper customMapper;
+
+    @InjectMocks
+    private AccountingForOrdersService accountingForOrdersService;
+
+
+    @Nested
+    @Tag("test -positive")
+    @DisplayName("A set of positive tests")
+
+    class PositiveTest {
+
+        @Test
+        @DisplayName("Should return an order if an order with the provided ID exists")
+        public void shouldReturnOrderByIdIfItExist() {
+            //Given
+            Customer customerEntity = getCustomer(1L);
+            CustomerDto customerDto = getCustomerDto(1L);
+
+            Order orderEntity = getOrder(customerEntity, 1L);
+            OrderDto orderDto = getOrderDto(customerDto, 2L);
+
+            //When
+            Mockito.doReturn(orderDto).when(customMapper).transferToDto(orderEntity);
+            Mockito.doReturn(Optional.of(orderEntity)).when(accountingForOrdersRepository).findByIdOrder(1L);
+            Optional<OrderDto> maybeOrder = accountingForOrdersService.findOrderById(1L);
+
+            //Then
+            org.assertj.core.api.Assertions.assertThat(maybeOrder.get().getCustomerId()).isEqualTo(1L);
+            Mockito.verify(customMapper).transferToDto(orderEntity);
+        }
+
+
+        @Test
+        @DisplayName("Should create an order if the order parameters are entered correctly.")
+        public void shouldCreateOrder() {
+            //Given
+            Customer customerEntity = getCustomer(1L);
+            CustomerDto customerDto = getCustomerDto(1L);
+
+            Order orderEntity = getOrder(customerEntity, 1L);
+            OrderDto orderDto = getOrderDto(customerDto, 2L);
+
+            //When
+            Mockito.doReturn(orderEntity).when(customMapper).transferToEntity(orderDto);
+            Mockito.doReturn(1L).when(accountingForOrdersRepository).createOrder(orderEntity);
+
+            OrderDto actualResult = accountingForOrdersService.createOrder(orderDto);
+
+            //Then
+            Assertions.assertThat(actualResult).isInstanceOf(OrderDto.class);
+            Assertions.assertThat(actualResult).isEqualTo(orderDto);
+            Assertions.assertThat(actualResult).isNotNull();
+            Mockito.verify(customMapper).transferToEntity(orderDto);
+            Mockito.verify(accountingForOrdersRepository).createOrder(orderEntity);
+
+        }
+
+        @Test
+        @DisplayName("Should update the order status if the order exists.")
+        public void shouldUpdateOrderStatusOfTheOrder() {
+            //Given
+            Customer customerEntity = getCustomer(1L);
+            CustomerDto customerDto = getCustomerDto(1L);
+
+            Order orderEntity = getOrder(customerEntity, 1L);
+            OrderDto orderDto = getOrderDto(customerDto, 2L);
+
+            //When
+            Mockito.doReturn(orderDto).when(customMapper).transferToDto(orderEntity);
+            Mockito.doReturn(Optional.of(orderEntity)).when(accountingForOrdersRepository).findByIdOrder(1L);
+            Mockito.doNothing().when(accountingForOrdersRepository).updateStatusOrder(1L, OrderStatus.EXIST);
+
+            OrderDto actualResult = accountingForOrdersService.updateOrderStatus(1L, OrderStatus.EXIST);
+
+            //Then
+            Assertions.assertThat(actualResult.getOrderStatus()).isEqualTo(orderDto.getOrderStatus());
+        }
+
+        @Test
+        @DisplayName("Should return a list of orders if a customer with the provided ID exists and has orders.")
+        public void shouldReturnListOrderIfClientExist() {
+
+            //Given
+            Customer customerEntity = getCustomer(1L);
+            CustomerDto customerDto = getCustomerDto(1L);
+
+            Order orderEntity1 = getOrder(customerEntity, 1L);
+            Order orderEntity2 = getOrder(customerEntity, 2L);
+
+            OrderDto orderDto1 = getOrderDto(customerDto, 1L);
+            OrderDto orderDto2 = getOrderDto(customerDto, 2L);
+
+            List<Order> orderEntityList = List.of(orderEntity1, orderEntity2);
+
+            //When
+            Mockito.doReturn(orderEntityList).when(accountingForOrdersRepository).getListOrderByClient(1L);
+            Mockito.doReturn(orderDto1).when(customMapper).transferToDto(orderEntity1);
+            Mockito.doReturn(orderDto2).when(customMapper).transferToDto(orderEntity2);
+            List<OrderDto> actualResult = accountingForOrdersService.getListOrderDtoByClient(1L);
+
+            //Then
+            Assertions.assertThat(actualResult).hasSize(2);
+            Assertions.assertThat(actualResult).contains(orderDto2);
+
+        }
+
+
+        @Test
+        @DisplayName("Should return a list of orders if orders with the provided OrderStatus exist.")
+        public void shouldReturnListOrderByStatus() {
+            //Given
+            Customer customerEntity = getCustomer(1L);
+            CustomerDto customerDto = getCustomerDto(1L);
+
+            Order orderEntity1 = getOrder(customerEntity, 1L);
+            Order orderEntity2 = getOrder(customerEntity, 2L);
+
+            OrderDto orderDto1 = getOrderDto(customerDto, 1L);
+            OrderDto orderDto2 = getOrderDto(customerDto, 2L);
+
+            List<Order> orderEntityList = List.of(orderEntity1, orderEntity2);
+
+            //When
+            Mockito.doReturn(orderEntityList).when(accountingForOrdersRepository).getListOrderByStatus(OrderStatus.PROCESSING);
+            Mockito.doReturn(orderDto1).when(customMapper).transferToDto(orderEntity1);
+            Mockito.doReturn(orderDto2).when(customMapper).transferToDto(orderEntity2);
+
+            List<OrderDto> actualResult = accountingForOrdersService.getListOrderByStatus(OrderStatus.PROCESSING);
+            List<Long> listCustomerId = actualResult.stream().map(OrderDto::getCustomerId).toList();
+
+            //Then
+            Assertions.assertThat(actualResult).isNotEmpty();
+            Assertions.assertThat(listCustomerId).contains(1L);
+            Assertions.assertThat(listCustomerId).doesNotContain(2L);
+        }
+
+
+        @Test
+        @DisplayName("Should return a list of products in the order if the order exists and contains products.")
+        public void shouldReturnListProductByOrderId() {
+            //Given
+            Customer customer = getCustomer(1L);
+            Order orderEntity = getOrder(customer, 1L);
+
+            Product apple = getProduct("Apple", 500.0, orderEntity);
+            Product samsung = getProduct("Samsung", 500.0, orderEntity);
+
+            ProductDto appleDto = getProductDto("Apple", 500.0, orderEntity.getId());
+            ProductDto samsungDto = getProductDto("Samsung", 500.0, orderEntity.getId());
+
+            List<Product> listProductEntity = List.of(apple, samsung);
+            List<ProductDto> listProductDto = List.of(appleDto, samsungDto);
+
+            //When
+            Mockito.doReturn(listProductDto).when(customMapper).transferProductEntityToDto(listProductEntity);
+            Mockito.doReturn(listProductEntity).when(accountingForOrdersRepository).getProductByOrderId(1L);
+
+            //Then
+            List<ProductDto> actualResult = accountingForOrdersService.getProductByOrderId(1L);
+            double actualResultTotalSumProduct = actualResult.stream().mapToDouble(ProductDto::getProductPrice).sum();
+
+            Assertions.assertThat(actualResult).isNotEmpty();
+            Assertions.assertThat(actualResult).hasSize(2);
+            Assertions.assertThat(actualResultTotalSumProduct).isEqualTo(1000.0);
+
+        }
+
+
+        @Test
+        @DisplayName("Should return a list of orders if the filter conditions are met.")
+        public void shouldReturnOrderByFilterIfExist() {
+            //Given
+            AccountingFilter filterStatus = new AccountingFilter(OrderStatus.PROCESSING, null, LocalDateTime.now());
+            AccountingFilter filterClientId = new AccountingFilter(OrderStatus.PROCESSING, 1L, LocalDateTime.now());
+
+            Customer customerEntity1 = getCustomer(1L);
+            Customer customerEntity2 = getCustomer(2L);
+
+            CustomerDto customerDto1 = getCustomerDto(1L);
+            CustomerDto customerDto2 = getCustomerDto(2L);
+
+            Order order1 = getOrder(customerEntity1, 1L);
+            Order order2 = getOrder(customerEntity2, 2L);
+
+            OrderDto orderDto1 = getOrderDto(customerDto1, 1L);
+            OrderDto orderDto2 = getOrderDto(customerDto2, 2L);
+
+            List<Order> listOrderByFilterStatusTest = List.of(order1, order2);
+            List<Order> listOrderByFilterClientTest = List.of(order2);
+
+            //When
+            Mockito.doReturn(orderDto1).when(customMapper).transferToDto(order1);
+            Mockito.doReturn(orderDto2).when(customMapper).transferToDto(order2);
+            Mockito.doReturn(listOrderByFilterStatusTest).when(accountingForOrdersRepository).getOrderByFilter(filterStatus);
+            Mockito.doReturn(listOrderByFilterClientTest).when(accountingForOrdersRepository).getOrderByFilter(filterClientId);
+
+            List<OrderDto> actualResultByFilterStatus = accountingForOrdersService.getOrderByFilter(filterStatus);
+            List<OrderDto> actualResultByFilterClientId = accountingForOrdersService.getOrderByFilter(filterClientId);
+
+            //Then
+            Assertions.assertThat(actualResultByFilterStatus).hasSize(2);
+            Assertions.assertThat(actualResultByFilterStatus.get(0).getOrderStatus()).isEqualTo(OrderStatus.PROCESSING.name());
+            Assertions.assertThat(actualResultByFilterClientId).hasSize(1);
+        }
+
+    }
+
+
+    @Nested
+    @Tag("test -negative")
+    @DisplayName("A set of negative tests")
+    class NegativeTest {
+
+        @Test
+        @DisplayName("Should return Optional.Empty if the order cannot be found by the given ID")
+        public void shouldEmptyIfOrderIsNotExist() {
+            //Given
+            CustomerDto customerDto = getCustomerDto(1L);
+            Customer customer = getCustomer(1L);
+
+            Order order = getOrder(customer, 1L);
+            OrderDto orderDto = getOrderDto(customerDto, 1L);
+
+            //When
+            Mockito.doReturn(Optional.empty()).when(accountingForOrdersRepository).findByIdOrder(order.getId());
+            Optional<OrderDto> actualResult = accountingForOrdersService.findOrderById(orderDto.getId());
+
+            //Then
+            Assertions.assertThat(actualResult).isEmpty();
+            Mockito.verify(accountingForOrdersRepository).findByIdOrder(Mockito.any());
+            Mockito.verifyNoInteractions(customMapper);
+        }
+
+        @Test
+        @DisplayName("Should throw an ConstraintViolationException if incorrect data is passed during the creation of orderDto.")
+        public void shouldThrowConstraintViolationExceptionIfTheCreateFailed() {
+            //Given
+            Customer customer = getCustomer(1L);
+
+            OrderDto orderDto = OrderDto.builder()
+                    .id(1L)
+                    .dateOfCreation(LocalDateTime.now())
+                    .orderStatus(OrderStatus.PROCESSING.name())
+                    .totalCost(5.0)
+                    .customerId(1L)
+                    .build();
+
+            Order order = Order.builder()
+                    .id(1L)
+                    .dateOfCreation(LocalDateTime.now())
+                    .orderStatus(OrderStatus.PROCESSING)
+                    .totalCost(5.0)
+                    .customer(customer)
+                    .build();
+
+            //Then
+            ConstraintViolationException actualResult = org.junit.jupiter.api.Assertions.assertThrows(ConstraintViolationException.class,
+                    () -> accountingForOrdersService.createOrder(orderDto));
+
+            Assertions.assertThat(actualResult).hasMessage("totalCost: должно быть больше чем или равно 10.0");
+            Mockito.verifyNoInteractions(customMapper);
+            Mockito.verifyNoInteractions(accountingForOrdersRepository);
+
+
+        }
+
+        @Test
+        @DisplayName("Should throw an exception if the Status update operation was not executed.")
+        public void shouldThrowUpdateExceptionIfTheUpdateFailed() {
+            //Given
+            CustomerDto customerDto = getCustomerDto(1L);
+            Customer customer = getCustomer(1L);
+            Order order = getOrder(customer, 1L);
+            OrderDto orderDto = getOrderDto(customerDto, 1L);
+
+            //Then
+            UpdateException updateException = org.junit.jupiter.api.Assertions.assertThrows(UpdateException.class,
+                    () -> accountingForOrdersService.updateOrderStatus(Mockito.any(), OrderStatus.COMPLETED));
+            Assertions.assertThat(updateException).hasMessage("failed to update order status");
+
+        }
+
+        @Test
+        @DisplayName("Should throw an ListOrderException if order cannot be found by clientId.")
+        public void shouldReturnThrowListOrderExceptionIfClientNotExist() {
+            //Given
+            Customer customer = getCustomer(1L);
+
+            //When
+            Mockito.doReturn(List.of()).when(accountingForOrdersRepository).getListOrderByClient(100L);
+
+            //Then
+            ListOrderException actualResult = org.junit.jupiter.api.Assertions.assertThrows(ListOrderException.class,
+                    () -> accountingForOrdersService
+                            .getListOrderDtoByClient(100L));
+
+            Assertions.assertThat(actualResult).hasMessage("Order with client is not found");
+            Mockito.verifyNoInteractions(customMapper);
+            Mockito.verify(accountingForOrdersRepository).getListOrderByClient(100L);
+
+        }
+
+        @Test
+        @DisplayName("Should throw an ListOrderException if products cannot be found by Order id.")
+        public void shouldReturnThrowListOrderExceptionIfProductNotExistByOrderId() {
+            //When
+            Mockito.doReturn(List.of()).when(accountingForOrdersRepository).getProductByOrderId(Mockito.any());
+
+            //Then
+            ListOrderException actualResult = org.junit.jupiter.api.Assertions.assertThrows(ListOrderException.class,
+                    () -> accountingForOrdersService.getProductByOrderId(100L));
+
+            Assertions.assertThat(actualResult).hasMessage("Сouldn't find the list of products from the order");
+            Mockito.verify(accountingForOrdersRepository).getProductByOrderId(100L);
+            Mockito.verifyNoInteractions(customMapper);
+
+        }
+
+        @Test
+        @DisplayName("Should throw an ListOrderException if order cannot be found by OrderStatus.")
+        public void shouldReturnThrowListOrderExceptionIfOrderNotFoundByOrderStatus() {
+            //Given
+            Customer customer = getCustomer(1L);
+            Order orderEntity = Order.builder()
+                    .orderStatus(OrderStatus.COMPLETED)
+                    .customer(customer)
+                    .dateOfCreation(LocalDateTime.now())
+                    .totalCost(100.0)
+                    .build();
+
+            OrderDto orderDto = OrderDto.builder()
+                    .orderStatus(OrderStatus.COMPLETED.name())
+                    .customerId(1L)
+                    .dateOfCreation(LocalDateTime.now())
+                    .totalCost(100.0)
+                    .build();
+
+            //When
+            Mockito.doReturn(List.of()).when(accountingForOrdersRepository).getListOrderByStatus(OrderStatus.PROCESSING);
+
+            //Then
+            ListOrderException actualResult = org.junit.jupiter.api.Assertions.assertThrows(ListOrderException.class,
+                    () -> accountingForOrdersService.getListOrderByStatus(OrderStatus.PROCESSING));
+
+            Assertions.assertThat(actualResult).hasMessage("Order with status is not found");
+            Mockito.verify(accountingForOrdersRepository).getListOrderByStatus(OrderStatus.PROCESSING);
+            Mockito.verifyNoInteractions(customMapper);
+
+
+        }
+
+        @Test
+        @DisplayName("Should return an empty list if no orders were found based on the filter condition.")
+        public void shouldReturnEmptyListIfOrderNotFoundByFilter() {
+            //Given
+            AccountingFilter filterStatus = new AccountingFilter(OrderStatus.EXIST, null, null);
+            AccountingFilter filterClientId = new AccountingFilter(null, 1L, null);
+
+            //When
+            Mockito.doReturn(List.of()).when(accountingForOrdersRepository).getOrderByFilter(filterStatus);
+            Mockito.doReturn(List.of()).when(accountingForOrdersRepository).getOrderByFilter(filterClientId);
+
+            List<OrderDto> actualResultByFilterStatus = accountingForOrdersService.getOrderByFilter(filterStatus);
+            List<OrderDto> actualResultByFilterClientId = accountingForOrdersService.getOrderByFilter(filterClientId);
+
+            //Then
+            Assertions.assertThat(actualResultByFilterClientId).hasSize(0);
+            Assertions.assertThat(actualResultByFilterStatus).hasSize(0);
+        }
+    }
+}

@@ -1,0 +1,43 @@
+1: Создать сущность entity (если в web есть поле где нам нужно что-то выбрать, к примеру роль или пол, то нужно создать enum)
+
+========================================================================================
+СУЩНОСТЬ ENTITY:
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class UsersEntity {
+    private Integer id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private Date birthday;
+    private String password;
+    private Genders genders;	<--- ENUM
+    private Role role;		<--- ENUM
+}
+
+========================================================================================
+2:  Создать dao
+DAO: 
+
+   @SneakyThrows
+    public UsersEntity save(UsersEntity users) {
+        try (Connection con = ConnectionManager.get();
+             PreparedStatement preparedStatement = con.prepareStatement(SQL_SAVE, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setObject(1, users.getFirstName());
+            preparedStatement.setObject(2, users.getLastName());
+            preparedStatement.setObject(3, users.getEmail());
+            preparedStatement.setObject(4, users.getBirthday());
+            preparedStatement.setObject(5, users.getRole());
+            preparedStatement.setObject(6, users.getGenders());
+
+           preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            users.setId(generatedKeys.getObject("id", Integer.class));
+
+        }
+        return users;
+    }

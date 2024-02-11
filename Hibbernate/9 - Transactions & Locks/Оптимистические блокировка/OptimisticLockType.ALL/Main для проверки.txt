@@ -1,0 +1,21 @@
+Решение проблемы: Non Repeatable Read(last commit wins)
+public class Main {
+    public static void main(String[] args) {
+
+        @Cleanup SessionFactory sessionFactory = ConfigurationUtil.getConfigurationBuilder();
+        @Cleanup var session1 = sessionFactory.openSession();
+        @Cleanup var session2 = sessionFactory.openSession();
+        session1.beginTransaction();
+	session2.beginTransaction();
+
+        var payment1 = session1.find(Payment.class, 1L);		<-- Транзакция №1 считывает
+        var payment2 = session2.find(Payment.class, 1L);		<-- Транзакция №2 считывает
+
+        payment1.setAmount(payment1.getAmount()+10);			<-- Транзакция №1 обновляет 
+        payment2.setAmount(payment2.getAmount()+100);			<-- Транзакция №2 обновляет, те изменения что сделала 1ая транзакция будут перетерты
+
+        session1.getTransaction().commit();				
+									<<--- транзакция №2  закомитила последний, поэтому именно ее изменения будут в таблице А ТАК НЕ ДОЛЖНО				
+        session2.getTransaction().commit();				       
+    }
+}

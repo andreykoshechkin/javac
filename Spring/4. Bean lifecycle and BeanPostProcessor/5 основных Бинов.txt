@@ -1,0 +1,22 @@
+CommonAnnotationBeanPostProcessor:	# Это бин, который срабатывает на этапе BeanPostProcessor и его задача это обработать, такие как аннотации как @PostConstruct и @PreDestroy, в Spring-контексте.
+					  Эти аннотации используются для определения методов, которые должны быть вызваны после создания бина и перед его уничтожением. 
+
+
+
+AutowiredAnnotationBeanPostProcessor:  # Данный бин обрабатывает аннотацию @Autowired и берет на себя ответственно за автоматическое внедрение зависимостей в поле, методы и конструкторы бинов, помеченных @Autowired.
+					 срабатывает на этапе BeanPostProccesor
+
+
+EventListenerMethodProcessor:	       # Это бин, который отвечает за слушателей событий(EventListener) его прямая задача, это найти тот бин, у которого метод отмечен аннотацией @EventListener 
+					 чтобы в последующем зарегистрировать этот метод как обработчика событий, данный бин срабатывает на этапе beanFactoryPostProcessor. 
+					 Для реализации EventListenerMethod нужно поставить аннотацию @EventListener над методом, тогда этот метод станет слушателем событий. 
+
+
+
+ConfigurationClassPostProcessor:       # Это бин который обрабатывает те классы, которые помеченны аннотацией @Configuration(т.е Являются конфигурационными классами). 
+					 Данный бин срабатывает на этапе BeanFactoryPostProcessor.
+					 
+
+PersistenceAnnotationBeanPostProcessor:# Обрабатывает аннотации, связанные с персистентностью данных, такие как @PersistenceContext и @PersistenceUnit. 
+					 Этот бин помогает в интеграции JPA (Java Persistence API) в Spring-приложения, обеспечивая внедрение менеджеров сущностей и фабрик. 
+					 срабатывает на этапе BeanPostProccesor

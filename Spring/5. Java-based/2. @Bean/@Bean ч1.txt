@@ -1,0 +1,38 @@
+@Bean 		//Тот объект который вернулся нам из метода становиться бином, название метода, это id этого бина. 
+		  В отличие от @Component(@Service, @Repository, и @Controller) мы можем из методов возвращать сколько угодно бинов одного и того же типа,
+		  в случае с @Component мы сделать этого не могли.Эту аннотацию мы можем ставить не только в классах помеченных аннотацией @Configuration, но и 
+		  в других компонентах, но так делать не стоит! Потому-что классы @Configuration сканируются BeanFactoryPostProcessor, а значит будут обрабатываться в 
+		  первую очередь.  метод может находиться в любом классе, но часто используется в классах, помеченных аннотацией @Configuration.
+
+
+"Метод, аннотированный @Bean вызывается при старте Спринга, результат его работы (созданный объект) записывается в контекст и в дальнейшем мы можем использовать его в своих сервисных классах"
+
+
+@Import(WebApplicationConfig.class)
+@Configuration
+@ComponentScan(basePackages = "org.example.spring.*", scopedProxy = ScopedProxyMode.NO, includeFilters = {
+        @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Component.class)
+})
+@PropertySource("classpath:application-db.properties")
+public class ApplicationConfig {
+
+    @Bean
+    public ConnectionManager pool1(){					<--- Возвращаю объект типа ConnectionManager и с помощью аннотации @Bean делает из этого объекта бин
+        return new ConnectionManager("test-name", "test-pass", 23);
+    }
+}
+
+================
+
+Параметры @Bean: 
+initMethod - метод для инициализаци, теперь мы можем не указывать у ConnectionManager @PostConstructor	
+destroyMethod - метод для очистки ресурсов, теперь мы можем не указывать у ConnectionManager @PreDestroy
+value - задаем id
+
+public class ApplicationConfig {
+
+    @Bean(initMethod = "init", destroyMethod = "destroy", value = "connectionPoolBean")
+    public ConnectionManager pool1(){
+        return new ConnectionManager("test-name", "test-pass", 23);
+    }
+}

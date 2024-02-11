@@ -1,0 +1,41 @@
+Streamable - представляет собой обертку итератора, чтобы более удобно итерироваться по коллекциям который вернулись из repository
+
+Slice - наследник Streamable еще более удобный способ для итерации, мы конечно же можем проитерироваться и по обычному списку, но с помощь slice мы можем получить 
+        следующую страницу(следующий offset) с тем же самым лимитом
+
+Page  - наследник Slice, отличие заключается в том, что Page можем отобразить количество всех страниц, при этом мы его можем переписать в @Query
+==================================================================================================================================
+Практический пример Slice:
+Slice<UserEntity> findAllBy(Pageable pageable);
+  @Test
+    void testSort2() {
+
+        PageRequest pageable = PageRequest.of(0, 2, Sort.by("id"));
+        Slice<UserEntity> slice = userRepository.findAllBy(pageable);
+        slice.forEach(user -> System.out.println(user.getId()));
+
+        while (slice.hasNext()) {                           //Есть ли следующие элементы в нашей выборки
+            slice = userRepository.findAll(slice.nextPageable());//Если элементы есть, то вызывай next страницу(меняет page с 0 на 1, но size останется)
+            slice.forEach(user -> System.out.println(user.getId()));
+        }
+    }
+
+==================================================================================================================================
+Практический пример Page:
+ @Test
+    void testSort2() {
+
+        PageRequest pageable = PageRequest.of(0, 2, Sort.by("id"));
+        Page<UserEntity> slice = userRepository.findAllBy(pageable);
+        slice.forEach(user -> System.out.println(user.getId()));
+
+        while (slice.hasNext()) {                           //Есть ли следующие элементы в нашей выборки
+            slice = userRepository.findAll(slice.nextPageable());//Если элементы есть, то вызывай next страницу(меняет page с 0 на 1, но size останется)
+            slice.forEach(user -> System.out.println(user.getId()));
+        }
+    }
+
+Если нам нужно изменить стандартный count:
+    @Query(value = "select u from UserEntity u", countQuery = "select count (distinct u.firstname) from UserEntity u")
+    Page<UserEntity> findAllBy(Pageable pageable);
+======================

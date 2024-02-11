@@ -1,0 +1,16 @@
+Чтобы сформировать view нужны viewResolver и поумолчанию используеться  internalViewResolver, но мы можем заменить стандартный vierResolver, на более современный.
+К современным view Resolveram относиться, Thymeleaf, mustache.
+
+Thymeleaf используеться для динамических запросов.
+Thymeleaf должен быть в аттрибутах 
+==================================
+1. Подкючаем зависимость
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    <version>3.0.5</version>
+</dependency>
+
+2. В директории resources создаем директорию thymeleft в ней будут храниться все наши страницы которые мы отобразим клиенту(страницы должны быть строго html)
+

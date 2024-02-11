@@ -1,0 +1,26 @@
+logging:
+  level:
+    root: info
+    org.example.spring.database.connection.ConnectionManager: ERROR
+  file:
+    name: src/main/logging/logging.log
+
+================================================С помощью xml=======================================================
+Важно: название xml должно быть logback-spring.xml
+
+
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.FileAppender">
+        <file>src/main/logging/log.log</file>
+        <encoder>
+            <winthJansi>true</winthJansi>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
+
+==============================================================================================================

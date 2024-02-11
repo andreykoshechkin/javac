@@ -1,0 +1,80 @@
+===========================================================================================================================
+new JPAQuery<ПередаемТоЧтоБудемВозвращать>
+
+
+Задание: Вернуть всех сотрудников
+   
+new JPAQuery<Employee>(session).select(QEmployee.employee) <--- Селект на сотрудникв
+                .from(QEmployee.employee)		       <--- Берем сотрудников из таблице сотрудников
+                .fetch().forEach(System.out::println);	       <--- Выводим сотрудников
+        session.beginTransaction().commit();
+
+===========================================================================================================================
+
+Задание: Вернуть одну, первую компанию
+     new JPAQuery<Company>(session)
+             .select(company)
+             .from(company)
+             .limit(1)
+             .fetch().forEach(System.out::println);
+
+
+===========================================================================================================================
+
+Задание: Вернуть список работников конкретной компании
+     new JPAQuery<Employee>(session)
+                .select(employee)
+                .from(employee)
+                .where(employee.company.companyName.eq("Facebook")).fetch().forEach(System.out::println);
+
+
+        new JPAQuery<Employee>(session)
+                .select(employee)
+                .from(company)
+                .where(company.companyName.eq("Facebook"))
+                .fetch().forEach(System.out::println);
+
+
+===========================================================================================================================
+Задание: Вернуть компанию, с условием, что в  ней работает конкретный сотрудник
+
+     new JPAQuery<Company>(session)
+                .select(company)      	<-- Верни мне компанию
+                .from(employee)		    из employee
+                .where(employee.employeeInfo.firstName.eq("Petr"))
+                .fetch().forEach(System.out::println);
+        session.beginTransaction().commit();
+
+
+===========================================================================================================================
+Задание: Вернуть все выплаты, полученные сотрудниками конкретной компании(условие по имени  компании) отсортировать по имени и по размеру выплаты
+Два одинаковых запроса, но первый предпочительней
+ 
+new JPAQuery<QPayment>(session)
+               .select(payment)
+               .from(payment)
+               .join(payment.employee, employee)	<--- после запятой мы ставим альяс
+               .join(employee.company, company)		<--- к компании мы обращаемся через альяс
+               .where(company.companyName.eq("Valve"))
+               .orderBy(employee.employeeInfo.firstName.asc(), payment.amount.asc())
+               .fetch().forEach(System.out::println);
+
+
+  new JPAQuery<Payment>(session)
+                 .select(payment)
+                 .from(payment)
+                 .join(payment.employee)
+                 .join(payment.employee.company)
+                 .where(payment.employee.company.companyName.eq("Valve"))
+                 .fetch().forEach(System.out::println);
+===========================================================================================================================
+Задание: Вернуть среднию зарплату сотрудника с указаным именем и фамилией 
+    new JPAQuery<Double>(session)
+               .select(payment.amount.avg())
+               .from(payment)
+               .join(payment.employee, employee)
+               .where(employee.employeeInfo.firstName.eq("Andrey")
+                       .and(employee.employeeInfo.lastName.eq("Koshechkin")))
+               .fetch().forEach(System.out::println);
+
+

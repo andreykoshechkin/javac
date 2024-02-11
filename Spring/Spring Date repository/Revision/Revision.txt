@@ -1,0 +1,51 @@
+1. Подклчить зависимости
+  <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-envers</artifactId>
+   </dependency>
+
+2. Далее, нам нужно поставить аннотацию @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) 
+   над тем классом, над которым мы хотим вести аудит. Не забываем!!! что мы должны поствить @NotAudited над всеми коллекциями
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@RevisionEntity
+public class Revision {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @RevisionNumber
+    private Long id;
+
+    @RevisionTimestamp
+    private Long timestamp;
+}
+
+
+3. в AuditConfiguration поставить аннотацию @EnableEnversRepositories
+@Configuration
+@EnableJpaAuditing
+@EnableEnversRepositories(basePackageClasses = Main.class)   //Подключает механизм hibernate-envers + делает дополнительные запросы к тем таблицам, которые мы хотим аудитеть
+public class AuditConfiguration {
+
+    @Bean
+    public AuditorAware<String> auditorAware(){
+        return ()-> Optional.of("ADMIN");
+    }
+}
+
+
+
+===============================================
+Тест:
+
+    @Test
+    @Commit
+    void testAudit(){
+        Optional<UserEntity> entity = userRepository.findById(1L);
+        entity.get().setFirstname("ADpAD");
+        userRepository.flush();
+        System.out.println();
+    }
+

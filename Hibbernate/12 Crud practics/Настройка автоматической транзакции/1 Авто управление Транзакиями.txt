@@ -1,0 +1,38 @@
+Мы не должны управлять транзакциями в ручную.
+Мы не можем создавать прокси через DynamicProxy, так как у нас не будет нужного интерфейса но мы можем создать прокси через наследование.
+
+@RequiredArgsConstructor
+public class TransactionInterceptor {
+    /*
+     * @RuntimeType  - Ставится, потому что мы не знам какой тип будет возвращен из нашего метода interceptor
+     * @SuperCall    - Озночает, что мы будем вызывать реальный метод service! а не прокси
+     * @Origin       - вызывается у метода service
+     * */
+    private final SessionFactory sessionFactory;        //Зависимость SessionFactory необходима, так как наш TransactionInterceptor будет сам открывать и закрывать транзакии
+
+    @RuntimeType
+    public Object interceptor(@SuperCall Callable<Object> call, @Origin Method method) throws Exception {     //Callable<Object> - для вызова метода, Method - сам метод, который мы будем проверять, есть ли аннотация transactional
+        Transaction transaction = null;
+        boolean transactionStart = false;
+        if (method.isAnnotationPresent(Transactional.class)) {                               //Если над каким-нибудь методом стоит аннотация Transactional, если аннотация стоит, тогда мы можем открыть/закрыть транзакцию
+            transaction = sessionFactory.getCurrentSession().getTransaction();//Если над методом стоит аннотаеция Transactional то мы получаем транзакцию
+            if (!transaction.isActive()) {                                                        //Если транзакция не активна
+                transaction.begin();                                                              //То начни ее
+                transactionStart = true;                                                            //Если транзакция началась, поставь tru
+            }
+        }
+        Object result = null;
+        try {
+            result = call.call();       //Вызываем реальный метод
+            if (transactionStart) {
+                transaction.commit();
+            }
+        } catch (Exception exception) {
+            if (transactionStart) {         //Если транзакция не началась, сделай rollback
+                transaction.rollback();
+            }
+            throw exception;
+        }
+
+        return result;
+    }

@@ -1,0 +1,14 @@
+Когда мы пишем IT тест, то мы должны поставить аннотацию @Transactional над тестовым классос. По умолчанию, когда мы поставим аннотацию @Transactional, то после каждого  теста будет Rollback,
+мы можем изменить это поведение(не стоит этого делать), если мы изменим это поведение и поставим над тестовым классом аннотацию @Commit, то те изменения, что мы сделали в тестах 
+зафиксируются и в Базе данных.
+
+
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@BootstrapWith(SpringBootTestContextBootstrapper.class)
+@ExtendWith({SpringExtension.class})
+@Transactional
+@Commit
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+public @interface IntegrationTest {
+}

@@ -1,0 +1,28 @@
+На уровне controller транзакция открыта поумолчанию и правило хорошего тона говорит, что транзакция должны открываться только на уровне сервиса. Соответственно нам  нужно
+отключить транзакцию для контроллера. Отключение транзакции на уровне controller происходит через properties.  spring.jpa.open-in-view
+
+spring:
+  jpa:
+    open-in-view: false	<-- Отключит транзакцию на уровне controller		
+============
+
+AntPathMatcher	<-- Описывает регулярные выражения 
+
+
+
+
+@Test
+    @SneakyThrows
+    void create(){
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                .param("username","test-username")
+                .param("birthday", LocalDate.now().toString())
+                .param("firstname", "test-firstname")
+                .param("lastname","test-lastname")
+                .param("role","ADMIN")
+                .param("companyId", "1"))
+
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())       //Должен вернуть 3xx статус
+                .andExpect(MockMvcResultMatchers.redirectedUrlPattern("users/{\\d+}")); //После выполнения метода, должен перенаправить на другой url(/users/*) {\d+} Означает, что после /users/ идет число(в нашем случае это число = id)
+
+    }

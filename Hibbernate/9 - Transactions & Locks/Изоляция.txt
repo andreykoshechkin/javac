@@ -1,0 +1,26 @@
+Как установить уровень изоляции для транзакции:
+1. перейти в hibernate.config.xml 
+2. <property name="hibernate.connection.isolation">8</property>		<--- поставили 8ой (SERIALIZABLE ) уровень изоляции
+
+
+READ UNCOMMITTED - 1
+READ COMMITTED  - 2
+REPEATABLE READ -4 
+SERIALIZABLE - 8
+
+
+Уровни изолированности транзакций:
+			Фантомное чтение| Неповторяющееся чтение|Грязное чтение|Потерянное обновление
+8 SERIALIZABLE        		+	|	     +		|	+      |	  +
+4 REPEATABLE READ 		-	|	     +		|	+      |	  +
+2 READ COMMITTED 		-	|	     -		|	+      |	  +
+1 READ UNCOMMITTED		-	|	     -		|	-      |	  +
+
+
+Чем выше уровень изоляции, тем хуже производительность
+=====================================================================================================================================
+Проверка уровня изоляции:
+
+    @Cleanup var sessionFactory = getBuilder();
+        @Cleanup var session = sessionFactory.openSession();
+        session.doWork(connection -> System.out.println(connection.getTransactionIsolation()));

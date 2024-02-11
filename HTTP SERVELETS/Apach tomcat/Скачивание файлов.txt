@@ -1,0 +1,52 @@
+HTTP header для скачивания  ->>> Content-Disposition: attachment; filename="filename.jpg"
+HTTP header для  загрузки на сервер ->>> Content-Disposition: form-data; name="fieldName"; filename="filename.jpg"
+========================================================================================================================================
+
+Чтобы скачать что-то с нашего сервера, нужно установить соответствующий header. В  качестве 1ого параметра идет Content-Disposition, в качестве 2ого attachment; filename=text.txt
+Пример:
+resp.setHeader("Content-Disposition", "attachment; filename=text.txt");
+
+Далее мы должны реализовать то что будет внутри файла(в нашем случае какой-то текст) и делается этого через printWriter, который вызывается у response!
+
+Пример реализации всего класса:
+
+
+
+========================================================================================================================================
+
+@WebServlet("/download")
+public class ServletsDownload extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Content-Disposition", "attachment; filename=text.txt");
+        resp.setContentType("text/plain");
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
+        try (PrintWriter writer = resp.getWriter()) {
+            writer.write("Download txt file)))");
+        }
+    }
+}
+
+=========================================================================================================================================
+
+Скачивание ресурсного файла из intellij Idead с помощью сервера
+
+@WebServlet("/htmlDownload")
+public class ServletsDownloadHtmlExample extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Content-Disposition", "attachment; filename=filename.txt");
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        resp.setContentType("application/html");
+
+
+        try (InputStream inputStream = ServletsDownloadHtmlExample.class.getClassLoader().getResourceAsStream("HtmlExample.html");
+             OutputStream writer = resp.getOutputStream();) {
+            writer.write((inputStream.readAllBytes()));
+
+        }
+
+    }
+}
+============================================================================================================================================

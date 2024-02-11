@@ -1,0 +1,21 @@
+OrphanRemoval - при удаление сущности из колекции, эта сущность так-же будет удалена и из базы данных.
+CascadeType - означает, что делать с сущностями над которыми стоит маппинг в том случае, когда мы что-то делаем с основной сущностью 
+
+
+@Builder.Default
+@OneToMany(mappedBy = "company", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+private Set<Game> gameSet = new HashSet<>();
+
+
+
+    @Test
+    void orphanRemoval() {
+        @Cleanup SessionFactory sessionFactory = ConfigurationBuilder.getBuilder();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Company company = session.get(Company.class, 1);
+        company.getGameSet().removeIf(game -> game.getId().equals(8));
+
+        session.getTransaction().commit();
+    }

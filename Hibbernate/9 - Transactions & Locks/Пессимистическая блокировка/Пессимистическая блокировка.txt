@@ -1,0 +1,3 @@
+PESSIMISTIC_WRITE: предотвраoщает чтение, обновление или удаление данных другими транзакциями.
+PESSIMISTIC_READ(общая блокировка): только для чтения!мы не сможем делать какие-либо обновления или удаления.
+PESSIMISTIC_FORCE_INCREMENT: аналог OptimisticLockType.VERSION. В КЛАССЕ ДОЛЖНО БЫТЬ ПОЛЕ @Version

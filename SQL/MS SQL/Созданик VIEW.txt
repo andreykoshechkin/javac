@@ -1,0 +1,9 @@
+GO
+CREATE VIEW author_book_avgPages_view AS
+SELECT 
+b.name,
+b.pages,
+a.first_name + ' ' + a.last_name AS fio
+FROM book_repository.dbo.book b 
+JOIN book_repository.dbo.author_tb a ON a.id = b.author_id
+WHERE b.pages > (SELECT avg(b1.pages) FROM book_repository.dbo.book b1);

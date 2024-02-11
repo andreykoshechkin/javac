@@ -1,0 +1,50 @@
+
+===============================================================================================================================================================
+
+Не стоит ставить cascade = CascadeType.ALL над маппиногом @ManyToOne, так как при удаление user, удалиться и компания на которую этот user ссылается   
+
+@JoinColumn(name = "company_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    private CompanyEntity company;
+===============================================================================================================================================================
+В примере ниже, мы удалим и company и user который ссылается на соответствующию компанию
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = "userList")
+@EqualsAndHashCode(exclude = "userList")
+@Builder
+@Entity
+@Table(name = "company")
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "company_name")
+    private String companyName;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "companyId", cascade = CascadeType.ALL)
+    private Set<User> userList = new HashSet<>();
+
+
+      public void addUsersInCompany(Users users){
+        usersList.add(users);   //Компания хранит список users, в этот список мы добавляем users
+        users.setCompany(this); //устанавливаем текущую компанию тому users которого добавили
+    }
+}
+
+
+    @Test
+    void deleteCompanyAndUser() {
+        @Cleanup SessionFactory builder = ConfigurationUtil.getBuilder();
+        @Cleanup Session session = builder.openSession();
+        session.getTransaction();
+
+        Company company = session.get(Company.class, 4L);
+        session.delete(company);
+        session.beginTransaction().commit();
+    }

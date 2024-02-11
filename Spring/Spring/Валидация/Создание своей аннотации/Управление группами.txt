@@ -1,0 +1,41 @@
+Управление группами позволяет нам явно указать когда должна выполняться аннотация. В нашем примере, у нас есть наша аннотация @FirstNameAndLastNameIsNotEmpty и у нее указанна 
+  группа CreateAction.class. Теперь наша аннотация сработает только в тех случаях, когда мы передадим в аннотацию @Validation(CreateAction.class) 
+  (Когда мы будет выполнять update то тогда наша аннотация @FirstNameAndLastNameIsNotEmpty не будет работать)
+
+===========================================================================================================================================================================
+1. Создаем интерфейс метку, название метки должно быть таким, чтобы было понятно в каких случаях аннотация должна сработать. В нашем примере аннотация 
+   @FirstNameAndLastNameIsNotEmpty Сработает, только при создание(при регистрации).
+
+2. В нашу аннотацию передаем эту метку
+  @FirstNameAndLastNameIsNotEmpty(groups = CreateAction.class)	<-- в groups указываем интерфейс метку
+
+ Пример:
+	@Value
+	@Builder
+	@FieldNameConstants
+	@FirstNameAndLastNameIsNotEmpty(groups = CreateAction.class)
+	public class UserCreateEditDto {
+   	 Long id;
+	
+ 	   @Email
+ 	   @Size(min = 4, max = 64)
+ 	   String username;
+ 	   LocalDate birthdate;
+	   String firstname;
+}
+
+3. В userController.
+По умолчание вызывается Default.class из jakarta.validation. Занимаеться тем, что запускает все аннотации, которые не содержат группы.
+
+
+  @PostMapping
+    public String create(@Validated({Default.class, CreateAction.class})UserCreateEditDto user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("user", user);
+            return "redirect:/users/registration";
+        }
+        userService.create(user);
+        return "redirect:/users";
+    }
+

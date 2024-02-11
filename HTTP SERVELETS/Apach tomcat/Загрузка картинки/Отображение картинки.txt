@@ -1,0 +1,43 @@
+
+@WebServlet("/Servlets/*")
+public class ImageServlets extends HttpServlet {
+
+    private static final ImageService imageService = ImageService.getImageService();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String requestURI = req.getRequestURI();                                     		 //<-- Позволяет получить оставшуюся часть в пути /Servlets/оставшияся часть
+        String imagePath = requestURI.replace("/Servlets", "");      			 // Меняем /Servlets на пустое значение
+
+        imageService.getPath(imagePath).ifPresentOrElse(image -> {
+            resp.setContentType("application/octet-stream");                     		 //Если картинка есть, то устанавливаем contentType,  иначе установи статус 404
+            writeImage(image, resp);                                                   			 //Используем метод который будет считывать 
+        }, () -> resp.setStatus(404));
+
+    }
+
+
+    @SneakyThrows
+    private void writeImage(InputStream image, HttpServletResponse resp) {
+        try (image; var output = resp.getOutputStream()) {
+            int current;
+
+            while ((current = image.read()) != -1) {
+                output.write(current);
+            }
+        }
+
+    }
+
+
+}
+
+
+========
+Image Service 
+   @SneakyThrows
+    public Optional<InputStream> getPath(String imagePath) {                            //Optional с параметром InputStream позволит скачивать файлы большого размера
+        Path fullPath = Path.of(PATH, imagePath);
+        return Files.exists(fullPath) ? Optional.of(Files.newInputStream(fullPath))    //метод Files.exists позволяет узнать, существует ли наш путь
+        : Optional.empty();
+    }

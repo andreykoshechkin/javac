@@ -1,0 +1,5 @@
+Изменение значение поля но через метод:
+    
+    Method method = User.class.getDeclaredMethod("setUser", String.class);
+        method.invoke(user, "Richa");
+        System.out.println(user);

@@ -1,0 +1,21 @@
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class GameDto {
+
+    private Long id;
+    private String name;
+    private Genre genre;
+    private CompanyDto companyDto;
+}
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CompanyDto {
+
+    private String name;
+}

@@ -1,0 +1,5 @@
+    default Optional<E> findById(K id) {
+        return findById(id, Collections.emptyMap());
+    }
+
+    Optional<E> findById(K id, MapString, Object properties);

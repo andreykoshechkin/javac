@@ -1,0 +1,32 @@
+@Component
+@RequiredArgsConstructor
+public class UsersMapper implements Mappers<UserReadDto, UserEntity> {
+
+    private final CompanyMapper companyMapper;
+
+
+    @Override
+    public UserEntity transferToEntity(UserReadDto object) {
+        return UserEntity.builder()
+
+                .build();
+    }
+
+    @Override
+    public UserReadDto transferToDto(UserEntity object) {
+
+
+        CompanyReadDto company = Optional.ofNullable(object.getCompanyId())       //Обрабатываем ту ситуацию, в котором мы не найдем компанию
+                .map(companyMapper::transferToDto)
+                .orElse(null);
+
+        return UserReadDto.builder()
+                .username(object.getUsername())
+                .firstname(object.getFirstname())
+                .lastname(object.getLastname())
+                .birthdate(object.getBirthDate())
+                .role(object.getRole().name())
+                .company(company)
+                .build();
+    }
+}

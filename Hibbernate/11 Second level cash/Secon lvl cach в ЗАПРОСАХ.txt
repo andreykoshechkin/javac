@@ -1,0 +1,38 @@
+1. В hibernate.config.xml добавить пропертри <property name="hibernate.cache.use_query_cache">true</property>
+
+2. Пример:(Payment обязана быть помечена аннотаеций @Cach иначе, в кеше 2ого уровня будут только id и нам придеться образаться в бд по этим id)
+
+                session.createQuery("select p FROM Payment p where p.employee.id=:employeeId ", Payment.class)
+                        .setParameter("employeeId", 1L)
+                        .setCacheable(true)		<--Обязательно
+                        .getResultList();
+=================================================================================================
+
+Фул пример:
+    Employee employee1 = null;
+        try (var sessionFactory = ConfigurationBuilder.getBuilder()) {
+
+            try (var session = sessionFactory.openSession()) {
+                session.beginTransaction();
+
+                session.createQuery("select p FROM Payment p where p.employee.id=:employeeId ", Payment.class)
+                        .setParameter("employeeId", 1L)
+                        .setCacheable(true)		<--Обязательно
+                        .getResultList();
+
+                session.getTransaction().commit();
+            }
+
+
+            try (var session = sessionFactory.openSession()) {
+                session.beginTransaction();
+                session.createQuery("select p FROM Payment p where p.employee.id=:employeeId ", Payment.class)
+                        .setParameter("employeeId", 1L)
+                        .setCacheable(true) 		<--Обязательно
+                        .getResultList();
+
+                session.getTransaction().commit();
+
+            }
+        }
+    }

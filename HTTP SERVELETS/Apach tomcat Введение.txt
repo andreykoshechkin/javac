@@ -1,0 +1,29 @@
+Apach tomcat 		//Это web server у которого есть три основных модуля:
+				1: Catalina - контейнер для сервелетов
+				2: Cayote - http соединение
+				3: Jasper - JSP engine
+
+Основные каталоги:
+	/bin  -  Тут собран сам Apach tomcat, bash сикрипотв
+	/conf - Тут  собраны  конфигурационные файлы(Можем настроить connection pool, post итд) 
+	/lib - Тут  собраны jar файлы необходимые для Apach tomcat(как postgresql Driver для JDBC)
+	/logs - Тут  собран жизненный цикл apach tomcat
+	/webapps -  Тут будут все наши приложение, который будут работать на нашем Apach tomcat (нужно собирать в war архив)
+
+
+Установка: 
+1) Мой компьютер -> (ПКМ) свойства -> дополнительные параметры системы -> переменные среды - системные переменные -> кнопка  Создать
+   Откроется окно: Имя переменной - JAVA_HOME. Значение переменной - открыть которол и указать расположение JAVA:
+2) Зайти в папку C:\Program Files\apache-tomcat-10.0.23\conf открыть tomcat-users и дописать <user username="admin" password="admin" roles="manager-gui"/> Перед последней записью
+   Пример:
+-->
+<user username="admin" password="admin" roles="manager-gui"/>
+<!--
+  <role rolename="tomcat"/>
+  <role rolename="role1"/>
+  <user username="tomcat" password="<must-be-changed>" roles="tomcat"/>
+  <user username="both" password="<must-be-changed>" roles="tomcat,role1"/>
+  <user username="role1" password="<must-be-changed>" roles="role1"/>
+-->
+</tomcat-users>
+

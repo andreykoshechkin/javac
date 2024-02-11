@@ -1,0 +1,9 @@
+ @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doPost(req, resp);
+
+        try (BufferedReader reader = req.getReader()) {
+            Stream<String> lines = reader.lines();
+            lines.forEach(System.out::println);
+        }
+    }

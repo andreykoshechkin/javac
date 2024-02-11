@@ -1,0 +1,5 @@
+в application.properties установить
+logging:
+  level:
+    root: debug
+    org.springframework.jdbc.core: TRACE

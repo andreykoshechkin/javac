@@ -1,0 +1,25 @@
+Cookie - нужны для хранения данных пользователя на сайте(в приложении) и храняться в браузере в ввиде пары ключ-значения
+ По ключу мы можем получить сохраненное в куках значение
+
+Описание того как добавить cookie
+@WebServlet("/cookies")
+public class CookiesServlets extends HttpServlet {
+
+    private final String USER = "user_id";
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Cookie[] cookies = req.getCookies();
+
+        if (cookies == null || Arrays.stream(cookies)
+                .filter(cookie -> USER.equals(cookie.getName()))
+                .findFirst().isEmpty()) {
+            Cookie cookie = new Cookie(USER, "666");
+            cookie.setPath("/cookies");  //Устанавливаем путь по которому будут идти куки
+            cookie.setMaxAge(-1);        //Определяется в секундах. По умолчанию равен -1 это значит, что куки будут хранится только на время сеанса
+            // cookie.setSecure();       //Если мы хотим отправить Только по HTTPS
+            resp.addCookie(cookie);      //Добавляем в response cookie
+        }
+    }
+
+}

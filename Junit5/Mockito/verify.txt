@@ -1,0 +1,5 @@
+verify -- Проверяет, сколько раз вызвался метод у нашено мока
+
+Mockito.verify(userDao).delete(ANDREY.getId());             		 //Ожидаем что метод delete был вызван 1 раза
+Mockito.verify(userDao, Mockito.atLeast(2)).delete(ANDREY.getId()); 	 //Ожидаем что метод delete был вызван 2 раза
+Mockito.verify(userDao, Mockito.times(3)).delete(ANDREY.getId());	 //Ожидаем что метод delete был вызван 3 раза

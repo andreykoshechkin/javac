@@ -1,0 +1,32 @@
+В  <excludes> можно указать те классы, которые должны быть проигнорированны
+
+=====
+<plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.7</version>
+            <configuration>
+                <excludes>
+                    <exclude>org/example/dto/*</exclude>
+                    <exclude>org/example/entity/*</exclude>
+                    <exclude>org/example/exception/*</exclude>
+                    <exclude>org/example/validation/ValidationError.class</exclude>
+                    <exclude>org/example/Main.class</exclude>
+                </excludes>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>prepare-agent</id>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>generate-jacoco-report</id>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                    <phase>verify</phase>
+                </execution>
+            </executions>
+        </plugin>

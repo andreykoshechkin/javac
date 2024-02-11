@@ -1,0 +1,18 @@
+1. Тест - на проверку, вход в систему выполнен успешно, если пользователь существует.
+
+   @Test
+    void loginSuccessIfUserExist() {
+        userService.add(ANDREY);		//Добавили пользователя				
+        Optional<UserDto> login = userService.login(ANDREY.getUsername(), ANDREY.getPassword()); 
+        assertTrue(login.isPresent()); 		//Вернет true если пользователь есть
+ 	login.ifPresent(user -> assertEquals(ANDREY, user));	//Проверяем, действительно ли это тот пользователь
+
+    }
+2. Тест - размер пользователей, если мы  добавил пользователя
+@Test
+    void usersSizeIfUserAdded() {
+        userService.add(ANDREY);
+        userService.add(IVAN);
+        List<UserDto> userDtoList = userService.getAll();
+        assertEquals(2, userDtoList.size());
+    }

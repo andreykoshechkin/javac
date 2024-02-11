@@ -1,0 +1,30 @@
+Класс сокет: 	//Позволяет нам реализовать клиент на стороне java(у нас на компе)
+
+//  Inet4Address        <--- Класса, который работает с ip версией 4
+//  Inet6Address        <--- Класса, который работает с ip версией 6
+
+// outputStream         <--- Как что передаем
+// inputStream	<--- Через что получаем
+
+// outputStream.writeUTF  <--- для отправки запроса(Что передаем)
+// inputStream.readUTF()   <---для получения ответа(Что получаем)
+==========================================================================
+        InetAddress byName = Inet4Address.getByName("google.com");		<---Определяем хост
+		
+try (var socket = new Socket(byName, 80);	 				  <--- в параметрах указываем, кому отправляем запрос и по-какому порту.В наше примере мы отправляем запрос гуглу по http порту
+DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());	  <---Для того, чтобы передать запрос серверу, нужно открыть outputStream. У класса Socket, есть метод getOutputStream(который возвращает outputStream();
+   DataInputStream dataInputStream = new DataInputStream(socket.getInputStream()))  {	  <---Для того, чтобы принять запрос от серверу, нужно открыть inputStream. У класса Socket, есть метод getInputStream
+
+          
+            outputStream.writeUTF("Hello google"); 	 <--- для отправки запроса(Что передаем)
+           // inputStream.readUTF();                    		 <--- для получения ответа(Что получаем)
+            byte[] response = inputStream.readAllBytes();
+            String str = new String(response);
+            System.out.println(str);
+
+        }
+
+
+    }
+}
+==========================================================================

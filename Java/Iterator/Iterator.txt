@@ -1,0 +1,30 @@
+Iterable<T>			//Это интерфейс 
+Iteratr<T>			//Это метод который возвращает iterator и позволяет обходить коллекцию. 
+Iterator 			//Это переборщик, который позволяет проходится по колекции
+Имеет два методы: 
+				boolean hashNext() - проверяет, есть ли следующий элемент. Возвращает boolean
+				next() - Возвращает следующий элемент. 
+
+
+
+
+
+
+
+
+
+
+Iterator<Integer> iterator = list1.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+}
+
+
+listIterator<charter> nameVar = list.listIterator(list.size()); - итерация начинается с конца.
+    for (char x : txt.toCharArray()) {
+            listCharter.add(x);
+        }
+nameVar.hasPrevious() - проходится по элементам листа справа на лево.
+nameVar.previous() - выводит следующий элемент
+
+Итератор не всегда работают коректно при работе с потоками;

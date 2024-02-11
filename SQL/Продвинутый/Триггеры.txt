@@ -1,0 +1,56 @@
+Триггеры - это некая сущность, которая нужна  для того чтобы делать какие-то действия: до, после или во-время  DML операций
+
+Создание триггера:
+
+CREATE TRIGGER name_trigger BEFORE OR AFTER OR INSTEAD ON (EVENT)                   //BEFORE - выполнить до DML операций
+										   //AFTER -  выполнить после DML операций
+										   //INSTEAD OF -  выполнить во время DML операций
+										   //EVENT - какое именно действие(INSERT,UPDATE,DELETE,TRUNCATE)
+										   //EXECUTE - выбираем функцию или процедуру которую мы созадли
+
+Пример:										   
+CREATE TRIGGER audit_aircraft_trigger
+    AFTER UPDATE OR INSERT OR DELETE		//Выполни после изменения, или вставки или удаления.
+    ON aircraft FOR EACH ROW 			//Для таблицы aircraft триггер должен срабатывать для каждой строки(FOR EACH ROW )
+EXECUTE FUNCTION audit_function();		//Выбираем нашу функцию
+
+
+
+
+
+========================================================================================================================================================					  
+Создание своей функции:
+Функцию нужно создавать до триггера
+
+\FUNCTION - что-то возвращает
+\PROCEDURE - ничего не возвращает
+\New  - позволяет обращаться к данным которые сейчас вставляются в определенную строку
+\Old - позволяет обращаться к данным которые были до DML операций.
+
+
+CREATE OR REAPLECE FUNCTION name_audit() returns TRIGGER создаст повторно функцию
+
+
+CREATE FUNCTION name_audit() returns TRIGGER
+language plpgsql
+AS $$
+	begin
+	new 
+		
+	end;
+	$$
+
+Пример:
+CREATE FUNCTION audit_function() returns TRIGGER
+    LANGUAGE plpgsql AS
+$$
+BEGIN
+    insert into audit (id, table_name, date) VALUES (new.id, tg_table_name, now());
+	RETURN NULL
+
+end;
+$$;
+
+
+Удаление Триггера:
+DROP TRIGGER audit_aircraft_trigger ON flight.aircraft;

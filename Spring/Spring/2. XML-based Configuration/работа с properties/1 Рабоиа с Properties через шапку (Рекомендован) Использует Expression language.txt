@@ -1,0 +1,39 @@
+1 Нам нужно изменить шапку.
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"		<--- xmlns:context сам создаст нужный бин
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+
+2 добавить. 
+    <context:property-placeholder location="classpath:application.properties"/>
+
+
+3 добавить в bean
+ <bean id="connectionPool" class="org.example.spring.database.connection.ConnectionPool"
+          init-method="prepare"
+          destroy-method="destroy">
+
+        <constructor-arg name="username" value="${db.username}"/>	<-- Теперь username будет иметь то значение, которое указанно в application.properties
+        <constructor-arg name="password" value="${db.password}"/>	<-- Теперь password будет иметь то значение, которое указанно в application.properties
+        <constructor-arg>
+            <list>
+                <value>12.3</value>
+                <value>100.31</value>
+                <value>44.98</value>
+            </list>
+        </constructor-arg>
+
+      <constructor-arg>
+            <map>
+                <entry key="1" value="${db.url}"/>
+                <entry key="2" value="${db.url}"/>
+                <entry key="3" value="${db.url}"/>
+            </map>
+        </constructor-arg>
+    </bean>

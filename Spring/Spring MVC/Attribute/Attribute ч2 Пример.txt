@@ -1,0 +1,22 @@
+@Controller
+@RequestMapping("/app")
+@SessionAttributes("user")
+public class FirstController {
+
+    @GetMapping("/hello")
+    public String hello(@SessionAttribute("user") UserReadDto user){
+        return "/greeting/hello";
+    }
+
+    @GetMapping("/bye")
+    public String bye(@SessionAttribute("user") UserReadDto user){
+        return "/greeting/bye";
+    }
+
+    @GetMapping("/init")
+    public String init(Model model, UserReadDto user){
+        model.addAttribute("user", user);			<--Название аттрибута должно быть таким же как и название в @SessionAttributes()
+        return "greeting/init";
+    }
+
+}

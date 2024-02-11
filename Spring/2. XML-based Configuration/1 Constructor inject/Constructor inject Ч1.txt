@@ -1,0 +1,42 @@
+Constructor injection		//Позволяет создавать бины на те объекты, которые имеют другие зависимости
+
+=====================================================================================================================
+Пример: в классе есть два final поля String username, Integer password
+ 
+ public class ConnectionPool {
+    private final String username;
+    private final Integer password;
+
+    public ConnectionPool(String username, Integer password) {
+        this.username = username;
+        this.password = password;
+    }
+}
+   <bean id="connectionPool1" name="pool1, pool2" class="org.example.spring.database.connection.ConnectionPool">
+        <constructor-arg value="postgres"/> 
+        <constructor-arg value="10"/>
+    </bean>
+=====================================================================================================================
+
+=====================================================================================================================
+
+Пример: Когда в классе есть еще и коллекции
+<bean id="connectionPool1" name="pool1, pool2" class="org.example.spring.database.connection.ConnectionPool">
+        <constructor-arg value="postgres"/>		
+        <constructor-arg value="10"/>
+       
+	 <constructor-arg>
+            <list>
+                <value>1000.31</value>
+                <value>99.11</value>
+                <value>31.132</value>
+            </list>
+        </constructor-arg>
+
+        <constructor-arg>
+            <map>
+                <entry key="App" value="DriverManager"/>
+            </map>
+        </constructor-arg>
+    </bean>
+=====================================================================================================================

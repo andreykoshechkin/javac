@@ -1,0 +1,29 @@
+@MethodSource		//Используется чаще всего. Предоставляет в качестве параметров любые значения.
+			  Мы должны предоставить @MethodSource полный путь к нашему методу.
+			  Сам метод, должен быть статическим и не быть внутри вложенного класса         
+
+
+
+	@ParameterizedTest
+        @MethodSource("org.koshechkin.listTest.AppRunnerTest#getArgumentsLoginTest")
+        void loginParameterizedTest(String username, String pass, Optional<UserDto> users) {
+            userService.add(ANDREY, IVAN);
+            Optional<UserDto> login = userService.login(username, passб);
+            assertThat(login).isEqualTo(users);
+
+        }
+
+    }
+
+    static Stream<Arguments> getArgumentsLoginTest() {
+        return Stream.of(
+                Arguments.of("Andrey", "123", Optional.of(ANDREY)),
+                Arguments.of("Ivan", "1111", Optional.of(IVAN)),
+                Arguments.of("dummy", "123", Optional.empty()),
+                Arguments.of("Andrey", "dummy", Optional.empty()),
+                Arguments.of("dummy", "dummy", Optional.empty())
+
+        );
+    }
+
+Из примера выше.... Optional<UserDto> users должен быть в качестве параметра. Именно с ним мы будем сравнивать через assertThan()

@@ -1,0 +1,41 @@
+1. Добавить Jasper для работы с Jsp. Так как spring использует embedde tomcat, а он не предоставляет нам jasper, нам нужно его добавить в ручную
+2. Нужно настроить viewResolver, это делаеться через Properties
+3. Добавить View, который нам отобразить какую-то информацию
+4. Настроить handler(Обработчик)
+=================================================================================================================================================================
+
+1. <dependency>
+    <groupId>org.apache.tomcat.embed</groupId>
+    <artifactId>tomcat-embed-jasper</artifactId>
+    <version>11.0.0-M4</version>
+  </dependency>
+
+2. Создаем директорию где будет лежать JSP + в этой директории создаем сами jsp страницы
+   main -> newDirectory WEB-INF -> jsp - greeting -> hello.jsp
+   main -> newDirectory WEB-INF -> jsp - greeting -> bye.jsp
+
+3. Идем в application.yaml и с помощью spring.mvc настраиваем vierResolver
+   spring:  
+     mvc:
+      view:
+        prefix: /WEB-INF/jsp/ 	<-- Указываем место, где будет лежать JSP
+          suffix: .jsp          <-- на что заканчиваеться наш jsp файл
+
+4. Создаем класс, который будет контроллером
+@Controller  //Это аннотация всего лишь компонент, которая просто указывает что GreetingController относится к слою Controller
+public class GreetingController {
+
+    @RequestMapping(value = "/helloController", method = RequestMethod.GET)
+    private ModelAndView getHello(ModelAndView modelAndView){
+        modelAndView.setViewName("greeting/hello");
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/byeController", method = RequestMethod.GET)
+    public ModelAndView getBye(ModelAndView modelAndView){
+        modelAndView.setViewName("greeting/bye");
+        return modelAndView;
+    }
+
+}

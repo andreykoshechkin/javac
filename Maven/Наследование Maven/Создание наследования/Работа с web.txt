@@ -1,0 +1,12 @@
+Пример: 
+1. ПКМ на ROOT проект --> New --> Module --> имя web			//Так мы создадим модуль для слоя web
+   У нас должен появиться модуль database со своим pom.xml.
+   Если pom.xml модуля database серый и перечеркнут то нам нужно
+   справа, в окне maven открыть модуль, ПКМ - UNIGNORE PROJECTS 
+   --> Reload project
+
+2. Project structure --> Moduls --> ПВМ на web --> add Web
+2.1 Переименовываем директорию web в webapp и переносим ее в директорию main у модуля web
+2.2 Идем в POM.xml и меняем packaging на war (поумолчанию packaging имеет расширение jar)
+
+3. Так как главный модуль у нас pom и имеет только тъдве функции это install и deplooy то нам не нужна папка src у главного модуля ее мы удаляем

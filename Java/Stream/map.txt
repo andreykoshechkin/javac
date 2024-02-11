@@ -1,0 +1,25 @@
+map - преобразует каждый элемент потока так как мы зададим. Создаем какое - то условие
+ 
+								//Set<Integer> set1 = set.stream().map(o1 -> o1 * 2).collect(Collectors.toSet());
+								//System.out.println(set1); Каждый элемент умножит на 2
+
+
+int[] massive = {3, 8, 1, 5, 9, 12, 4, 21, 81, 7, 18};
+
+        int total = Arrays.stream(massive).filter(num -> num % 2 == 1).map(o1 ->{
+            if (o1 %3==0){
+                o1 /= 3;
+            }return o1;
+        }).reduce((acc, num)-> acc + num).getAsInt();
+        System.out.println(total);
+
+
+
+
+
+     studentList = studentList.stream().map(element -> {
+            element.setName(element.getName().toUpperCase());
+            return element;
+        }).filter(o1 -> o1.sex == 'w').sorted((o1, o2) -> o1.getAge() - o2.getAge()).toList();
+
+        studentList.forEach(System.out::println);

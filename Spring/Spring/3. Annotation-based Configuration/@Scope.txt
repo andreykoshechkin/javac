@@ -1,0 +1,14 @@
+@Scope		//Дает возможность БЕЗ XML указывать у класса каким скопом он будет, singleton or prototype
+
+
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+@Component(value = "userRep")
+public class UserRepository {
+
+    @Autowired
+    private final UserDao userDao;
+
+    public UserRepository(UserDao userDao) {
+        this.userDao = userDao;
+    }
+}

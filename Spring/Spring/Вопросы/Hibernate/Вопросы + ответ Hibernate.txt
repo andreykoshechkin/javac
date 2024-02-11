@@ -1,0 +1,7 @@
+Что такое sessionFactory - SessionFactory это по сути наш connection pool. SessionFactory как и connection pool должен быть один на всю наше приложение
+Configuration - это класс, который содержит в себе все то, что нужно для создания SessionFactory 
+Что такое session - обертка вокруг connection
+PostgresDialect - помогает hibernat'y сгенерировать дополнительные схемы, функции, view для конкретной базы данных.
+Открытие/Закрытие транзакций - hibernate не поддерживает autocommit mode, поэтому, мы должны в ручную открывать/закрывать транзакции 
+
+Entity Persisters - Entity Persisters это класс, который отвечает за операциями над сущностями и преорабузет объектно-ориентированную модель в реляционную. 

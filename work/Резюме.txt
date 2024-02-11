@@ -1,0 +1,15 @@
+Java 8+, ОПП, java code conventions
+Http/Servlets, Модель OSI, Swagger
+PostgeSQL, JDBC, JPA(Hibernate), Mapstruct
+Maven, Junit5(Mockito/assertJ), TestContainer
+slf4j(Log4j/Logback), Git, Jira, Docker
+Spring fraemwork(Boot, MVC, Test, Sequrity, Date)
+Linux, Bash 
+
+
+Ключевые навыки
+Java SE
+Java EE
+JUnit
+PostgreSQL
+Java

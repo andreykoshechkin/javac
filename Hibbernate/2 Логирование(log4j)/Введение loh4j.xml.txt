@@ -1,0 +1,25 @@
+Файлы логирования должны быть либо в properties либо xml формате. В примере ниже, мы будем использовать xml. 
+Все файлы логирования должы лежать в директории resources.
+
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">  <--- Берем лог сообщение и отправляет его куда мы укажем(в нашем случает на Console)
+        <param name="target" value="System.out"/>			<--- Лог сообщение мы увидим в System.out
+
+        <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="[%d{HH:mm:ss, SSS}] %p [%c: %L] %m%n" /> Всю расшифровку можно прочитать https://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html
+        </layout>
+    </appender>
+
+    <root>
+        <level value="info"/>   <--- Тут указываем, с какого уровня выполнять логирование(TRACE, DEBUG, INFO и тд)
+        <appender-ref ref="console"/>	<--- Указываем appender 
+    </root>
+
+</log4j:configuration>
+
+
+[%c: %L]  <<<<< %c - показывет в каком классе происходит логирование

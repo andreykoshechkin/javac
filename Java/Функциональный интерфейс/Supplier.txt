@@ -1,0 +1,10 @@
+Supplier - функциолнаяльный интерфейс, получает элемент, мы можем создать 3 объекта разом
+ public static List<Student> SupTest(Supplier<Student> s) {
+        List<Student> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            list.add(s.get());
+        }
+        return list;
+    }
+
+   List<Student> list = SupTest(() -> new Student("AS",321,31.3));

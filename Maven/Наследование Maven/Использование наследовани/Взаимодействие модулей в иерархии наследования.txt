@@ -1,0 +1,33 @@
+В pom.xml главного модуля все <dependencyManagement> , а плагины <pluginManagement>
+Внутри <dependencyManagement> мы указываем зависимости, которые должны быть доступны у потомков
+Оборачивать зависиомти в <dependencyManagement> мы ДОЛЖНЫ ТОЛЬКО У РОДИТЕЛЯ, у потомка мы оборачиваем по стандарту  в <dependencies>
+
+Пример:
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+  <dependency>  
+	 другие зависимости	
+  </dependency>
+</dependencyManagement>
+После этого все потомки не смогут использовать зависомости родителя. Это делается для того, чтобы к примеру web модуль не имел доступ к postgresql зависимости.
+
+
+Чтобы та зависимость, которая нужна конкретному модулю, стала доступна этому модулю, нам нужно просто прописать эту зависимость у нужного модуля при этом, нам не стоит 
+указывать версию, так как версия перейдет от родительского pom.xml. 
+Чтобы у зависимость появилась в папке lib нам нужно указать scope
+
+Пример: у модуля потомка
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+==========================================================================================================================================================================
+Все плагины в главном модуле должны быть обернуты в <pluginManagement>, а у потомка мы вызываем плагины как обычно

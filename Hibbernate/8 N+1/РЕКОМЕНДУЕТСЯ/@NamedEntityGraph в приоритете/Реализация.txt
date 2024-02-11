@@ -1,0 +1,33 @@
+@NamedEntityGraph реализация одной сущности (на это способен и @FetchProfile):
+==========================================================================================================================================
+@Cleanup var sessionFactory = ConfigurationBuilder.getBuilder();
+        @Cleanup var session = sessionFactory.openSession();
+        session.getTransaction();
+        
+        
+   	 Map<String, Object> graph = Map.of(
+                GraphSemantic.LOAD.getJpaHintName(), session.getEntityGraph("thisEmployeeGraph")
+        );
+
+        var employee = session.find(Employee.class, 1L, graph);		<--- метод get не подойдет, так как get не пердоставляет EntityGraph API
+
+        System.out.println(employee.getCompany().getCompanyName());
+        System.out.println(employee.getProfiles().size());
+        session.beginTransaction().commit();
+
+==========================================================================================================================================
+
+@NamedEntityGraph реализация в HQL, когда нам нужно получить несколько сущностей (@FetchProfile сделать это не сможет):
+
+
+        @Cleanup var sessionFactory = ConfigurationBuilder.getBuilder();
+        @Cleanup var session = sessionFactory.openSession();
+        session.getTransaction();
+
+        var select = session.createQuery("select e from Employee e where 1=1 ", Employee.class)
+                .setHint(GraphSemantic.LOAD.getJpaHintName(), session.getEntityGraph("thisEmployeeGraph"))
+                .list();
+
+        select.forEach(it -> System.out.println(it.getCompany().getCompanyName()));
+        select.forEach(it -> System.out.println(it.getProfiles().size()));
+        session.beginTransaction().commit();

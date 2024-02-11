@@ -1,0 +1,20 @@
+@CsvFileSource чаще используется, когда мы работаем с БД
+
+1)В директории test создаем папку resources,в ней создаем файл с расширением .csv и пишем:
+USERNAME,PASSWORD
+Andrey,123
+Ivan,123
+
+    
+@ParameterizedTest
+@CsvFileSource(resources = "/login-arguments.csv", delimiter = ',', numLinesToSkip = 1)
+        void loginParametrizedTest(String username, String pass) {
+            userService.add(ANDREY, IVAN);
+            Optional<UserDto> login = userService.login(username, pass);
+            assertThat(login).isEqualTo(null);
+
+        }
+
+resources = "/login-arguments.csv" - указываем путь где лежит .csv  файл
+delimiter = ',' - указываем делиметр
+numLinesToSkip = 1 - пропустит первую строчку(Username)

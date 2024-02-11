@@ -1,0 +1,7 @@
+filet - Отфильтровывает записи, возвращает только записи, соответствующие условию
+
+    								//Set<String> set1 = set.stream().filter(o1 -> o1.length() < 7).collect(Collectors.toSet());
+      								//System.out.println(set1); Вернет только те элементы, длина который меньше 7
+								
+								//list = list.stream().filter(o1 -> o1.getAge() < 25 && o1.getAvgGrade() > 9).toList();
+       								  System.out.println(list);  Вернет только те элементы(студентов), возраст которых < 25 и средОценка > 9

@@ -1,0 +1,16 @@
+Spring Data JPA дает возможность делать запросы в базу данных 3мя разными способами:
+
+1. С помощью методов запросов, которые позволяют нам манипулировать данными, получая запросы от имен методов. Для реализации, наш репозиторий должен реализовать один из
+   следующих интерфейсов:
+   1. JpaRepository
+   2. CrudRepository
+   3. Repository 
+   4. SimpleRepository
+
+
+2. С помощью аннотации @Query, которая предоставляет нам возможно создавать hql запросы прямо над методом.
+    @Query("select u FROM UserEntity u WHERE u.firstname like %:firstname% and u.lastname like %:lastname%")
+     List<UserEntity>findAllBy(String firstname, String lastname);
+
+
+3. Реализация собственого репозитория - репозитория со своими методами

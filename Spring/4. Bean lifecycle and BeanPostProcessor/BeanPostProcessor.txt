@@ -1,0 +1,54 @@
+Object bean - Тот класс, в который мы хотим внедрить зависимости
+
+1. Пример: 
+ 1.1 Описание: Логирование перед инициализацией бина
+   public class CustomLoggingBeanPostProcessor implements BeanPostProcessor {
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        // Логирование перед инициализацией бина
+        System.out.println("Before Initialization of Bean: " + beanName);
+        return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        // Логирование после инициализации бина
+        System.out.println("After Initialization of Bean: " + beanName);
+        return bean;
+     }
+ }
+
+2. Пример:
+ 2.1 Описание: Нужно внедрить зависимости, которые отмечены соответствующей аннотацией
+  //BeanPostProcessor - интерфейс, который позволяет создать кастомный BeanPostProcessor.
+//ApplicationContextAware - интерфейс, который позволяет обратиться к applicationContext и взять бин из applicationContext.
+public class CustomBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware {
+
+    private ApplicationContext applicationContext;
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+
+        //Берем все поля у класса
+        Arrays.stream(bean.getClass().getDeclaredFields())
+
+                //Ставим условия, что нам нужны только те поля, которые отмечены аннотацией CustomInjectBean
+                .filter(field -> field.isAnnotationPresent(CustomInjectBean.class))
+
+                //Проходимся в цикле по всем полям, достаем их из context и инициализируем их
+                .forEach(files -> {
+
+                    // Из applicationContext берем bean (вопрос какой??) (files.getType() вернет поля соответствующего класса. Из нашего примера вернет два поля, 1-ConnectionPool 2-BaseRepository)
+                    Object beanToInject = applicationContext.getBean(files.getType());
+                    ReflectionUtils.makeAccessible(files);
+                    ReflectionUtils.setField(files, bean, beanToInject);
+                });
+        return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+}

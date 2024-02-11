@@ -1,0 +1,7 @@
+
+Для работы с историей ревизии
+RevisionRepository<СущностьНадКоторойМыВедемРевизию, типIdСущности, ТипIDуРевизии>
+
+public interface UserRepository extends JpaRepository<UserEntity, Long>, RevisionRepository<UserEntity, Long, Long> {
+
+}

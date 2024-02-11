@@ -1,0 +1,63 @@
+Exchanger: 					//Синхронизатор, который позволяет обмениваться данными между потоками.Класс
+						
+Метод: 						//exchange() этот метод заменяет данные. в параметрах нужно передать, что меням, а переменная должны быть тем на что меняем. 
+						message = exchanger.exchange(message);
+
+
+public class ExchangerEx {
+    public static void main(String[] args) {
+        Exchanger<String> ex = new Exchanger<>();
+        Thread th1 = new Thread(new OneThread(ex));
+        Thread th2 = new Thread(new TwoThread(ex));
+        th1.start();
+        th2.start();
+
+    }
+}
+
+class OneThread implements Runnable {
+
+    Exchanger<String> exchanger;
+
+    String message = "Поток #1 Apple";
+
+    public OneThread(Exchanger<String> exchanger) {
+        this.exchanger = exchanger;
+
+    }
+
+
+    @Override
+    public void run() {
+        try {
+            message = exchanger.exchange(message);
+            System.out.println("Thread #1 " + message);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+class TwoThread implements Runnable {
+
+    Exchanger<String> exchanger;
+
+    String message = "Поток #2 Nokia";
+
+    public TwoThread(Exchanger<String> exchanger) {
+        this.exchanger = exchanger;
+    
+    }
+
+
+    @Override
+    public void run() {
+        try {
+            message = exchanger.exchange(message);
+            System.out.println("Thread #2 " + message);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+}

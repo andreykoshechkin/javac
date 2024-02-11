@@ -1,0 +1,40 @@
+Способы решения проблемы Non repeatable read (last commit wins) :
+1: Указать версионность. Для этого нам нужно:
+   1.1: В таблице базы данных, нужно создать целочисленную колонку version 
+   1.2  В сущности создать поле version + ставим аннотация  @Version
+   Примечание: если мы хотим использовать @Version, то ставить аннотация @OptimisticLocking(type = OptimisticLockType.VERSION) не обезательно. 
+
+2: Как работает аннотация @Version:
+   Когда первая транзация делает update + commit поле в бд version делает инкремент и когда вторая транзация сделет update + commit мы получим exception, 
+   потому-что, вторая транзакция делает условие where с версионностью 0, но первая транзакция уже изменила этот нолик на единицу, соответственно, нам вернулось ноль строк
+
+
+
+Пример того как должна выглядеть сущность:
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = {"companyId", "employeeChats", "payments"})
+@Entity
+@Builder
+@OptimisticLocking(type = OptimisticLockType.VERSION)	//Можно и не ставить. Hibernate впервую очередь будет искать поле, которое помечено аннотацией @Version
+public class Employee implements BaseEntity<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @JoinColumn(name = "company_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Company companyId;
+
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Embedded
+    private PersonalInformation personalInformation;
+
+    @Version
+    private Long version;
+ 

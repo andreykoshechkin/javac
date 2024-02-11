@@ -1,0 +1,9 @@
+@RequiredArgsConstructor
+public class GameService {
+    private final RepositoryGame repositoryGame;
+    private final MapperGameToDto mapperGameToDto;
+
+    public Optional<GameDto> findById(Long id) {
+        return repositoryGame.findById(id).map(mapperGameToDto::transfer);
+    }
+}

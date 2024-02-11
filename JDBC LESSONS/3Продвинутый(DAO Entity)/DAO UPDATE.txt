@@ -1,0 +1,36 @@
+psvm{
+        Optional<TicketEntity> optionalTicketEntity = findById(12);
+        optionalTicketEntity.ifPresent(age ->{
+            age.setAge(99);
+            updateSql(age);
+        });
+    }
+}
+
+public static void updateSql(TicketEntity ticket) {
+        String update = """
+                UPDATE ticket SET 
+                passenger_no = ?,
+                passenger_name = ?,
+                age = ?,
+                flight_id = ?,
+                seat_no = ?,
+                cost = ?
+                 WHERE id = ?
+                """;
+        try (Connection connection = GetConnection.loadDriver();
+             PreparedStatement preparedStatement = connection.prepareStatement(update)) {
+            preparedStatement.setString(1, ticket.getPassenger_no());
+            preparedStatement.setString(2, ticket.getPassenger_name());
+            preparedStatement.setInt(3, ticket.getAge());
+            preparedStatement.setInt(4, ticket.getFlight_id());
+            preparedStatement.setString(5, ticket.getSeat_no());
+            preparedStatement.setDouble(6, ticket.getCost());
+            preparedStatement.setInt(7, ticket.getId());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }

@@ -1,0 +1,40 @@
+<repositories>
+     <repository>
+          <id>com.e-iceblue</id>
+          <name>e-iceblue</name>
+          <url>http://repo.e-iceblue.com/nexus/content/groups/public/</url>
+     </repository>
+</repositories>
+<dependencies>
+     <dependency>
+          <groupId>e-iceblue</groupId>
+          <artifactId>spire.pdf.free</artifactId>
+         <version>2.6.3</version>
+     </dependency>
+</dependencies>
+//Создайте экземпляр PdfDocument
+        PdfDocument doc=new PdfDocument();
+        //Загрузите файл PDF
+        doc.loadFromFile("document1.pdf");
+
+        //Создать экземпляр StringBuilder
+        StringBuilder sb=new StringBuilder();
+
+        PdfPageBase page;
+
+        //Перебирайте страницы PDF и получайте текст каждой страницы
+        for(int i=0;i<doc.getPages().getCount();i++){
+            page=doc.getPages().get(i);
+            sb.append(page.extractText(true));
+        }
+        FileWriter writer;
+        try {
+            //Написать текст в текстовый файл
+            writer = new FileWriter("ExtractText.txt");
+            writer.write(sb.toString());
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        doc.close();

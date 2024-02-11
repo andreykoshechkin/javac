@@ -1,0 +1,31 @@
+1.  В Pom.xml
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>	<--- тут хранятся версии разных зависимостей
+        <version>3.0.4</version>
+    </parent>
+
+    <dependency>
+            <groupId>org.springframework.boot</groupId>		<--Сам spring-boot
+            <artifactId>spring-boot-starter</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+
+     <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+
+
+2.
+@SpringBootApplication	
+public class Main {
+    public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);	
+    }
+}
+
+SpringApplication <---Основной класса для запуска приложений через Spring boot
+run 		<--Запуск

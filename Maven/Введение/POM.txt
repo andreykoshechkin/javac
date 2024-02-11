@@ -1,0 +1,33 @@
+В терминале: mvn compiler:compile там мы скомпилирует исходники
+	     mvn clean install так мы тоже скомпилируем 
+Транзизктивная зависимость - когда одна зависимость зависит од другой
+
+
+ <contributors>
+    <contributor></contributor>		<--- Используется для какой-то мета информации(имя программиста, почта и тд) не влияет на сам проект
+  </contributors>
+
+
+ <dependencies>
+    <dependency></dependency>		<--- Используется для подключений зависимостей
+  </dependencies>
+
+ 
+<scope>compile</scope>			<--- Указывает, что зависимоть нужна для компиляции(compile не указывается потому что идет по умолчанию)
+<scope>provide</scope>			<--- Указывает, что зависимость бует предоставлена кем-то другим
+					     (Пример: jakarta.servlet, будет пердоставлена apache, так как эта зависимость лежит в директории lib у apache tomcat)
+<scope>runtime</scope>			<--- Указывает, что зависимость нужна только при выполнении
+<scope>test</scope> 			<--- Указываеться, что зависимость нужна для тестом(Junit и тд)
+
+
+
+ <exclusions>					<---  <exclusions> позволяет использовать более новую зависимость 	
+    <exclusion>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </exclusion>
+ </exclusions>
+ 
+
+
+

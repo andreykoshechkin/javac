@@ -1,0 +1,16 @@
+(DataInputStream и DataOutputStream - предназначенны для чтение приметивов
+
+ try (DataInputStream dataIn = new DataInputStream(new FileInputStream("C:\\Users\\79964\\Desktop\\datatxt.txt"));
+             DataOutputStream dataOut = new DataOutputStream(new FileOutputStream("C:\\Users\\79964\\Desktop\\datatxt.txt"))) {
+
+            dataOut.writeInt(23);
+            dataOut.writeDouble(1321.3 * 2);
+
+            System.out.println(dataIn.readInt());
+            System.out.println(dataIn.readDouble() * 0);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }

@@ -1,0 +1,40 @@
+Валидация должна происходить на уровне service(Аннотации мы должны ставить над Dto).
+
+@NotNull - валидирует поле
+@Valid - вилидирует вложенное поле
+====================================================================================================
+import javax.validation.constraints.NotNull;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class GameDto {
+
+    private Long id;
+    @NotNull 	<--Теперь поле genre будет проходить валидацию
+    private String name;
+    @NotNull	<--Теперь поле genre будет проходить валидацию
+    private Genre genre;
+    private Long companyId;
+}
+
+================
+@RequiredArgsConstructor
+public class GameService {
+
+    private final RepositoryGame repositoryGame;
+
+    private final MapperCreateGameToEntity mapperCreateGameToEntity;
+
+    public Long create(GameDto gameDto) {
+		   try (var validatorFactory = Validation.buildDefaultValidatorFactory()) {
+            var validator = validatorFactory.getValidator();
+            var validateResult = validator.validate(gameDto);
+            if(!validateResult.isEmpty()){
+                throw new ConstraintViolationException(validateResult);
+            }
+        }
+        var entity = mapperCreateGameToEntity.transfer(gameDto);
+        return repositoryGame.save(entity).getId();
+    }
+}

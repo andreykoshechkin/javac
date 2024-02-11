@@ -1,0 +1,28 @@
+1: Создаем интерфейс
+
+public interface Mapper<F, T> {
+    T transformation(F obj);
+}
+
+
+2:Создаем класс в котором будет реализованна логика  по преобразованию, этот класс должен быть синглтоном
+
+public class MapperTransformation implements Mapper<CreateUserDTO, UsersEntity>{
+     @Override
+    public UsersEntity transformation(CreateUserDTO obj) {
+
+        return UsersEntity.builder()
+           .firstName(obj.getFirstName())
+                .lastName(obj.getLastName())
+                .email(obj.getEmail())
+                .birthday(obj.getBirthday())		<---В сущности поле birthday является Date, а в DTO string, поэтому нам нужно создать util класс который преобразует string date в localData 
+                .password(obj.getPassword())
+                .genders(Genders.valueOf(obj.getGenders()))
+                .role(Role.valueOf(obj.getRole()))
+                .build();
+    }
+}
+
+
+
+ .birthday(DataTimeFormatterUtil.format(obj.getBirthday())) После создание утилитного класса, поле birthday Должен быть таким

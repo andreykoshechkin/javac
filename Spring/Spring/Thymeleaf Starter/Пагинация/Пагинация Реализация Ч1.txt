@@ -1,0 +1,39 @@
+1. Создаем класс в пакете dto
+@Value
+public class PageResponse <T>{
+
+    List<T> content;
+    MetaDate metaDate;
+
+    public static <T> PageResponse<T> of(Page<T> page){
+        MetaDate metadate = new MetaDate(page.getNumber(), page.getSize(), page.getTotalElements());
+        return new PageResponse<>(page.getContent(), metadate);
+    }
+
+    @Value
+    public static class MetaDate{
+        int page;          //Страница
+        int size;          //Количество записей на одной странице
+        long totalElement; //Количество страниц на сайте
+    }
+}
+2. Мой UserRepository должен реализовать интерфейс QuerydslPredicateExecutor<T>
+
+
+3. В UserService изменяем метод findAll
+
+
+    public Page<UserReadDto> findAll(UserFilter userFilter, Pageable pageable) {
+        Predicate predicate = QPredicate.builder()
+                .add(userFilter.firstname(), userEntity.firstname::equalsIgnoreCase)
+                .add(userFilter.lastname(), userEntity.lastname::equalsIgnoreCase)
+                .add(userFilter.birthdate(), userEntity.birthdate::gt)
+                .whereOr();
+        return userRepository.findAll(predicate, pageable).map(usersMapper::transferToDto);
+
+	//findAll(predicate, pageable)	<-- мы получили метод findAll с параметрами predicate, pageable из-за СМОТРЕТЬ ПУНКТ 2
+	//если мы в findAll(predicate, pageable) передадим predicate в котором не условий, то мы получим exception, так работает QuerydslPredicateExecutor. Чтобы этого избежать
+	  нам нужно изменить Qpredicate 
+    }
+
+

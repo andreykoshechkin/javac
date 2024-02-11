@@ -1,0 +1,37 @@
+1. Подключить зависимость
+
+      <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.1.214</version>
+            <scope>test</scope>
+        </dependency>
+
+2. Настроить application-test.yaml
+     jpa:
+    hibernate:
+      ddl-auto: update		<-- ddl-auto значит, что для накатыванием DDl схемы будет заниматься hibernate (hibernate будет выступать как миграционный фреймворк)
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+3. В директорию для тестов test/java/resources/sql/ должен лежать скрипт, который будет накатывать данные(делать insert)
+   
+
+Поставить над тестовым классом аннотацию @SQL.
+
+Пример:
+@Sql({"classpath:sql/init.sql"})
+@IntegrationTestRun
+@RequiredArgsConstructor
+public class UserRepositoryIT {
+
+    private final UserRepository userRepository;
+    private final CompanyRepository companyRepository;
+
+    @Test
+    void testProjection(){
+        List<UserProjection> allProjection = userRepository.findAllProjection(1);
+        allProjection.forEach(System.out::println);
+    }

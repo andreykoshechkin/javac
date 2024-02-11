@@ -1,0 +1,27 @@
+    public static Optional<TicketEntity> findId(Long id) {
+
+      
+
+        try (Connection con = MyConnection.getConn();
+             PreparedStatement preparedStatement = con.prepareStatement(FIND_BY_ID)) {
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            TicketEntity ticket = null;			<--- Создаем объект, из resultSet.
+
+            if (resultSet.next()) {
+                ticket = new TicketEntity(		<--- Заполняем конструктор тем данными, которые мы получили из ResualtSet
+                        resultSet.getLong("id"),
+                        resultSet.getString("passenger_no"),
+                        resultSet.getString("passenger_name"),
+                        resultSet.getLong("flight_id"),
+                        resultSet.getString("seat_no"),
+                        resultSet.getBigDecimal("cost1")
+                );
+            }
+
+            return Optional.ofNullable(ticket) ;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }

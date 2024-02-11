@@ -1,0 +1,50 @@
+Ситуация когда мы хотим в таблице хранить не саму сущность, а лишь информацию(Embedebbl) о другой сущности. То есть, company_locale будет хранить информацию о языках, 
+и  ссылаться на таблицу company.
+
+=============================================
+joinColumns = @JoinColumn(name = "id_company") <--- если имя в базе данных отличается(в нашем случае, в таблице forgen key назвается id_company)
+=============================================
+1. В cущность company добавить 
+    @ElementCollection
+        @ElementCollection
+    @CollectionTable(name = "company_locale", joinColumns = @JoinColumn(name = "company_id"))
+    private List<CompanyLocales> companyLocales = new ArrayList<>();
+
+    private List<CompanyLocale> companyLocales = new ArrayList<>();
+
+2. Создать встраиваемую сущность в которой будет информация
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Embeddable
+public class CompanyLocale {
+
+    private String lang;
+    private String info;
+}
+
+3.
+
+  @Test
+    void checkElementCollection() {
+        @Cleanup var sessionFactory = ConfigurationBuilder.getBuilder();
+        @Cleanup var session = sessionFactory.openSession();
+        session.getTransaction();
+
+        var employee1 = session.get(Employee.class, 1L);
+        employee1.getEmployeeLang().add(EmployeeLang.of("Java"));
+
+        session.beginTransaction().commit();
+    }
+
+БД:
+CREATE TABLE lang
+(
+    employee_id BIGINT REFERENCES employee(id),
+    lang VARCHAR (32),
+    PRIMARY KEY (employee_id, lang)
+
+)
+
+

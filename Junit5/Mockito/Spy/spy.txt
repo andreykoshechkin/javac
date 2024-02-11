@@ -1,0 +1,6 @@
+spy - тот же mock но внутри себя содержит реалый объект, что позволяет сделать оболочку какого-то класса    
+@BeforeEach
+    void prepare() {
+        this.userDao = Mockito.spy(UserDao.class); 	<-- сделали оболочку класса userDao
+        this.userService = new UserService(userDao);
+    }

@@ -1,0 +1,6 @@
+Запуск тестов из командной строки происходит благодоря wrapper'am
+В терминале пишем: mvn wrapper:wrapper -Dmaven=ВерсияMaven. В проекте у нас должна появиться директория .mvn с maven.wrapper
+
+2ой способ создания врапера:
+Описание - https://github.com/takari/maven-wrapper
+В в окне maven справа -> Execute maven goal -> mvn wrapper:wrapper

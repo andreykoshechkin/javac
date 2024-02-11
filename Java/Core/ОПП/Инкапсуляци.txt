@@ -1,0 +1,10 @@
+
+Если в методер get в качестве возвращаемого значение будет изменяемый тип данных, мы сможем изменять нашу переменную через getter, что не есть 
+хорошо...чтобы это избежать, нам нужно в get методе возвращанть копию переменной типа StringBuilder.
+
+к примеру StringBuilder...если наша переменная типа StringBuilder, то не смотря на Getter and Setter мы можем изменить значение переменной
+Пример
+    public StringBuilder getName() {
+        StringBuilder sb = new StringBuilder(name);
+        return sb;
+    }

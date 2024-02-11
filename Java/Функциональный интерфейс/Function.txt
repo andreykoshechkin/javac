@@ -1,0 +1,14 @@
+Когда нам на вход нужно подать один тим данных а получить другой  
+
+   public static Double GetAvg(List<Student> list, Function<Student, Double> function) {
+        double num = 0;
+        for (Student x : list) {
+            num += function.apply(x);
+
+        }
+        num = num / list.size();
+        return num;
+    }
+
+     double total = GetAvg(listStudent, o1 -> (double)o1.getAge());
+        System.out.println(total);

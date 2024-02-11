@@ -1,0 +1,42 @@
+Predicate - это функциональный интерфейс, который позволяет делать выборку, создавать условие
+
+public class Main {
+    public static void Info(List<Student> l1, Predicate<Student> pre) {
+        for (Student x : l1) {
+            if (pre.test(x)) {
+                System.out.println(x);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Student s1 = new Student("Andrey", 25, 8.6);
+        Student s2 = new Student("Vlad", 23, 7.3);
+        Student s3 = new Student("Alex", 22, 5.2);
+
+        List<Student> listStudent = new ArrayList<>();
+        listStudent.add(s1);
+        listStudent.add(s2);
+        listStudent.add(s3);
+
+        Info(listStudent, (o -> o.getAge() < 25));
+
+    }
+}
+
+
+У List'a есть метод removeIf, который в позволяет удалять элементы с помощью Predicate
+ List<String> integerList = new ArrayList<>();
+        integerList.add("HELLO");
+        integerList.add("WORLD");
+        integerList.add("PRIVET");
+        integerList.add("MIR");
+        integerList.add("VICTOR");
+
+        integerList.removeIf(o->o.length()> 5);
+        System.out.println(integerList);
+
+negate() - логическое отрицание
+    Predicate<String> pre = str -> str.startsWith("A");
+        GetPre(integerList, pre.negate());  - выведит все слова которые начинаются не на А 
+

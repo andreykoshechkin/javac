@@ -1,0 +1,4 @@
+    Map<Integer, List<Person>> collect = list.stream()
+                .collect(Collectors.groupingBy(Person::getAge));	<-- Collectors.groupingBy вернет меп
+
+        System.out.println(collect);

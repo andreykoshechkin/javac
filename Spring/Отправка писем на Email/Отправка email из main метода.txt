@@ -1,0 +1,31 @@
+@SpringBootApplication
+public class MainApplication {
+
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(MainApplication.class, args);
+
+        JavaMailSender mailSender = context.getBean(JavaMailSender.class);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo("recipient@example.com");
+        message.setSubject("Subject");
+        message.setText("Message text");
+
+        mailSender.send(message);
+    }
+}
+
+
+В этом примере:
+
+Мы используем аннотацию @SpringBootApplication для настройки Spring Boot приложения.
+
+В методе main создаем контекст Spring с помощью SpringApplication.run().
+
+Получаем бин JavaMailSender из контекста, который автоматически создается при использовании @SpringBootApplication.
+
+Создаем объект SimpleMailMessage, устанавливаем параметры письма и отправляем его с помощью mailSender.send(message).
+
+Пожалуйста, обратите внимание, что для выполнения данного кода вам потребуется настроить параметры почты в файле application.properties (как указано в предыдущем ответе).
+
+Имейте в виду, что отправка почты из main метода может быть полезной для отладки и тестирования, но в реальных приложениях рекомендуется использовать компоненты Spring, такие как сервисы или контроллеры, для обработки бизнес-логики и отправки писем.

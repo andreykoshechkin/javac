@@ -1,0 +1,26 @@
+Request	- Запрос
+Response - Ответ
+
+HttpClient	//Класс, который выступает клиентом к веб серверу(к серверу который принимает http запросы). Имеет паттерн newBuilder и newHttpclient.
+		 newHttpclient создаст HttpClient с дефолтными настройками.
+		В параметрах newBuilder() можно указать URI. 
+		Для отправки запрос к серверу нужно использовать метод .send()
+
+Методы newBuilder:
+.version()  	<--- позволяет указать версию http
+.authenticator 	<---Позволяет провести аунтентификацию пользователя
+
+================================================================================================================
+Пример создания HttpClient с паттерном newBulder:
+
+HttpClient httpclient = HttpClient.newBuilder().version(Версия http).build
+
+================================================================================================================
+В параметрах newBuilder() можно указать URI. 
+Как отправить запрос серверу:
+URI.create <--- Создает запрос 
+
+	HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
+	HttpRequest httpRequest = HttpRequest.newBuilder(URI.create("https://www.google.com")).GET().build();
+	HttpResponse<String> send = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+	System.out.println(send.body());

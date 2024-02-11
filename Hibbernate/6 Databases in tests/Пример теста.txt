@@ -1,0 +1,54 @@
+@Slf4j
+public class AccountingForOrdersRepositoryTest {
+
+    private AccountingForOrdersRepository accountingForOrdersRepository;
+    private static SessionFactory sessionFactory;
+    private Session session;
+
+    @BeforeAll
+    public static void beforeAll() {
+        log.warn("launch test container");
+        sessionFactory = TestContainerRunner.runContainer();
+    }
+
+    @BeforeEach
+    public void beforeEach() {
+        session = sessionFactory.openSession();
+        log.warn("open session {}", session);
+
+        Transaction transaction = session.beginTransaction();
+        log.warn("transaction start {}", transaction);
+
+        accountingForOrdersRepository = new AccountingForOrdersRepository(session);
+        log.warn("accountingForOrdersRepository initialization {}", accountingForOrdersRepository);
+    }
+
+
+    @Test
+    public void test() {
+        Customer alex = getDataCustomer("Alex", "Sidorov");
+        Customer bob = getDataCustomer("Alex", "Sidorov");
+
+        List<Customer> customerList = new ArrayList<>();
+        customerList.add(alex);
+        customerList.add(bob);
+
+        List<Customer> customer = accountingForOrdersRepository.getCustomer();
+        Assertions.assertThat(customer).hasSize(1);
+
+    }
+
+
+    @AfterAll
+    public static void afterAll() {
+        sessionFactory.close();
+        log.warn("session factory close {}", sessionFactory);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        session.getTransaction().commit();
+        log.warn("transaction commit");
+        session.close();
+        log.warn("session is close {}", session);
+    }

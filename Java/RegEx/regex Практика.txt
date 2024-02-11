@@ -1,0 +1,13 @@
+    String str = "dslkjfs 0Xff ;das 0x21 0x12 0XAB";
+        Pattern pattern = Pattern.compile("0[Xx][0-9a-fA-F][0-9a-fA-F]");
+
+        Matcher matcher = pattern.matcher(str);
+        while (matcher.find()){
+            System.out.println(matcher.group());
+        }
+
+
+("0[Xx][0-9a-fA-F][0-9a-fA-F]");
+0 -- начинается с нуля
+[Xx] --- После нуля идет либо маленкая x либо большая
+[0-9a-fA-F] --- После идет либо числа от 0-9 либо a-f либо A-F

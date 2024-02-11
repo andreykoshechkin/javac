@@ -1,0 +1,63 @@
+1. Чтобы возвращать только данные, тобишь, использовать REST, а не всю html страницу как это было с modelAndView, мы должны установить ModelAndView в null
+   тогда мы отключим viewResolver. Чтобы это реализовать, нужно поставить аннотацию @ResponseBody над нашими методами. 
+
+Пример:
+
+@RestController         //Заменяет и @Controller и @ResponseBody. Если мы ставим  @RestController то @Controller и @ResponseBody можно и не ставить
+//@ResponseBody           //Аннотация вернет данные как есть, если это строка то вернет строку, если это объект то вернет этот объект, по умолчанию это JSON
+//@Controller
+@RequestMapping("/api/v1/users")          //api говорит, что это rest, v1 это версия <--Именно такой должен быть url в REST
+@RequiredArgsConstructor
+public class UserRestController {
+
+    private final UserService userService;
+    private final CompanyService companyService;
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)    //Consumes - в каком фомрате клиент отправляет данные. Produce - указывается, в каком формате сервер вернет данные клиенту
+     private Pagination<UserReadDto> findAll(UserFilter filter, Pageable pageable) {
+        Page<UserReadDto> page = userService.findAll(filter, pageable);
+        return Pagination.of(page);
+    }
+
+    @GetMapping("/{id}")
+    public UserReadDto findById(@PathVariable("id") Long id) {
+        return userService.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+
+     //Данные со страницы регистрации мы отправляем не с формы, а с помощью json, 
+      поэтому мы должны использовать аннотацию @RequestBody, которая говорит, что данные придут в теле запроса
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)            
+    public UserReadDto create(@Validated(value = {Default.class, CreateAction.class}) @RequestBody UserCreateEditDto user) {
+        return userService.create(user);
+    }
+
+
+    @PutMapping("/{id}")
+    public UserReadDto update(@PathVariable("id") Long id, @Validated @RequestBody UserCreateEditDto user) {
+
+        return userService.update(id, user)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)  //Если мы удалили то нам возвращать нечего
+    public String delete(@PathVariable("id") Long id) {
+        if (!userService.delete(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return "redirect:/users";
+    }
+
+}
+
+=========================
+
+Второй способ метода delete
+@DeleteMapping("/{id}/delete")
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+        return userService.delete(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+    }

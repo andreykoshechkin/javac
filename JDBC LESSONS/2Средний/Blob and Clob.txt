@@ -1,0 +1,13 @@
+Blob 		//Структура данных переводиться как бинарный большой объект. В эту структура данных можно засунуть все что пердставленно в бинарном ввиде(единицы и нули). 
+Clob		//Структура данных переводиться как симовьный большой объект . В эту структура данных можно засунуть все что пердставленно ввиде символов(Картинку).
+
+В postgresql эти структуры данных отсутствуют. Вместо них есть bytea и TEXT. Собственно, bytee и TEXT являются аналогами Blob и Clob.
+
+createBlob()	//Создаст blob объект.
+setBytes()	//Записывает объект в blob объект.
+setBlob()	//Метод у PreparedStatement, который позволяет передать какой-то значение вместо ? при запросе.
+ 
+   UPDATE flight.aircraft SET image = ? WHERE id = 2;
+   PreparedStatement preparedStatement = connection.prepareStatement(loadImage)) {
+   preparedStatement.setBytes(1, Files.readAllBytes(Path.of("C:\\Users\\79964\\Desktop\\newCars.jpeg")));  <-- Добавляет картинку вместо ? из нашего запроса
+   preparedStatement.executeUpdate();

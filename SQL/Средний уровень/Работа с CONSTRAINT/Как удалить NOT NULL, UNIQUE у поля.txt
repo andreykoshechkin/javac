@@ -1,0 +1,15 @@
+#Удаление UNIQUE у поля. 
+#Нужно узнать имя уникального поля, имя храниться в таблице information_schema.table_constraints, в нашем случае, запрос ниже вернет employee_email_key
+
+1)SELECT constraint_name
+  FROM information_schema.table_constraints
+  WHERE table_name = 'employee' AND constraint_type = 'UNIQUE';
+
+2)ALTER TABLE employee
+  DROP CONSTRAINT employee_email_key
+
+
+#Удаление NOT NULL у поля
+
+ALTER TABLE employee
+ALTER COLUMN email DROP NOT NULL;

@@ -1,0 +1,9 @@
+Данный тест, тестирует за сколько времени будет выполнен метод login.
+
+org.opentest4j.AssertionFailedError: execution exceeded timeout of 250 ms by 95 ms
+Ожидание: 250 милисекунд
+Реальность: 250+95=345 <--- Именно столько выполнялся наш тест
+  @Test
+    void checkLoginFunctionality(){
+        assertTimeout(Duration.ofMillis(250L), ()-> userService.login("OMgmeowmeow@yandex.ru", "12345"));
+    }

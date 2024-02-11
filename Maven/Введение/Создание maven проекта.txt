@@ -1,0 +1,32 @@
+=====================================================================================================================================================================
+Примечание:
+
+В терминале: 
+mvn archetype:help		//Позволяет посмотреть все голы. у archetype 7 плагинов и один из нах называется archetype:generate.
+archetype:generate		//Создает новый проект на основе архетипа или обновляет фактический проект
+
+groupId: обычно тут пишут название компанией, разделяется точкой. Пример: com.koshechkin 
+artefactId: название проекта в рамках одной группы(просто пишем название проекта)
+version: состоит из 3 составляющих. major.minor.increment и часто используют qualifier
+				    major - главная версия проекта
+				    minor - пишется, когда произошел какой то фикс
+				    increment - для баг фиксов (можно не использовать)
+				    qualifier - это snapshot который часто используется и озночает, что проект используется в разработке
+Пример:groupId - com.koshechkin 
+       artefactId - first-maven
+       version - 1.0.0-SNAPSHOT
+ 
+
+
+=====================================================================================================================================================================
+Практика по созданию maven проекта:
+Для создания проекта нам нужен quickstart(google ->maven archetype quickstart) в нижнем окне, под Usage будет код
+
+1) Заходим в терминал 
+2) Мы должны создавать проект которая не является проектам. Если мы находим в папке какого-то проекта то нам нужно выйти и к примеру зайти в IdeaProjects.
+3) Вводим в терминале mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 
+   Которая создаст maven проект в директории в которй мы находимся. 
+   Если использовать powerShall mvn archetype:generate "-DarchetypeGroupId=org.apache.maven.archetypes" "-DarchetypeArtifactId=maven-archetype-quickstart" "-DarchetypeVersion=1.4" 
+
+4) Нам нужно будет ввести groupId,artefactId,version
+ 

@@ -1,0 +1,7 @@
+org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint [payment_receiver_id_fkey]
+
+Решение: Установить каскадное удаление либо на уровне БД либо на Уровне entity
+
+1. На уровне БД установить ON DELETE CASCADE
+2. На уровне entity установить cascade = CascadeType.ALL    
+ 

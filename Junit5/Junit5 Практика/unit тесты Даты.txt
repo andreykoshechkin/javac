@@ -1,0 +1,35 @@
+    @Test
+    void format() {
+
+        String date = "2000-01-02";                                                    //Give, наши начальные данные.
+        LocalDate actual = LocalDateFormatter.format(date);                            //When, наши актуальные данные, их получаем при вызове метода
+        assertThat(actual).isEqualTo(LocalDate.of(2000, 1, 2));  //Then, само сравнение
+    }
+
+    @Test
+    void shouldThrowsDateTimeExceptionIfDateIsNotCorrected() {
+
+        String date = "2020-11-01 13:12";                                                //Give, наши начальные данные.
+											 //LocalDateFormatter.format(date) это When
+        assertThrows(DateTimeException.class, () -> LocalDateFormatter.format(date));    //Тест будет пройден, если при не верной дате, будет вызван  DateTimeException
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("getParameter")
+    void isValidTest(String parameter, boolean expected) {         			//Given это наш метод getParameter                     
+
+        boolean actualResult = LocalDateFormatter.isValidDate(parameter);		//When, вызов нашего метода
+        assertThat(actualResult).isEqualTo(expected);					//Then, 
+
+    }
+
+    static Stream<Arguments> getParameter() {
+        return Stream.of(
+                Arguments.of("2020-11-01", true),
+                Arguments.of("2019-01-10", true),
+                Arguments.of("01-01-1999", false),
+                Arguments.of("2020-11-01 12:00", false)
+        );
+    }
+}

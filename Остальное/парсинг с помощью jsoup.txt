@@ -1,0 +1,23 @@
+ String url = "https://www.cbr.ru/currency_base/daily/";
+        var document = Jsoup.parse(new URL(url), 4000);
+        var select = document.select("table");
+        var tr = select.select("tr");
+        for (var x : tr) {
+            System.out.println(x.text());
+        }
+
+
+       Document doc = Jsoup.connect("pageUrl").get();//получает html-код страницы
+        Element table = doc.select("table").first(); //находим первую таблицу в документе
+                                                 //если надо вторую, третью или т.д. используем .get(номер)
+
+        Elements rows = table.select("tr");// разбиваем нашу таблицу на строки по тегу 
+
+        for (int i = 1; i < rows.size(); i++) {
+            Element row = rows.get(i); //по номеру индекса получает строку
+            Elements cols = row.select("td");// разбиваем полученную строку по тегу  на столбы
+            System.out.print(cols.get(0).text());// первый столбец
+            System.out.print(cols.get(1).text());
+            System.out.print(cols.get(2).text());
+            System.out.println();
+        }

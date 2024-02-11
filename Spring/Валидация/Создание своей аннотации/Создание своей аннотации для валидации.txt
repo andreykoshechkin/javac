@@ -1,0 +1,34 @@
+Если мы хотим создать свою аннтацию, то в этой аннотации всегда должны быть 3 поля: 
+ 1.   String message() default "Firstname or lastname should be filled in";		
+ 2.   Class<?>[] groups() default { }; 
+ 3.   Class<? extends Payload>[] payload() default { };
+
+
+Все валидаторы, по умолчанию являются спринг бинами. Так что, мы можем даже не ставить аннотацию @Component 
+====================================================================================================
+1. Создаем аннотацию:
+
+@Target(ElementType.TYPE)				<--- Аннотацию можно ставить только над классолм
+@Retention(value = RUNTIME)
+@Constraint(validatedBy = UserInfoValidator.class)	<--- Указываем, какой валидатор будет обрабатывать нашу аннотацию
+public @interface UserInfo {
+
+    String message() default "какой-то текс, который отобразиться если валидация будет не пройдена";		
+    Class<?>[] groups() default { }; 
+    Class<? extends Payload>[] payload() default { };
+}
+
+2. Создаем валидатор. Он должен реализовывать интерфейс ConstraintValidator<НашаАннотация, ЧтоВалидируем>
+
+@Component
+public class UserInfoValidator implements ConstraintValidator<UserInfo, UserCreateEditDto> {
+    @Override
+    public void initialize(UserInfo constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
+    @Override
+    public boolean isValid(UserCreateEditDto value, ConstraintValidatorContext context) {
+        return StringUtils.hasText(value.getFirstname()) || StringUtils.hasText(value.getLastname()); <-- Валидация будет пройдена, только в том случаи
+													  Когда у нас есть либо firstname либо lastname
+    }
+}

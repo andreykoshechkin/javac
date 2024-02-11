@@ -1,0 +1,36 @@
+1.  UserService:
+
+    public List<UserReadDto> findAll(UserFilter userFilter) {
+        return userRepository.findAllByFilter(userFilter).stream().map(usersMapper::transferToDto).toList();
+
+    }
+
+2. UserController 
+ @GetMapping
+    private String findAll(Model model, UserFilter userFilter) {
+        model.addAttribute("users", userService.findAll(userFilter));
+        model.addAttribute("filter", userFilter);	<--Устанавливаем, чтобы по новой не вводить данные в фильтр
+        return "user/users";
+    }
+
+
+3. HTML
+
+<form class="filter" action="/users" th:value="${filter}"> 			<--Устанавливаем, чтобы по новой не вводить данные в фильтр
+    <label>Firstname:
+        <input type="text" name="firstname" th:value="${filter.firstname()}">	<--Устанавливаем, чтобы по новой не вводить данные в фильтр
+    </label>
+    <label>Lastname:
+        <input type="text" name="lastname" th:value="${filter.lastname()}">	<--Устанавливаем, чтобы по новой не вводить данные в фильтр
+    </label>
+    <label>Birthdate:
+        <input type="date" name="birthdate" th:value="${filter.birthdate()}">	<--Устанавливаем, чтобы по новой не вводить данные в фильтр
+    </label>
+    <button type="submit">Filter</button>
+
+</form>
+
+
+<div th:each="users : ${users}" th:value="${users}">
+    <a th:href="@{'users/' + ${users.id}}" th:text="${users.username}">User</a>
+</div>

@@ -1,0 +1,37 @@
+В docker-compose вместо build ./ указать images имя_нашего_образа, который мы загрузили ранее на docker hub.
+
+version: '1'
+
+services:
+  backend:
+    restart: always
+    ports:
+      - 5555:5000
+    build: ./api
+    depends_on:
+      - mysql
+    image: koshechkinandrey/time_app_backend_layer
+
+  frontend:
+    restart: always
+    ports:
+      - 3000:3000
+    image: koshechkinandrey/time_app_frontend_layer
+    
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: time_db
+      MYSQL_ROOT_PASSWORD: password 
+    volumes:
+      - mysql_volumes_pub:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8888:8080
+
+volumes:
+  mysql_volumes_pub:

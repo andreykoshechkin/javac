@@ -1,0 +1,41 @@
+@FetchProfile -- нужен когда мы получаем одну сущность по id и загрузить те ассоциации, которые мы указали в association.
+Аннотация @FetchProfile ставиться над сущностью, которую мы хотим получить.
+
+PS - нам нужно явно включить @FetchProfile.  session.enableFetchProfile("thisEmployee"); 
+
+@FetchProfile(name = "thisEmployee", fetchOverrides = {
+        @FetchProfile.FetchOverride(
+                entity = Employee.class, association = "company", mode = FetchMode.JOIN
+        ),
+        @FetchProfile.FetchOverride(
+                entity = Employee.class, association = "paymentList", mode = FetchMode.JOIN
+        )
+})
+public class Employee implements GenerationId<Long> {
+
+}
+
+
+     @Cleanup var sessionFactory = ConfigurationBuilder.getBuilder();
+        @Cleanup var session = sessionFactory.openSession();
+        session.getTransaction();
+        session.enableFetchProfile("thisEmployee");
+
+        var employee1 = session.get(Employee.class, 1L);
+
+        System.out.println(employee1.getCompany().getCompanyName());
+        System.out.println(employee1.getPaymentList().size());
+        System.out.println(employee1.getProfiles().size());
+
+        session.beginTransaction().commit();
+
+=======================
+Пример:
+@FetchProfile -- Позволит нам выполнить один select а не несколько
+    var employee1 = session.get(Employee.class, 1L);			<-- Получаем одну сущность по id <-- Первый запрос на получения самой сущности
+
+        System.out.println(employee1.getCompany().getCompanyName());	<-- Второй запрос    на получения название компании
+        System.out.println(employee1.getPaymentList().size());		<-- Третий запрос    на получения на получение размера (мы обратимся к таблице Payment)
+        System.out.println(employee1.getProfiles().size());		<-- Четвертый запрос на получения на получение размера (мы обратимся к таблице Profiles)
+
+Без @FetchProfile мы бы сделали разных  4 запроса для получение. Но с помощью @FetchProfile мы сделаем 1 запрос

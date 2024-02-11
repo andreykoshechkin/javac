@@ -1,0 +1,13 @@
+@ImportResources 	//Редко встречается, но ее суть заключатся в том, что мы к нашему конфигу подключаем еще и xml config
+@Import			//Внедряет один конфиг в другой, даже если конфиг находится в другой директории или модуле. Таким образом, настройка одного конфига будет использоваться в другом конфиге
+
+
+@ImportResource("application.xml")
+@Import(WebApplicationConfig.class)	<--Внедряем конфиг WebApplicationConfig в наш конфиг
+@Configuration
+@ComponentScan(basePackages = "org.example.spring.*", scopedProxy = ScopedProxyMode.NO, includeFilters = {
+        @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Component.class)
+})
+@PropertySource("classpath:application-db.properties")
+public class ApplicationConfig {
+}

@@ -1,0 +1,47 @@
+Пример написания теста: Эти два теста абсолютно одинаковы, аннотаций @SpringBootTest в себе содержит и @ExtendWith(SpringExtension.class)
+и @ContextConfiguration(classes = Main.class, initializers = ConfigDataApplicationContextInitializer.class)
+
+
+Предпочтительный вариан:
+@SpringBootTest(classes = имяГлавногоMainКласса.class)
+public class UserServiceIT {
+
+    @Autowired
+    private UserService userService;
+
+    @Test
+    void findById(){
+        UserReadDto userReadDto = UserReadDto.builder()
+                .id(1)
+                .build();
+
+        Optional<UserReadDto> actualResult = userService.findById(1);
+
+        Assertions.assertThat(actualResult).isPresent();
+        Assertions.assertThat(actualResult.get()).isEqualTo(userReadDto);
+    }
+}
+
+
+
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = Main.class, initializers = ConfigDataApplicationContextInitializer.class)
+public class UserServiceIT {
+
+    @Autowired
+    private UserService userService;
+
+    @Test
+    void findById(){
+        UserReadDto userReadDto = UserReadDto.builder()
+                .id(1)
+                .build();
+        
+        Optional<UserReadDto> actualResult = userService.findById(1);
+        
+        Assertions.assertThat(actualResult).isPresent();
+        Assertions.assertThat(actualResult.get()).isEqualTo(userReadDto);
+    }
+}
+
+

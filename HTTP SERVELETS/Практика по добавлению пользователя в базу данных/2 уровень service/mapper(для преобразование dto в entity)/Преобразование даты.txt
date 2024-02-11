@@ -1,0 +1,19 @@
+public class DataTimeFormatterUtil {
+    private static final String PATTER = "yyyy-MM-dd";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(PATTER);
+
+    public LocalDate format(String date) {
+        return LocalDate.parse(date, FORMATTER);
+    }
+
+    public boolean isValidData(String date){
+        try {
+            format(date);
+            return true;
+        }catch (DateTimeException e){
+            return false;
+        }
+    }
+
+
+}

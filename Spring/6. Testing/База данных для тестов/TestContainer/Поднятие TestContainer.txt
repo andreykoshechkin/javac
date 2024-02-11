@@ -1,0 +1,36 @@
+1. 
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+2.
+
+@Sql({
+        "classpath:sql/data.sql"
+})
+@IntegrationTestRun
+public abstract class TestContainerRunner {
+
+    private static final PostgreSQLContainer<?>container = new PostgreSQLContainer<>("postgres:16.0")
+            .withUsername("database-test")
+            .withPassword("secret-pass");
+
+   @BeforeAll
+    static void initContainer(){
+       container.start();
+   }
+
+    @DynamicPropertySource
+    static void postgresProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", container::getJdbcUrl);
+
+    }
+
+}
+
+3. IT тесты должны унаследоваться от TestContainerRunner 
+
+4. Мы должны подправить sql скрипт (сам скрипт лежит в соседнем файле).

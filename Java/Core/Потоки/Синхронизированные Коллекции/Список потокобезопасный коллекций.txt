@@ -1,0 +1,8 @@
+Синхронизированный коллекции - это те коллекции, которые имеею безопасные методы для использования в многопоточной среде
+
+ArrayBlockingQueue	  //Блокирущая очередь
+ConcurrentHashMap	  //Потокобезопасная HashMap
+ConcurrentSkipListMap     //Потокобезопасная HashMap, которая сортирует ключи(аналог treeMap)
+ConcurrentSkipListSet	  //Потокобезопасная Set, которая сортирует ключи(аналог treeMap)
+CopyOnWriteArrayList	  //
+CopyOnWriteArraySet	  //

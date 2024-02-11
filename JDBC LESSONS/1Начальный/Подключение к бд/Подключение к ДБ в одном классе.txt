@@ -1,0 +1,35 @@
+    private static final String URL_KEY = "db.url";
+    private static final String USERNAME_KEY = "db.username";
+    private static final String PASSWORD_KEY = "db.password";
+
+
+    private static final Properties PROPERTIES = new Properties();
+
+    private static String getKey(String key) {  
+        return PROPERTIES.getProperty(key);
+    }
+
+    static {
+        loadDriverManager();
+    }
+
+    public static Connection loadDriverManager() {
+        try {
+            InputStream inputStream = ConnectionManager.class.getClassLoader().getResourceAsStream("application.properties");  <--- Получаем пропертиес файл
+            PROPERTIES.load(inputStream);	<--- зашружаем наш полученный пропертиес в объект класса пропертиес
+            return DriverManager.getConnection(ConnectionManager.getKey(URL_KEY),
+                    ConnectionManager.getKey(USERNAME_KEY),
+                    ConnectionManager.getKey(PASSWORD_KEY));
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+==========================================================================
+до java 1.8 были проблемы с загрузкой драйвера.  и чтобы наше соединение работала даже с java 1.8 и ниже, нужно дописать
+
+    private static void loadDriver() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }

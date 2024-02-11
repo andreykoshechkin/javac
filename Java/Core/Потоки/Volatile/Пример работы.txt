@@ -1,0 +1,54 @@
+public class VolatileRunnable extends Thread {
+  private volatile boolean bool = true;		
+
+    public void run() {
+        while (bool) {
+            try {
+                Thread.sleep(100);
+                System.out.println("hello");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+
+    public void shutdown() {
+        this.bool = false;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+
+        var thread = new VolatileRunnable();
+        thread.start();
+        var scanner = new Scanner(System.in);
+        scanner.nextLine();
+        thread.shutdown();
+
+
+    }
+}
+=========================================================
+
+    private static boolean aFlag = false;		<--- нальное значение переменной aFlag
+
+
+    public static void main(String[] args) throws InterruptedException {
+
+        var thread1 = new Thread(() -> {				<----Запускаем первый поток
+            while (!aFlag) {					<--- Пока aFlag не true Выпоняй тело метода
+                System.out.println("Flag : " + aFlag);
+            }
+        });
+        thread1.start();
+        Thread.sleep(100L);
+
+        var thread2 = new Thread(() -> {				<---Запускаем второй поток
+							<--- Меняем aFlag с false на true. Может возникнуть когерентность кеша и java не получит свежее значение(в кеше всегда будет false)
+                aFlag = true;
+                System.out.println("Flag : " + aFlag);
+
+        });
+        thread2.start();
+

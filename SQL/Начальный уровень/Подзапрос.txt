@@ -1,0 +1,17 @@
+ В блок FROM мы можем подставлять не только таблицы но и другие запросы, тем самым создавать подзапрос.
+	----Подзапрос должен быть в круглых скобках
+	----У подзапроса должен быть альяс
+
+SELECT avg(salary)
+FROM (SELECT first_name,
+             salary
+
+      FROM company_table
+      ORDER BY salary
+      LIMIT 2) AVG_SALARY;
+=================================================================================
+2 Вариант создание подзапроса:
+SELECT first_name,
+        (SELECT min(salary) FROM company_table)'
+ 	(SELECT max(salary) FROM company_table)
+FROM company_table;

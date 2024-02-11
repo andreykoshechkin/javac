@@ -1,0 +1,41 @@
+Quarydsl не умее работать с DTO, поэтому, в запросе, в качестве параметра нужно передавать Tuple из пакета com.quarydsl.core
+gt() ---> чем с права 
+lt() ---> меньше чем справа
+========================================================================================================================================================
+
+Задание: Вернуть название компании и среднию зарплату каждой из этих компаний
+
+new JPAQuery<Tuple>(session)
+              .select(company.companyName, payment.amount.avg())
+              .from(company)
+              .join(company.employee, employee)
+              .join(employee.payment, payment)
+              .groupBy(company.companyName)
+              .fetch().forEach(System.out::println);
+
+========================================================================================================================================================
+
+Задание: Возвращает список: сотрудник (объект User), средний размер выплат, но только для тех сотрудников, чей средний размер выплат 
+больше среднего размера выплат всех сотрудников Упорядочить по имени сотрудника
+
+   new JPAQuery<Tuple>(session)
+                .select(employee, payment.amount.avg())
+                .from(employee)
+                .join(employee.payment, payment)
+                .groupBy(employee)
+                .having(payment.amount.avg()
+                        .gt(new JPAQuery<Double>(session)
+                        .select(payment.amount.avg())
+                        .from(payment))).fetch().forEach(System.out::println);
+
+========================================================================================================================================================
+
+Задание: Вывести сотрудника чья зарплата больше 500
+  new JPAQuery<Tuple>(session)
+            .select(employee.employeeInfo.firstName, payment.amount)
+            .from(employee)
+            .join(employee.payment, payment)
+            .where(payment.amount.gt(500))
+            .fetch().forEach(System.out::println);
+    }
+

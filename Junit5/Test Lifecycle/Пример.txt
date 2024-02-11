@@ -1,0 +1,48 @@
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)  <-- Значит, что мы планируем создать один объект (UserService)
+@TestInstance(TestInstance.Lifecycle.PER_METHOD) <-- В этом случае, BeforeAll AfterAll должны быть статическими
+
+class AppRunnerTest {
+    private UserService userService;
+
+
+    @BeforeAll
+     void start() {
+        System.out.println("start");
+    }
+
+    @BeforeEach
+    void prepare() {
+        System.out.println("Вызываем Before each " + this);
+        userService = new UserService();
+    }
+
+
+    @Test
+    void usersIsEmptyIfNoUserAdded() {
+        System.out.println("test 1 " + this);
+        List<UserDto> users = userService.getAll();
+        assertTrue(users.isEmpty(), () -> "User service should be empty");
+
+    }
+
+
+    @Test
+    void userSizeUfUserAdder() {
+        userService.add(new UserDto());
+        userService.add(new UserDto());
+
+        List<UserDto> user = userService.getAll();
+        assertEquals(2, user.size());
+        System.out.println("test 2  " + this);
+    }
+
+    @AfterEach
+    void after() {
+        System.out.println("Вызываем AfterEach" + this);
+    }
+
+    @AfterAll
+     void end() {
+        System.out.println("end");
+    }
+}

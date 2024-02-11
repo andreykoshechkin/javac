@@ -1,0 +1,23 @@
+
+    /*execution() - ищет любой метод с названием в сервисах
+    *
+    * В нашем примере, мы ищем любой метод с названием findById среди всех сервисов
+    *
+    * execution() имеет шаблон, по которому нужно описывать, что мы хотим получить.
+    *
+    * execution(modifiers-pattern ret-type-pattern declaring-type-pattern?name-pattern(param-pattern) throw-pattern)
+    *
+    * modifiers-pattern - модификатор доступа
+    * ret-type-pattern - что метод должен возвращать, если нас это не интересует то просто ставим *
+    * declaring-type-pattern?name-pattern(param-pattern) - должны указать класс, в котором находится метод. name-pattern - имя метода
+    * throw-pattern - какой exception мы ожидаем.
+    *
+    * В нашем примере: ищи все public методы, что возвращает тот или иной метод нам не важно, поэтому ставим *
+    *                  наши методы находится по пути spring.service.UserService, называется findById(Именно тот, который принимает Long.
+    *                  Если поставим *, то ожидаем один параметр, если поставим .. то несколько)
+    *
+    * */
+    @Pointcut("execution(public * org.example.spring.service.UserService.findById(Long) throws ClassNotFoundException)")
+    public void antFindByIdServiceMethod(){
+
+    }

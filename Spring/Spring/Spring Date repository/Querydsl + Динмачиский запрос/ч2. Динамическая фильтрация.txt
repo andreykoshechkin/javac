@@ -1,0 +1,24 @@
+1. Способо создание динамического запроса состоит в том, что spring date сама предоставит на функционал по работе с динамическими запросами.
+   Все что нам нужно сделать, это передать predicate в один из методов.
+
+
+2. Слой репозитори должен реализовать интрефейс  QuerydslPredicateExecutor<Сущность>
+   пример: 
+   public interface UserRepository extends JpaRepository<UserEntity, Long>, UserFilterRepository,
+        QuerydslPredicateExecutor<UserEntity> {
+        }
+
+
+3. Тест:
+    @Test
+    void testFilter() {
+        Predicate predicate = QPredicate.builder()
+                .add("n", userEntity.firstname::containsIgnoreCase)
+                .buildAnd();
+        Iterable<UserEntity> all = userRepository.findAll(predicate);
+
+        for (UserEntity entity : all) {
+            System.out.println(entity);
+        }
+
+    }

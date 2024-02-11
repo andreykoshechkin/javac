@@ -1,0 +1,27 @@
+1. mapper который преобразует из GameEntity в GameDto
+
+@RequiredArgsConstructor
+public class MapperGameToDto implements MapperExample<Game, GameDto> {
+    private final MapperCompanyToDto mapperCompanyToDto;
+
+    @Override
+    public GameDto transfer(Game obj) {
+        return GameDto.builder()
+                .id(obj.getId())
+                .name(obj.getName())
+                .genre(obj.getGenre())
+                .companyDto(mapperCompanyToDto.transfer(obj.getCompany())) <---так как, GameDto имеет поле CompanyDto, а GameEntity ComoanyEntity, то нам и тут нужно маппить
+                .build();
+    }
+}
+========
+
+2 mapper который преобразует из CompanyEntity в CompanyDto
+public class MapperCompanyToDto implements MapperExample<Company, CompanyDto>{
+    @Override
+    public CompanyDto transfer(Company obj) {
+        return CompanyDto.builder()
+                .name(obj.getName())
+                .build();
+    }
+}

@@ -1,0 +1,39 @@
+AuditReaderFactory		//Позволяет находить(считывать) ревизию на конкретную дату ил по id, тем самым, дает возможность узнать старые данные
+				  Проще говоря,AuditReaderFactory работает так же как и git, позволяет перемищаться по ревизиям(коммиты в гите)
+=====================================================================================================================================================================
+
+Так же, мы можем формировать запросы 
+auditReader.createQuery()
+        .forEntitiesAtRevision(Payments.class, 14L)	<Верни мне Payments
+        .add(AuditEntity.property("amount").lt(300))	<У которого amount меньше 300
+	.addProjection(AuditEntity.property("amount" )) <В списке будет только amount
+        .getResultList();				<Вернет List<Payments>
+
+=====================================================================================================================================================================
+
+
+Если нам нужно переписать (поменять) текущие данные на те данные, которые раньше(на момент первой ревизии)
+     AuditReader auditReader = AuditReaderFactory.get(session);
+     Payments OldPayments = auditReader.find(Payments.class, 1L, new Date(1677468760334L));
+     session.replicate(OldPayments, ReplicationMode.OVERWRITE);
+
+
+=====================================================================================================================================================================
+
+Описание: На текущий момент(на последний момент ревизии), payments.getAmount равен 199. Но мы можем получить payments.getAmount на момент самой первой ревизии. 
+
+Пример:
+ @Cleanup SessionFactory sessionFactory = HibernateUtil.getBuilder();
+ @Cleanup Session session = sessionFactory.openSession();
+
+ session.beginTransaction();
+
+ Payments payments = session.find(Payments.class, 1L);		
+ System.out.println(payments.getAmount() + " текущий amount");
+
+ AuditReader auditReader = AuditReaderFactory.get(session);
+ Payments OldPayments = auditReader.find(Payments.class, 1L, 1L); или  Payments OldPayments = auditReader.find(Payments.class, 1L, new Date(1677468760334L));	
+ System.out.println(OldPayments.getAmount() + " старый amount");
+
+ session.getTransaction().commit();
+=====================================================================================================================================================================

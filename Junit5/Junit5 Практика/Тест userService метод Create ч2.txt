@@ -1,0 +1,53 @@
+   @Test
+    void createUserSuccess() {
+        UserEntity userEntity = UserEntity.builder()
+                .id(1111L)
+                .email("test@gmail.com")
+                .password("12345")
+                .gender(Gender.MALE)
+                .country(Country.Russia)
+                .username("testUsername")
+                .birthday(LocalDate.of(1999, 1, 1))
+                .build();
+
+        UserDto userDto = UserDto.builder()
+                .id("1111")
+                .email("test@gmail.com")
+                .password("12345")
+                .gender(Gender.MALE.name())
+                .country(Country.Russia.name())
+                .username("testUsername")
+                .birthday(LocalDate.of(1999, 1, 1).toString())
+                .build();
+
+        doReturn(new ValidationResult()).when(registrationValidator).isValid(userDto);
+        doReturn(userEntity).when(createMapper).transfer(userDto);
+        doReturn(userDto).when(readMapper).transfer(userEntity);
+
+        UserDto actualResult = userService.createUser(userDto);
+
+        verify(userDao).createUser(userEntity);
+        Assertions.assertThat(actualResult).isEqualTo(userDto);
+    }
+
+    @Test
+    void createUserFail() {
+        UserDto userDto = UserDto.builder()
+                .id("1111")
+                .email("test@gmail.com")
+                .password("")
+                .gender(Gender.MALE.name())
+                .country(Country.Russia.name())
+                .username("testUsername")
+                .birthday(LocalDate.of(1999, 1, 1).toString())
+                .build();
+
+        ValidationResult validationResult = new ValidationResult();
+        validationResult.addError(ValidationError.of("invalid.username"));
+        doReturn(validationResult).when(registrationValidator).isValid(userDto);
+
+        assertThrows(ValidatorException.class, () -> userService.createUser(userDto));
+
+
+        verifyNoInteractions(createMapper, readMapper, userDao);
+    }

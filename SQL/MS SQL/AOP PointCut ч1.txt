@@ -1,0 +1,83 @@
+@Aspect
+@Component
+public class FirstAspect {      //Это и есть наш Aspect, в котором мы создаем pointcut, join point и тд
+
+    //Так как pointcut это предикат, то и название должно как-бы ставиться как boolean.
+
+    //@within() проверка аннотаций над классом. within - проверка класса
+
+
+    /* @within() - проверяем аннотацию над классом.
+    В нашем примере, мы проверяем, если это контроллер,
+    то над каждым контроллером должна стоять аннотация*/
+    @Pointcut("@within(org.springframework.stereotype.Controller)")
+    public void isController(){
+
+    }
+
+
+    /*within - проверяет, класс. В нашем примере, мы проверяем
+    * является ли классы из пакета org.example.spring.service Сервисами.
+    * *Service - означает, что нам неважно префикс, нам нужно
+    * чтобы класс заканчивался на Service.
+    * */
+
+
+    @Pointcut("within(org.example.spring.service.*Service)")
+    public void isService(){
+    }
+
+
+    /*this() - обращается к AOP прокси
+    * target() - обращается к исходному объекту
+    * В нашем примере, мы проверяем все классы, которые являются repository.
+    * */
+    @Pointcut("this(org.springframework.data.repository.Repository)")
+    public void isRepository(){     //Repository это интерфейс, поэтому within не подойдет
+
+    }
+
+
+    /*@annotation() - проверяет аннотацию над методом.
+    *В нашем примере, мы проверяем все методы, которые отмечены аннотацией GetMapping
+    * isController() - проверь все контроллеры и проверь, стоит ли над методами аннотация GetMapping
+    * && @annotation(org.springframework.web.bind.annotation.GetMapping)
+    *
+    * можно использовать логические операции - && || !=
+    * */
+    @Pointcut("isController() && @annotation(org.springframework.web.bind.annotation.GetMapping)")
+    public void hasGetMapping(){
+
+    }
+
+    /*
+    * args - проверяет параметры
+    *
+    *
+    * args(org.springframework.ui.Model,..) - ,.. значит, Module должен быть первым параметром,
+    * а сколько параметров идет дальше нам неважно.
+    * ,* - один параметр
+     * */
+    @Pointcut("isController() && args(org.springframework.ui.Model,*)")
+    public void hasModuleParam(){
+
+    }
+
+    /*@args() используется в тех случаях, когда нам нужно проверить параметр, над котором стоит аннотация
+    * К примеру, в нашем UserController есть метод registration и этот метод в качестве параметра принимает
+    * UserCreateEditDto, а уже класс UserCreateEditDto внутри себя содержит ряд аннотаций, одна из них @Value
+    *
+    * */
+    @Pointcut("isController() && @args(lombok.Value,..)")
+    public void haseUserInfoParamAnnotation(){
+
+    }
+
+    /*bean - проверяет, является ли тот или иной слой бином
+    * В нашем примере, мы проверяем, является ли service бином
+    * bean(*Service) - * (звездочка) означает, что нам не важен префикс.
+    * */
+    @Pointcut("bean(*Service)")
+    public void isBean(){
+
+    }

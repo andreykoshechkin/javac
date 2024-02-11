@@ -1,0 +1,21 @@
+Встраиваемая сущность - это та сущность в которой есть поля, которые являются переменной в основной сущности.
+Пример: у нас есть основная сущность с полями username, firstname,birth_day 
+эти поля мы переносим во встраиваную сущность, а в основной сущности мы создаем поля с типом встаеваемой сущности.
+
+Пример:
+Встраиваемой сущности:
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Embeddable
+public class PersonalInfo {
+
+
+    private String firstname;
+    private String lastname;
+    @Column(name = "birthday")
+    @Convert(converter = BirthdayConverter.class)
+    private Birthday birth_day;
+}

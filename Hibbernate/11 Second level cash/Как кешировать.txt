@@ -1,0 +1,40 @@
+Чтобы закешировать объект в second level cache нужно поставить аннотация над классом который мы хотим закешировать. Если нужно изменить название региона, то 
+то нужно дописать region = "Employees".
+
+Если в сущности есть ссылки на другие сущности(ManyToOne) то мы обязаны ставить аннотацию @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Employees")
+и над ней. В примере ниже, в  Company мы так же поставили аннотацию Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Employees"), поэтому сущность company
+Так же закешировалсь.
+
+
+В случаях с коллекциями (OneToMany) мы должны ставить аннотацию Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Employees") и над коллекцией и над сущностью
+
+
+CacheConcurrencyStrategy	//Говорит нам о том, как транзакции должны работать с нашем кешем
+
+
+============================================================================================================================================================
+Пример:
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "username")
+@ToString(exclude = {"company", "paymentList", "profiles"})
+@Entity
+@Audited
+@Inheritance(strategy = InheritanceType.JOINED)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Employees")
+public class Employee implements GenerationId<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    private String username;
+}
+
+============================================================================================================================================================

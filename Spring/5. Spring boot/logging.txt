@@ -1,0 +1,36 @@
+Введение		#Логгер позволят узнать что происходит под копотом нашего приложение, какие процессы вызваются. Мы можем записывать логги в файл, выводить в консоль, записывать в базу данных и передавать другим серверам.
+			 В Spring по умолчанию установлен логгер (Logback), если мы хотим подлючить другой логгер (например log4j), то нам нужно сначало исключить стартер logback, а затем подключить стартер log4j, а так же 
+			 название xml должно быть log4j2-spring.xml
+===============================================================
+Logback зависимость, которая идет по умолчанию.
+
+<groupId>org.springframework.boot</groupId>		
+<artifactId>spring-boot-starter-logging</artifactId>
+===============================================================
+
+logging:
+  level:
+    root: info
+    org.example.spring.database.connection.ConnectionManager: ERROR
+  file:
+    name: src/main/logging/logging.log
+
+================================================С помощью xml=======================================================
+Важно: название xml должно быть logback-spring.xml
+
+
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.FileAppender">
+        <file>src/main/logging/log.log</file>
+        <encoder>
+            <winthJansi>true</winthJansi>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
+
+==============================================================================================================

@@ -1,0 +1,44 @@
+
+file.getAbsoluteFile() 			//Показывает расположение файла.
+				          Пример: File file = new File("C:\\Users\\79964\\Desktop\\text.txt");
+					  System.out.println(file.getAbsoluteFile());
+
+file.isAbsolute()			//Является ли путь к файл абсолютным или нет.
+					  Пример: File file = new File("C:\\Users\\79964\\Desktop\\text.txt");
+        				  System.out.println(file.isAbsolute());
+
+file.isDirectory()			//Является ли директорией
+					  Пример: File file = new File("C:\\Users\\79964\\Desktop\\text.txt");
+       					  System.out.println(file.isDirectory());
+
+file.isFile()				//Является ли файлом.   
+				       	  Пример: File file = new File("C:\\Users\\79964\\Desktop\\text.txt");
+       					  System.out.println(file.isFile());
+
+file.exists()  				//Проверяет существует ли наш файл/директория или нет
+					  File file = new File("C:\\Users\\79964\\Desktop\\text.txt");
+					  System.out.println(file.exists());	
+
+file.mkdir();   			//Создает новую директорию
+					  File file = new File("C:\\Users\\79964\\Desktop\\Text");
+      					  file.mkdir();
+
+file.createNewFile();			//Создает новый файл
+					  File file = new File("C:\\Users\\79964\\Desktop\\Text1231312.txt");
+        				  file.createNewFile();
+					  File file = new File("src\\resources\\Tast.txt");
+     					  file.createNewFile();
+
+file.canRead ()				//Есть ли доступ к записи в файл
+file.canWrite()				//Есть ли доступу к чтению файла
+file.canExecute()			//Есть ли доступу на запуск этого файла
+					  Пример: File file = new File("C:\\Users\\79964\\Desktop\\employee.txt");
+      						  System.out.println(file.canRead());
+      						  System.out.println(file.canWrite());
+        					  System.out.println(file.canExecute());
+
+
+
+
+      
+

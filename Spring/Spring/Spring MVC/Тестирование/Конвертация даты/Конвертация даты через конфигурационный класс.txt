@@ -1,0 +1,14 @@
+@Configuration
+public class WebConfiguration implements WebMvcConfigurer {
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        //registry.addFormatter();        --Преобразует исходя из локали
+        registry.addConverter(Jsr310Converters.StringToLocalDateConverter.INSTANCE);  //Принимает String возвращает LocalDate
+
+    }
+}
+
+
+
+Обратить внимание  на интерфейс WebMvcConfigurer

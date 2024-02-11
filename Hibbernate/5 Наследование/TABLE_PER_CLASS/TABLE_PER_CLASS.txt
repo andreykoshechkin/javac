@@ -1,0 +1,86 @@
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+ в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+
+============================================================================================================================================
+Реализация:
+1. Делаем абстрактный родительский класс 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString(of = "name")
+@EqualsAndHashCode(exclude = "gameLocales")
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Game implements AutoGenerationID<Long>{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @Column(unique = true)
+    private String name;
+
+    @Convert(converter = ReleaseDateConverter.class)
+    private ReleaseDate release;
+
+    @OneToOne(mappedBy = "game")
+    private Profile profile;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "game_locale")
+    private List<Game_locale> gameLocales = new ArrayList<>();
+}
+
+2. Делаем класс-потомок.
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+public class CustomGame extends Game {
+    
+
+    private String nameCustomGame;
+
+    @Builder
+    public CustomGame(Long id, Company company, String name, ReleaseDate release, Profile profile, List<Game_locale> gameLocales, Long id1, String nameCustomGame) {
+        super(id, company, name, release, profile, gameLocales);
+        this.id = id1;
+        this.nameCustomGame = nameCustomGame;
+    }
+}
+
+3. в hibernate.config.xml дописываем  <property name="hibernate.hbm2ddl.auto">update</property>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

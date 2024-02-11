@@ -1,0 +1,20 @@
+@ExtendWith(SpringExtension.class)				 <-- Устанавливает связть между Junit5 и TestContextFramework
+
+@ContextConfiguration(classes = Main.class, 			 <-- Дает возможность получить context, а initializers = ConfigDataApplicationContextInitializer.class
+initializers = ConfigDataApplicationContextInitializer.class)	     Дает возможность работать с application.yaml
+
+@ActiveProfiles("test")						 <-- Активирует profile (application-test.yaml)
+
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)<-- Инициализация полей через консруктор(Теперь @Autowired можно и не ставить над полями)  
+
+@TestPropertySource(""classpath: nameProperties)		 <-- Для работы с обычными properties  
+
+@BootstrapWith 							 <-- Определяет метаданные уровня класса, которые используются для определения того, как загружать Spring TestContext Framework.
+
+
+@SpringBootTest		<-- Аннотация которая включаем в себя:
+			 @ExtendWith(SpringExtension.class), 
+			 @ContextConfiguration(classes = Main.class, initializers = ConfigDataApplicationContextInitializer.class
+			 Данная аннотация автоматически ищет тот класс, который отмечен аннотацией @SpringBootApplication, именно по этой причине, нам не нужно указывать  @ContextConfiguration(classes = Main.class, initializers = ConfigDataApplicationContextInitializer.class 
+	
+ 

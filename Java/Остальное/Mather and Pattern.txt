@@ -1,0 +1,21 @@
+Mather and Pattern - нужны для каких-то операций с текстом. Эти два класса имеют особеность поиска совпадений в тексте  
+
+Класс Pattern - предстовляет из себя регулярное выражение. в аргументы мы пишем регулярное вырожение
+пример: Pattern pattern = Pattern.compile("\\w+@(yandex|google)\\.(com|ru)");
+Мы не создает Patter через new так как у этого класса приватный конструктор.(factory method)
+
+Класс Matcher - позволяет искать все совпадния который указанны в Pattern 
+пример: Matcher matcher = pattern.matcher(num);
+
+while(matcher.find()){  ----- find - находит
+sout(matcher.group()); -------- group выводит то что нашел find
+}
+------------------
+в методе group() в качстве аргумента мы можем задать id и group выведит нам именно то значение которое имеет этот id
+
+text - "andrey@gmail.ru";
+				    1id          2id             3id	
+Pattern pattern = Pattern.compile("(\\w+)@(yandex|google)\\.(com|ru)");
+
+while(matcher.find()){  
+sout(matcher.group(3));  выведит только "ru"

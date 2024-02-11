@@ -1,0 +1,14 @@
+        List<Predicate> predicates = new ArrayList<>();
+
+        if(employee.employeeInfo.firstName != null){
+            predicates.add(employee.employeeInfo.firstName.eq("Andrey"));
+        }
+
+        new JPAQuery<Double>(session)
+                .select(payment.amount.avg())
+                .from(payment)
+                .join(payment.employee, employee)
+                .where(predicates.toArray(Predicate[]::new))
+                .fetch().forEach(System.out::println);
+        session.beginTransaction().commit();
+    }

@@ -1,0 +1,31 @@
+@Tag - Позволяет ставить теги нашим тестам, чтобы в дальнейшем мы могли разом запустить их. Мы так же можем установить тег над классом.
+В терминале:
+mvn clean test -Dgropus=ИмяТега		 <-- Запустить только тесты с тегом ИмяТега
+mvn clean test -Dexcludegroups=ИмяТега   <-- Запустить все тесты кроме тех, которые отмечены ИмяТега 
+
+@Tag("check")
+    void CheckThrowExceptionIfUsernameOrPasswordIsNull() {
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () -> userService.login(null, ANDREY.getPassword())),
+                () -> assertThrows(IllegalArgumentException.class, () -> userService.login(ANDREY.getUsername(),null))
+        );
+    }
+
+Все тесты, у которых стоит тег "check" будут запущенны разом. 
+======================================================================================================================================================
+С помощью лаунчера:
+
+        Launcher launcher = LauncherFactory.create();
+        SummaryGeneratingListener generatingListener = new SummaryGeneratingListener();
+
+
+        LauncherDiscoveryRequest discoveryRequest = LauncherDiscoveryRequestBuilder.request()
+                .selectors(DiscoverySelectors.selectClass(UserServiceTest.class	))
+                .filters(TagFilter.includeTags("login"))		<---Запустит все тесты, которые отмеченны тегом "login" 
+ 		 .filters(TagFilter.excludeTags("login"))		<---Запустит все тесты кроме тех у которых стоит тег "login" 
+                .build();
+
+        launcher.execute(discoveryRequest, generatingListener);
+
+        @Cleanup PrintWriter printWriter = new PrintWriter(System.out);
+        generatingListener.getSummary().printTo(printWriter);

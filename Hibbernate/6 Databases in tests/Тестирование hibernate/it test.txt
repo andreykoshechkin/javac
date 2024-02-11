@@ -1,0 +1,144 @@
+@Slf4j
+@Tag("repository -it")
+public class AccountingForOrdersRepositoryIT {
+
+    private final SessionFactory sessionFactory = TestContainerRunner.getSessionFactory();
+    private Session session;
+    private AccountingForOrdersRepository accountingForOrdersRepository;
+
+
+    @BeforeEach
+    public void init() {
+        session = sessionFactory.openSession();
+        log.warn("Initialization session {}", session);
+
+        Transaction transaction = session.beginTransaction();
+        log.warn("begin transaction {}", transaction.getStatus());
+
+        accountingForOrdersRepository = new AccountingForOrdersRepository(session);
+
+
+        session.createQuery("delete FROM Order ").executeUpdate();
+        session.createQuery("delete FROM Product ").executeUpdate();
+        session.createQuery("delete FROM Customer ").executeUpdate();
+
+        ImportDataForIntegrationTest.initializeTestDataEntity(session);
+        log.warn("upload data by test for {}", ImportDataForIntegrationTest.class);
+    }
+
+    @AfterEach
+    public void close() {
+        session.getTransaction().commit();
+        log.warn("session commit. Status transaction = {}", session.getTransaction().getStatus());
+
+        session.close();
+        log.warn("session close {}, Date = {}", session, LocalDateTime.now());
+    }
+
+    @Test
+    @DisplayName("Should create an order if the order parameters are entered correctly.")
+    void shouldReturnIdOrderIdIfCreateOrderSuccessful() {
+        Customer dataCustomer = ImportDataForIntegrationTest.getDataCustomer(session, 1L, "Alex", "Jacobson");
+        Order order = Order.builder()
+                .dateOfCreation(LocalDateTime.now())
+                .totalCost(1000.0)
+                .orderStatus(OrderStatus.REFUND)
+                .customer(dataCustomer)
+                .build();
+
+        Long actualResult = accountingForOrdersRepository.createOrder(order);
+        org.junit.jupiter.api.Assertions.assertEquals(4L, actualResult);
+        org.junit.jupiter.api.Assertions.assertEquals(order.getCustomer().getPersonalInformation().getLastName(), "Jacobson");
+
+    }
+
+    @Test
+    @DisplayName("Should update the order status if the order exists.")
+    void shouldUpdateOrderStatusIfOrderExist() {
+
+        accountingForOrdersRepository.updateStatusOrder(1L, OrderStatus.EXIST);
+        Optional<Order> actualResult = accountingForOrdersRepository.findByIdOrder(1L);
+        actualResult.ifPresent(it -> Assertions.assertThat(it.getOrderStatus()).isEqualTo(OrderStatus.EXIST));
+        Assertions.assertThat(actualResult).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("Should return a list of orders if orders with the provided OrderStatus exist.")
+    void shouldReturnListOrderByStatus() {
+
+        List<Order> actualResult = accountingForOrdersRepository.getListOrderByStatus(OrderStatus.PROCESSING);
+        Assertions.assertThat(actualResult).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Should return an order if an order with the provided ID exists")
+    void shouldReturnOrderById() {
+        Optional<Order> maybeOrder = accountingForOrdersRepository.findByIdOrder(1L);
+        Assertions.assertThat(maybeOrder.get().getOrderStatus()).isEqualTo(OrderStatus.PROCESSING);
+        Assertions.assertThat(maybeOrder.get().getTotalCost()).isEqualTo(1000.0);
+    }
+
+
+    @Test
+    @DisplayName("Should return a list of orders if a customer with the provided ID exists and has orders.")
+    void shouldReturnListOrderByClientId() {
+
+        List<Order> actualResultFirst = accountingForOrdersRepository.getListOrderByClient(1L);
+        List<Order> actualResultTwo = accountingForOrdersRepository.getListOrderByClient(2L);
+
+        Assertions.assertThat(actualResultFirst).hasSize(2);
+        Assertions.assertThat(actualResultTwo).hasSize(1);
+
+        Assertions.assertThat(actualResultFirst.get(0).getId()).isEqualTo(1L);
+        Assertions.assertThat(actualResultFirst).isNotEqualTo(actualResultTwo);
+        Assertions.assertThat(actualResultFirst.get(0).getTotalCost()).isGreaterThan(10.0);
+    }
+
+    @Test
+    @DisplayName("Should return a list of products in the order if the order exists and contains products.")
+    void shouldReturnListProductIfOrderIsNotEmpty() {
+
+        List<Product> actualResult = accountingForOrdersRepository.getProductByOrderId(1L);
+        List<String> expectedResult = List.of("Apple", "Samsung");
+        List<String> actualResultProductName = actualResult.stream().map(Product::getProductName).toList();
+
+        Assertions.assertThat(actualResult).hasSize(2);
+        Assertions.assertThat(actualResultProductName).contains("Apple", "Samsung");
+        org.junit.jupiter.api.Assertions.assertIterableEquals(expectedResult, actualResultProductName);
+    }
+
+    @Test
+    @DisplayName("Should return a list of orders if the filter conditions are met.")
+    void shouldReturnOrderByFilter() {
+
+        AccountingFilter filterStatus = new AccountingFilter(OrderStatus.PROCESSING, null, null);
+        AccountingFilter filterClient = new AccountingFilter(null, 1L, null);
+        AccountingFilter filterDate = new AccountingFilter(null, null, ImportDataForIntegrationTest.getLOCAL_DATE_TIME());
+
+        List<Order> actualResultStatus = accountingForOrdersRepository.getOrderByFilter(filterStatus);
+        List<Order> actualResultClient = accountingForOrdersRepository.getOrderByFilter(filterClient);
+        List<Order> actualResultDate = accountingForOrdersRepository.getOrderByFilter(filterDate);
+
+        Assertions.assertThat(actualResultStatus).hasSize(1);
+        Assertions.assertThat(actualResultClient).hasSize(2);
+        Assertions.assertThat(actualResultDate).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("Should add a product to the order if both the product and the order exist.")
+    void shouldAddProductInOrderIfProductAndOrderExist() {
+        session.createQuery("delete FROM AddProductInOrder ").executeUpdate();
+
+        accountingForOrdersRepository.addProductInOrder(1L, 1L);
+        accountingForOrdersRepository.addProductInOrder(1L, 2L);
+        accountingForOrdersRepository.addProductInOrder(1L, 3L);
+
+        List<Product> actualResult = accountingForOrdersRepository.getProductByOrderId(1L);
+        List<String> productNameForTest = actualResult.stream().map(Product::getProductName).toList();
+
+        Assertions.assertThat(actualResult).hasSize(3);
+        Assertions.assertThat(actualResult.get(0).getId()).isEqualTo(1L);
+        Assertions.assertThat(productNameForTest).contains("Apple", "Samsung", "Google");
+
+    }
+}

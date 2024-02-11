@@ -1,0 +1,28 @@
+Создать web приложение через maven можно 2 способами:
+
+1.  Создать сразу web приложение(Лучше не использовать):
+1.1 File -> New Project -> Maven archetype в  параметре archetype выбрать org.apache.maven.archetypes:maven-archetype-webapp
+1.2 Далее нам нужно добавить директорию test: ПКМ -> src -> new directory -> test/resources
+1.3 И директорию java: директория main -> пвм -> new directory -> java
+
+2.  Создать из обычного jar приложение web приложение(В приоритете)
+2.1 Project-structure -> Modules -> ПКМ на наш проект -> add -> web module
+2.2 Переименовываем директорию web в webapp и переносим ее в директорию main
+2.3 Идем в POM.xml и меняем packaging на war (поумолчанию packaging имеет расширение jar)
+
+Должно быть так:
+
+    <groupId>com.koshechkin</groupId>
+    <artifactId>first-maven-project</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+2.4 Переименовать web в webapp далее Project-structure -> Modules и добавить \src\main\webapp
+2.5 Добавляем в pom.xml  
+	 <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.3.2</version>
+        </plugin>
+2.6 жмем в package
+================================================================================================================================================================

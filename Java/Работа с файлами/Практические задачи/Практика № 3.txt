@@ -1,0 +1,30 @@
+В одном классе заменить все атрибуты с public на private
+
+
+public class Main {
+    public static void main(String[] args) {
+
+        Path path = Path.of("src", "InputOutputStream", "FileRunner.java");
+        try {
+            String strings = Files.readString(path);
+            String result = strings.replace("public", "private");
+            File file = Path.of("src", "task.java").toFile();
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+            bufferedWriter.write(result);
+            bufferedWriter.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
+==============================
+Более простой способ
+ Path path = Path.of("src", "InputOutputStream", "FileRunner.java");	<---Указали какой файл считывать
+        String s = Files.readString(path);				<--- Метод readString(path) записывает все строки за файла в string. (В переменной s хранится весь текст)
+        String result = s.replace("public", "protected");			<---Заменям в полученном тексте 
+
+        Path file = Path.of("JavaTest.java");
+        Files.writeString(file, result);				<---writeString() записывает в новый файл. 1Пар - куда:
+											      2Пар - откуда; 

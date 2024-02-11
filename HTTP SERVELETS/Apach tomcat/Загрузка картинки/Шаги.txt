@@ -1,0 +1,11 @@
+В базе данных должно быть поле image VARCHAR()
+
+1: добавить в jsp соответствующий input с имени по кторому мы будет обращаться + добавить enctype="multipart/form-data" в <form
+2: в сервелете дописать аннотицию @MultipartConfig(fileSizeThreshold = 1024 * 1024)
+3: Создать properties и записать туда путь где будет лежать файл
+
+4:Создаем service по загрузки картинки + переменная     public static final String PATH = PropertiesUtil.getKey("db.image.url"); 
+
+5: добавить в entity и dto поле с  параметром String для enitity и Part для DTO (в дальнейшем мы будем получать массив байт)
+6: в mappere указать  .image(IMAGE_FOLDER + obj.getImage().getSubmittedFileName()).build(); + в mappre должна быть переменная директивы users/ (что бы путь бы C:/Programm file/servlets/users);
+7: В основном service   imageService.upload(users.getImage(), usersDTO.getImage().getInputStream()); 

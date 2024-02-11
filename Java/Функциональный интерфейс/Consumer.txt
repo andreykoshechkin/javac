@@ -1,0 +1,5 @@
+ 
+`Consumer - функциолнаяльный интерфейс, который изменяет объект
+   public static void Retail(Student student, Consumer<Student> consumer) {
+        consumer.accept(student);
+    }

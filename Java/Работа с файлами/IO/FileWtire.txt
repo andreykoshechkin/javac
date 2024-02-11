@@ -1,0 +1,24 @@
+FileWrite:			//Это класс, который позволяет записывать что-то в текстовой документ
+				//Потоки FileWrite всегда нужно закрывать блоке finnaly	
+				//метод write записывает текст в указанный файл.
+				//Если в конструкторе fileWrite 2ым аргументом указать true, то мы сможем записывать разные txt файлы в один.
+
+Пример:		
+			      String txt = "Кто понял жизнь тот больше не спешит,\n" +
+              		     "Смакует каждый миг и наблюдает,\n" +
+                	     "Как спит ребёнок, молится старик,\n" +
+                	     "Как дождь идёт и как снежинки тают.\n";
+
+      			// String str1 = "Hello";
+       			   FileWriter writer = null; (Если мы создаем FileWrite так, то это позволит нам закрыть поток в блоке finnaly)
+      
+      	        	   writer = new FileWriter("C:\\Users\\79964\\Desktop\\myTxt.txt", true);
+            		   writer.write(txt);
+            		   writer.write(str1);
+
+           		   writer.close();
+        		  System.out.println("Done");\\
+
+for (int i = 0; i < txt.length(); i++) {
+                fileWriter.write(txt.charAt(i));
+            }

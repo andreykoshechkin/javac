@@ -1,0 +1,27 @@
+Взаимодействие разных зависимостей разных модулей:
+
+в pom.xml  модуля web мы пишем 
+  <dependencies>
+        <dependency>
+            <groupId>org.koshechkin.example</groupId>
+            <artifactId>service</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+Теперь в модуле web будет доступы все что есть в модуле service и мы сможем к ним обращаться.
+
+
+в pom.xml  модуля service мы пишем 
+ <dependencies>
+        <dependency>
+            <groupId>org.koshechkin.example</groupId>
+            <artifactId>database</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+Теперь в модуле service будет доступы все что есть в модуле database и мы сможем к ним обращаться. 
+(как на курсе http/servlets где мы создавали класс сервис и вызывали dao метод который принадлежит базе данных)
+
+
+
+Урок 22

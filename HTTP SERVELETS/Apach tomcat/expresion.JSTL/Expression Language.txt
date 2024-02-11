@@ -1,0 +1,24 @@
+ Expression Language - специальный язык, который максимально просто вставляет результат вырожения в JSP страницу.
+Attribute - хранит в себе массив, где ключ string, а значение любой объект.
+
+Синтаксис:
+$ {Выражение}
+${RequestScope.book.name}  <--- book это ключа attributa. name это значение
+
+requestScope - наши атрибуты, который мы вставили в HTTP request. 
+sessionScope - это атрибуты, который устанавливаются в HttpSession.
+applicationScope - сервелет contex
+
+param - Параметры запроса
+hedear - загаловок
+cookie - куки
+initParam - параметры сервлета.
+
+оператор empty - для проверки на null
+================
+    <p>Size: ${requestScope.AllCompany.size()}</p> 		 	<-- Получаем размер map по ключу AllCompany(мы создали атрибут и указали AllCompany в качестве ключа)
+    <p>Elements: ${sessionScope.CompanyMap.values()} 		<-- Получаем значение map по ключу CompanyMap (мы создали session и преорбразовали ее в map)
+    <p>Elements map get: ${requestScope.AllCompany[2].id}</p> 	<-- Получаем id у элемента из map  под index 2
+    <p>JSESSION: ${cookie["JSESSIONID"].value}</p> 			<-- Получаем cookie. В параметрах указываем название cookie (.value БЕЗ СКОБОК())
+    <p>Param: ${param[param.id]}</p>
+ <p>Empty: ${not empty requestScope.AllCompany}</p>		<-- Проверяем, содержит ли AllCompany null

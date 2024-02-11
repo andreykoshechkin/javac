@@ -1,0 +1,36 @@
+Классы:
+	
+	ЗАПИСЬ И ЧТЕНИЕ ФАЙЛОВ.
+	file - Позволяет указать путь файла, в параметрах нужно указать место где будет хранится файл.
+	PrintWrite - позволяет получить доступ к указанному файлу.
+	.println  - позволяет записать строку в файл.
+	ВСЕГДА ЗАКРЫВАТЬ МЕТОД printwrite - .close.
+	
+	file - Позволяет указать путь файла, в параметрах нужно указать место где находится файл.
+	Scanner - Позволит считать файл. В параметрах нужно указать file.
+	while + hasNextLine + nextLine - вывести построчно
+	
+
+	ЗАПИСЬ И ЧТЕНИЕ ОБЪЕКТОВ.
+	Записываем созданные объекты..
+	FileOutputStream - Позволяет указать путь Объекта, в параметрах нужно указать место где будет хранится файл.
+	ObjectOutputStream - позволяет получить доступ к указанным объектам.
+	.WriteObject - Позволяет записать объекты в файл.
+	ВСЕГДА ЗАКРЫВАТЬ МЕТОД PrintOutputStream  - .close.
+
+
+	FileInputStream -  Позволяет указать путь до Объекта, в параметрах нужно указать место где хранится файл.
+	ObjectInputStream - позволяет получить доступ к указанным объектам (Входной поток данных).
+	Создаем переменную класса нашего объекта и применяем Downcasting. + readObject()
+	system.out.println(Имя переменной) - выводим на экран данные наших объектов.
+	ВСЕГДА ЗАКРЫВАТЬ МЕТОД PrintInputStream  - .close.
+
+BufferedInputStream - является под классом FileInputStream и нужен для считывание объектов. Его преимущество заключается в производительности так как 
+BufferedInputStream считывает байты блоками, тем самым мы уменьшаем количество обращений к файлу.
+
+	FileInputStream fileInputStream = new FileInputStream("C:\\Users\\79964\\Desktop\\t.txt");
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+            int i;
+            while ((i = bufferedInputStream.read()) != -1) {
+                System.out.print((char) i);
+

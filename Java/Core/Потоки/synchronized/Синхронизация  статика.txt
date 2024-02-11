@@ -1,0 +1,12 @@
+Статические поля принадлежат всему классу, а не объекту следовательно, мы не можем синхронизировать статик поле чеерез this. Но мы можем синхронизировать на уровне кдасса
+Пример:
+public class Counter {
+    private int counter;
+    private static String description;
+    public static void description (){
+        synchronized (Counter.class){
+            if(description == null){
+                description = "Hi";
+            }
+        }
+    }

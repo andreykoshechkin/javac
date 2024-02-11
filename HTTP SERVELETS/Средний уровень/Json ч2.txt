@@ -1,0 +1,19 @@
+{
+  "name" : "Andrey",
+  "age" : "28",
+  "city" : "Astrakhan",
+  "skill" : {
+    "testing" : {
+      "test design" : "exel",
+      "API" : ["Postman", "Swagger"]
+    },
+    "programming" : {
+      "language" : ["Java", "C++"],
+      "framework" : "Spring framework"
+    },
+    "dataBase":{
+      "dateBase" : ["MySql", "PostgreSQL"]
+    }
+    
+}
+}

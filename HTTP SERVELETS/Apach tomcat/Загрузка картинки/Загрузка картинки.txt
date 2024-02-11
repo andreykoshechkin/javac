@@ -1,0 +1,20 @@
+*Поумолчанию сервлеты не могут работать с партами, для коректной работы нужно использовать аннотацию   @MultipartConfig(fileSizeThreshold = 1024 * 1024)
+fileSizeThreshold	<------ Позволяет не сохранять файл на жесткий диск, а сохраняет ее в памяти.
+
+===========================================================================================================================================================
+1: в JSP должен быть input с типом file + нужно изменить body, написать  enctype="multipart/form-data
+     Пример: <form action="/registration" method="post" enctype="multipart/form-data">
+	  
+	   <label for="imageId">Файл:
+                              <input type="file" name="image" id="imageId">
+   	   </label>
+		
+	 <input type="password" name="password" id="passwordId" required> 	<--- Ключевое слово required является неким  валидатором на  минималках
+
+
+2:На странице сервлета, в методе doPost:	
+
+
+getPart		//Позволяет получить файл со стороный клиента(Аналог getParametr но только для файлов)
+		    Part part = req.getPart("image")  В параметрах передаем имя атрибута(имя имя мы указывали на jsp страницы)
+

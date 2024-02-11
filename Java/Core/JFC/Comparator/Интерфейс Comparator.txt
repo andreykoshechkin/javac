@@ -1,0 +1,27 @@
+Интерфейс Comparator - Позволяет задать логику сортировки у элементов. Имеет один метод compare который нужно переопределить.
+в параметрах нужно передать тот тип данных с которым идет работа. 
+
+
+Пример:  Set<String> set = new TreeSet<>(new Comparator<String>()
+Пример для Класса class test implements Comparator<String>
+
+Когда идет работа с arrayList нам нужно в методе Collection.sort в качестве второго параметра указать наш класс или в качестве аргумента сохдать new Comparater.
+Для Set or Map можно указать в аргументах Set<String> set = new TreeSet<>(new имяКласса());
+
+
+Интерфейс Comparable - Позволяет задать логику сортировки у объектов. Имеет один метод compareTo
+Логика мето compareTo - Если текущий объект больше объекта в параметрах то вернет положительное число, если меньше отрицательно, 
+если объекты равно вернет 0;
+
+Сокращенное написание:
+    public int compareTo(Employee o) {
+       return this.age + o.age;
+    }
+
+@Override
+    public int compareTo(Employee o) {
+      return this.age.compareTo(o.age);
+    }
+
+Скажем так, с помощью Comparable мы задаем какую-то сортировку по id, проходит время и нам нужно отсортировать объекты по зарплате, в таком случае и нужен 
+Comparator, так как второй параметр в Collections.sort() перехватывает инициативу и нам не нужно будет переписывать comareTo у Comparable. 

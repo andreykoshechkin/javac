@@ -1,0 +1,28 @@
+@Controller
+@RequestMapping("/app")
+@SessionAttributes("user")
+public class FirstController {
+
+    @GetMapping("/hello")
+    public String hello(ModelAndView modelAndView, @SessionAttribute("user") UserReadDto user) {
+        return "hello";
+    }
+
+    @GetMapping("/bye")
+    public String by(ModelAndView modelAndView, @SessionAttribute("user") UserReadDto user) {
+        return "by";
+    }
+
+
+    @GetMapping("initUserBySession")
+    public String initUserBySession(Model model) {
+
+        UserReadDto userReadDto = UserReadDto.builder()
+                .firstname("andrey@gmail.com")
+                .build(); 
+
+       model.addAttribute("user", userReadDto);
+
+        return "initUsersBySession";
+    }
+}

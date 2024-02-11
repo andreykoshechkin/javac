@@ -1,0 +1,23 @@
+@Query		//Аннотация @Query позволяет создавать нам hql запросы прямо на методом
+		  Пример: В этом примере, мы изменяем role по нескольким id
+  	  	  @Query("update UserEntity u set u.role = :role where u.id in (:ids)")
+      		  int updateRole(Role role, Long... ids);
+
+		  Тест: 
+		 @Test
+   		 void update(){
+       		 int update = userRepository.updateRole(Role.USER, 2L, 3L);
+        	 org.junit.jupiter.api.Assertions.assertEquals(2, update);
+		    }
+
+На самом деле так работать не будет, мы получим exception 
+========================
+@Modifying	//@Modifying используется для улучшения аннотации @Query, чтобы мы могли выполнять не только запросы SELECT, но также запросы INSERT, UPDATE, DELETE и даже DDL.
+
+     		 @Modifying(clearAutomatically = true)
+      		 @Query("update UserEntity u set u.role = :role where u.id in (:ids)")
+     		 int updateRole(Role role, Long... ids);
+
+clearAutomatically = true	<-- чистить persistence context.
+				    
+	

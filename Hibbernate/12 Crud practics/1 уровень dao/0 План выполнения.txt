@@ -1,0 +1,5 @@
+1.  Создать параметризованный интерфейс, где будут храниться все методы 
+2. Создать базовый абстрактный класс RepositoryDao, чтобы все наследники этого класса, могли использовать переопределенный метоn
+3. Создать Repository то компании, которая убдет работать с нашими crud методами
+
+Если мы решили использовать EntityManager вместо SessionFactory то в hibernate.config нужно добавить  <property name="hibernate.current_session_context_class">thread</property>

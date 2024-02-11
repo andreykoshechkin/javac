@@ -1,0 +1,4 @@
+ IF EXISTS			//Если мы укажем  IF EXISTS в сигнатуре, то если это таблица не существует, мы не получим excepation
+
+ALTER TABLE IF EXISTS employee
+ADD COLUMN department VARCHAR (128);

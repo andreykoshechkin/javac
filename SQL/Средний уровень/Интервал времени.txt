@@ -1,0 +1,20 @@
+В postgresql есть специальный оператор interval в котором можно задать интервал времени:
+
+select now() - interval '2 year'	//Покажет дату  которая была два года назад 
+
+
+Если нам не нужно время, то мы можем явно превести TIMESTAMP к DATE(убрать время оставив только дату) для этого используем ::
+select (now() - interval '2 days') :: DATE;
+
+
+
+SELECT *
+FROM ticket t
+         JOIN flight f on f.id = t.flight_id
+WHERE f.departure_airport_code
+    ILIKE 'MNK'
+  AND f.arrival_airport_code ILIKE 'LDN'
+  AND t.seat_no = 'B1'
+  AND  arrival_date::date = (SELECT (now() - interval '2 years 12 days')::date);
+
+SELECT (now()-interval '2 years 12 days')::date

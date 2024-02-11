@@ -1,0 +1,25 @@
+TTL - Время жизни данных в нашем кеше. TTL нужно использовать, чтобы данные в кеше не хранились вечно.
+      Объекты должны быть сериализуемыми, потому что, Redis хранит данные в бинарном формате
+
+
+# Способ 1
+Использование @RedisHash. @RedisHash позволяет нам указать значение для его атрибута timeToLive:
+@RedisHash(timeToLive = 60L)
+public class Session {
+    @Id
+    private String id;
+    private Long expirationInSeconds;
+}
+
+
+# Способ 2
+   @Bean
+    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory){
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(5L))
+                .disableCachingNullValues();
+
+        return RedisCacheManager.builder(redisConnectionFactory)
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
+    }

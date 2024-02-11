@@ -1,0 +1,48 @@
+Jdbc template 		//Основной класс для работы с jdbc, этот класс реализует интерфейс JdbcOperations в котором содержаться ряд методов для работы с бд.
+			  Jdbc template являеться одним из вариантов по работе с dto(Именно с DTO).
+
+Реализация: 
+1. public interface JdbcExample  {
+   List<UserReadDto> findUsersByCompanyIdAndRole(Integer companyId, Role role);
+}
+
+
+2. @RequiredArgsConstructor
+   public class JdbcExampleImpl implements JdbcExample {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    private final String FIND_USERS_BY_COMPANY_ID_AND_ROLE = """
+            SELECT 
+            u.id,
+            u.firstname,
+            u.lastname,
+            u.birth_date
+            FROM users u WHERE u.company_id =? and u.role =?
+            """;
+    @Override
+    public List<UserReadDto> findUsersByCompanyIdAndRole(Integer companyId, Role role) {
+        return jdbcTemplate.query(FIND_USERS_BY_COMPANY_ID_AND_ROLE, new RowMapper<UserReadDto>() {
+            @Override
+            public UserReadDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new UserReadDto(
+                        rs.getLong("id"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getDate("birth_date").toLocalDate()
+                );
+            }
+        }, companyId, role.name());
+    }
+}
+
+3. public interface UserRepository extends JpaRepository<UserEntity, Long>, UserFilterRepository, JdbcExample {}
+
+4. Тест:
+   @Test
+    void checkJDBCTemplate() {
+        List<UserReadDto> users = userRepository.findUsersByCompanyIdAndRole(1, Role.ADMIN);
+        Assertions.assertThat(users).isNotEmpty();
+        Assertions.assertThat(users.get(0).getFirstname()).isEqualTo("Ivan");
+        System.out.println();
+    }

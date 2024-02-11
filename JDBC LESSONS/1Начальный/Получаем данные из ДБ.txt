@@ -1,0 +1,29 @@
+  Connection connection = ConnectionManager.loadDriverManager()		     //Устанавливаем соединение с бд
+  PreparedStatement preparedStatement = connection.prepareStatement(sql)) {  //Получам выборку из соединения с бд
+  ResultSet resultSet = preparedStatement.executeQuery();		     //Записываем результат выборки в ResualtSet для дальнейшего получения результата в цикле while
+  preparedStatement.setFetchSize(50)					     //Устанавливаем что из выблрки мы можем брать за раз 50 записей
+  preparedStatement.setQueryTimeout(10);				     //Устанавливаем таймаут для  наших соединений
+  preparedStatement.setMaxRows(100);					     //Устанавливаем лимит для наших запросов(В слачае если у нас очень много запросов
+										то java приложение может упасть)
+
+
+==================================================================================================================================================================
+  Пример:
+        String sql = """
+                SELECT * FROM game_info;
+                """;
+
+        try (Connection connection = ConnectionManager.loadDriverManager();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            preparedStatement.setFetchSize(50);
+            preparedStatement.setQueryTimeout(10);
+            preparedStatement.setMaxRows(100);
+            while (resultSet.next()){
+                System.out.println(resultSet.getString("name"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+==================================================================================================================================================================

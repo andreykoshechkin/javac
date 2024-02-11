@@ -1,0 +1,17 @@
+@Controller
+@SessionAttributes("user")
+public class LoginController {
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "user/login";				<---Тут используеться метод forward, который перенаправит запрос на страницу jsp. На курсе Http/Servlets я использовал
+    }							    я использовал resp.forward()
+
+
+    @PostMapping("/login")
+    public String login(Model model, LoginDto loginDto) {
+        model.addAttribute("user", loginDto);
+        return "redirect:/v1/hello";			<--- тут используеться пренаправление запроса на страницу hello. На курсе Http/Servlets я использовал
+							     req.sendRedirect();
+    }
+}

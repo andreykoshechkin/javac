@@ -1,0 +1,33 @@
+class WaitAndNotify {
+    public void producer() {
+        synchronized (this) {
+            try {
+
+                System.out.println("Hello from producer");	1шаг ---   Выводится сообщение
+                Thread.sleep(500);			2шаг ---   Спис 5мс
+              this.  wait();				3шаг ---    Вызываем метод wait() который останавливает поток и отдает монитор тому методу у которого вызван метод notify. На этом этапе, код перестается выполняться.
+                System.out.println("Producer end...");	9 шаг ---  выводим сообщение
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    public void consumer (){
+
+        var scanner = new Scanner(System.in);
+        synchronized (this){
+
+            try {
+                System.out.println("Hello from consumer..."); 4шаг----	  Выводим сообщение
+                Thread.sleep(300);			    5шаг ---   Спис 3мс
+                System.out.println("Please key enter");	    6шаг ---   Выводим сообщение
+                scanner.nextLine();
+                Thread.sleep(500);			    7шаг ---   Спис 5мс
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }	
+            this.notify();				   8шаг --- отдаем монитор  назад
+        }
+    }
+}

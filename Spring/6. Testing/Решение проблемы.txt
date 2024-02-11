@@ -1,0 +1,37 @@
+===================================================================================================================================================
+Если мы получили:
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'pool1' defined in file [C:\Users\Koshechkin\IdeaProjects\spring-fraemwork-starter\target\classes\org\example\spring\database\connection\ConnectionManager.class]: Unexpected exception during bean creation
+
+Could not resolve placeholder 'db.username' in value "${db.username}"
+
+Возникает, когда значение properties хранится в yaml формате! 
+и она означает, что у нас есть проблемы с создание бина 'pool1' из-за того, что не хватает property 'db.username' in value "${db.username}"
+===================================================================================================================================================
+
+Решение: Нужно установить initializers = ConfigDataApplicationContextInitializer.class: <--Инициализирует yaml формат
+
+@ExtendWith(SpringExtension.class)  //<-- установили связь junit5 TestContext Framework
+@ContextConfiguration(classes = Main.class, initializers = ConfigDataApplicationContextInitializer.class)   //<-- указали какой конкретно Application context использовать
+public class UserServiceIT {
+
+    @Test
+    void findById(){
+
+    }
+}
+
+
+Если значение properties храниться не в yaml формате:
+
+@ExtendWith(SpringExtension.class)  //<-- установили связь junit5 TestContext Framework
+@ContextConfiguration(classes = Main.class)   //<-- указали какой конкретно Application context использовать
+@TestPropertySource("classpath:application.properties")
+public class UserServiceIT {
+
+    @Test
+    void findById(){
+
+    }
+}
+
+

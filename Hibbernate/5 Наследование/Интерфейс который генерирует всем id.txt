@@ -1,0 +1,36 @@
+Суть в том, что мы создадим абстрактный класс, в котором будет автогенерируемое поле id и все классы, которые унаследуют это класс, будут иметь свой id
+
+public interface BaseIdentity<T extends Serializable> {
+
+    void setId(T id);
+
+    T getId();
+}
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString(of = "name")
+@EqualsAndHashCode(exclude = "gameList")
+@Builder
+@Entity
+public class Company extends BaseIdentity<Long> {
+
+
+    @Column(unique = true)
+    private String name;
+
+    @Column(unique = true)
+    private String president;
+
+    @Column(name = "founding_date")
+    @Convert(converter = FoundingDateConverter.class)
+    private FoundingDate foundingDate;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @SortNatural
+    @MapKey(name = "name")
+    private Map<String,Game> gameList = new TreeMap<>();
+
+}

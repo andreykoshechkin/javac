@@ -1,0 +1,2 @@
+session.doWork(connection -> connection.setAutoCommit(true));
+Такие операции как save, select работают даже без открытия транзакций, но с учетом того, что id сущности должен быть identity.

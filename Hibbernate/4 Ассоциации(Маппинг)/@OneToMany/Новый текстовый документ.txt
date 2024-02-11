@@ -1,0 +1,33 @@
+@OneToMany(один ко многим, одна  компания имеет много пользователей) 
+Там где маппинг ассоциаций заканчивается на Many там всегда будет коллекцей:
+Пример: одна компания имеет список пользователей 
+
+
+Сущность на которую ссылаються (Forgen key) должны быть помечена аннотацией @OneToMane (одна компания имеет много пользователей)
+Сущность которая ссылаеться, должна быть помечена аннотацией @ManyToOne (Много пользователей могут быть в одной компании)
+
+
+1. Создать коллекцию в сущности на которую кто-то ссылается (в нашем примере на company ссылается users)
+2. Поставить аннотацию @OneToMany и указать mappedBy = "поле которое есть у users" 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@ToString(exclude = "usersList")
+@EqualsAndHashCode(exclude = "usersList")
+@Table(name = "company")
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "company_name")
+    private String company_name;
+
+    @OneToMany(mappedBy = "companyId")  <-- у users есть поле private Company companyId 
+    private List<Users> usersList;
+}
+
+

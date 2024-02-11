@@ -1,0 +1,43 @@
+     var transactionInterceptor = new TransactionInterceptor(sessionFactory);
+        new ByteBuddy()
+                .subclass(GameService.class)                            //Создай наследника от GameService.class(сам наследник станет proxy)
+                .method(ElementMatchers.any())                          //Означает, что мы хотим проверить все методы
+                .intercept(MethodDelegation.to(transactionInterceptor)) //Все методы, должны использовать мой interceptor
+                .make()                                                 //Вернет объект, который может загрузить в JVM(В память)
+                .load(GameService.class.getClassLoader())               //Вызываем loader, который уже загрузит объект в память
+                .getLoaded()
+                .getDeclaredConstructor()                               //В параметры передаем, те параметры, который у нашего класса(GameService)
+                .newInstance();
+
+Пример::
+public class Main {
+
+    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        @Cleanup SessionFactory sessionFactory = ConfigurationBuilder.getBuilder();
+        var session = (Session) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{Session.class},
+                (proxy, method, args1) -> method.invoke(sessionFactory.getCurrentSession(), args1));
+
+
+        var mapperReaderGame = new MapperReaderGame();
+        var repositoryGame = new RepositoryGame(session);
+       /* var gameService = new GameService(repositoryGame, mapperReaderGame);*/
+
+
+        var transactionInterceptor = new TransactionInterceptor(sessionFactory);
+
+        GameService gameService = new ByteBuddy()
+                .subclass(GameService.class)
+                .method(ElementMatchers.any())
+                .intercept(MethodDelegation.to(transactionInterceptor))
+                .make()
+                .load(GameService.class.getClassLoader())
+                .getLoaded()
+                .getDeclaredConstructor(RepositoryGame.class, MapperReaderGame.class)
+                .newInstance(repositoryGame, mapperReaderGame);
+
+
+        gameService.findAll().forEach(System.out::println);
+
+
+    }
+}

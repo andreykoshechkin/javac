@@ -1,0 +1,19 @@
+Метод: printf
+%s - вставляет слово туда где расположенна %s 
+System.out.printf("I %s this is good book", "think") --> I think this is good book
+
+%d - вставляет число туда где расположенна %s
+System.out.printf("me %d years old", 20) --> me 20 years old 
+
+%.3f - позволяет задать количество цифр после запятой
+double num = 20.21221;
+System.out.printf("%.3f",num) -- 20.212;
+
+%f - позволяет задасть вещественной число:
+
+int num = 12;
+System.out.printf("%03d", num) Указываем, что Должно быть 3 числа но если наше число меньше 3 то замени на 0 недостающие числа;
+вывод 012
+
+String.format - позволяет задать шаблок вывода текста.
+String str = String.forman("%.3f",num);

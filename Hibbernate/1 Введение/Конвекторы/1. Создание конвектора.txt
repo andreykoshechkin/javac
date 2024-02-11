@@ -1,0 +1,67 @@
+Конвектор: нужен чтобы автоматически преобразовывать типы, В примере мы будем преобразовывать LocalDate(JAVA) в Date(SQL) и наоборот. Конвектор может преобразовывать  только 
+те типы данных про которые он знает. 
+
+Шаг 1: Создаем класс
+public record Birthdate(LocalDate birthdate) {
+
+    public long getAge() {
+        return ChronoUnit.YEARS.between(birthdate, LocalDate.now());
+    }
+}
+
+/*
+*ChronoUnit.YEARS.between(birthdate, LocalDate.now()); <-- Определяет сколько лет прошло между birthdate и текущей датой
+*
+* */
+
+Шаг 2: Создаем конвектор, который реализует интерфейс  AttributeConverter
+public class BirthDateConverter implements AttributeConverter<Birthdate, Date> {
+    @Override
+    public Date convertToDatabaseColumn(Birthdate birthdate) {
+        return Optional.ofNullable(birthdate)
+                .map(Birthdate::birthdate)
+                .map(Date::valueOf)
+                .orElse(null);
+    }
+
+    @Override
+    public Birthdate convertToEntityAttribute(Date date) {
+        return Optional.ofNullable(date)
+                .map(Date::toLocalDate)
+                .map(Birthdate::new)
+                .orElse(null);
+    }
+}
+
+/*
+*                                   Создание конвектора
+* 1.
+* public interface AttributeConverter<X, Y> <--- это интерфейс, который преобразует Java тип в SQL тип
+* X <--- Java тип
+* Y <--- SQL тип
+*
+* 2.
+*     @Override
+    public Date convertToDatabaseColumn(Birthdate birthdate) {
+        return Optional.ofNullable(birthdate)
+                .map(Birthdate::birthdate)
+                .map(Date::valueOf)
+                .orElse(null);
+    }
+        @Override
+    public Birthdate convertToEntityAttribute(Date date) {
+        return Optional.ofNullable(date)
+                .map(Date::toLocalDate)
+                .map(Birthdate::new)
+                .orElse(null);
+    }
+
+*
+* */
+
+Шаг 3: У сущности мы должны явно указать то мы используем наш конвектор
+  @Convert(converter = BirthDateConverter.class)
+    private Birthdate birthdate;
+
+Шаг 4: Мы должны указать в методе Main у configuration ->  configuration.addAttributeConverter(new BirthDateConverter(), true); ИЛИ
+поставить аннотацию @Converter(autoApply = true) над конвектором

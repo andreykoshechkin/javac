@@ -1,0 +1,18 @@
+#У поля email удалить констрайнт NOT NULL
+ALTER TABLE employee
+ALTER COLUMN email DROP NOT NULL;
+
+
+#Удалить UNIQUE констраинт у поля.
+1) Сначала нужно получить полное имя этого уникального поля.
+ 
+   SELECT constraint_name
+   FROM information_schema.table_constraints
+   WHERE table_name = 'employee' AND constraint_type = 'UNIQUE';'э
+
+   это запрос вернет полное имя unique поля(employee_email_key)
+
+2)
+ALTER TABLE employee
+DROP CONSTRAINT employee_email_key
+

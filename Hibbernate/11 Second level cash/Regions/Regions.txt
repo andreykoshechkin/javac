@@ -1,0 +1,37 @@
+Regions - область памяти, которая хранит сериализованные объекта типа entity. Относиться к Second level cash.
+Regions - нужны не только чтобы хранить сериализованные объекта типа entity, 
+	  но так же и для того чтобы, управлять памятью(Как долго хранить сериализованные объекта, сколько сериализованных объектов хранит в region).
+	  Пример: поумолчанию, в одном регионе одна сериаоизованная сущность, но мы можем настроить regions таким образом, чтобы один region хранил несколько сущностей.
+
+==================================================================================================================================
+1:Если нужно изменить название региона, то то нужно дописать region = "Employees"
+
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Employees")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "username")
+@ToString(exclude = {"company", "paymentList", "profiles"})
+@Entity
+@Audited
+@Inheritance(strategy = InheritanceType.JOINED)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Employees")
+public class Employee implements GenerationId<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    private String username;
+}
+
+2: Если мы хотим, чтобы несколько сущностей хранились в одном регионе то, название региона у них должно быть одно и тоже
+
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Employees")	<--Теперь в region Employees хранится и Employee и Company
+public class Company implements GenerationId<Long> {
+==========================================================================================================================
+Чтобы задать доп.настройки regions нужно создать ehcache-config.xml

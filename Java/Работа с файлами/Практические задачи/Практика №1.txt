@@ -1,0 +1,15 @@
+Задача: Вывести все слова из текса, которые начинаються на буквы из переменной VOWELS:
+
+
+public static final String VOWELS = "dcmahfeq";
+public static void main(String[] args) throws IOException {
+
+File path = Path.of("src", "resources", "Task.txt").toFile();	<--- Указываем где искать
+
+try (Scanner scanner = new Scanner(path)){			<--- hashNex считывает по одному слову
+while (scanner.hasNext()){					<--- Пока у нас есть какие-то слова возвращай true 
+String next = scanner.next();					<--- Записали одно слово в переменнуб
+String value = String.valueOf(next.charAt(0));			<--- Получили первый символ
+	
+if(VOWELS.contains(value)) {					<--- Проверяем, содержится ли первый символ в переменной VOWELS
+System.out.println(next);

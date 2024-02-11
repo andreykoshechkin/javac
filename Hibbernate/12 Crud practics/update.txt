@@ -1,0 +1,38 @@
+    public StudentDto update(Long id, StudentDto studentDto) {
+
+        @Cleanup ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        Validator validator = validatorFactory.getValidator();
+        Set<ConstraintViolation<StudentDto>> result = validator.validate(studentDto);
+        if (!result.isEmpty()) {
+            throw new ConstraintViolationException(result);
+        } else {
+           return studentRepository.findById(id)
+                   .map(entity -> studentMapper.cope(entity, studentDto))
+                   .map(studentRepository::update)
+                   .map(studentMapper::studentEntityToStudentDto)
+                   .orElse(studentDto);
+        }
+
+    }
+
+
+Для обновления StudentEntity на основе значений из StudentDto вам необходимо написать метод вручную, который будет устанавливать новые значения из StudentDto в StudentEntity. Вот пример, как это можно сделать:
+
+@Mapper(uses = StudentToCoursesMapper.class)
+public interface StudentMapper {
+
+    StudentMapper INSTANCE = Mappers.getMapper(StudentMapper.class);
+
+
+    @Mapping(target = "studentToCoursesDto", source = "toCoursesList")
+    StudentDto studentEntityToStudentDto(StudentEntity studentEntity);
+
+    @Mapping(target = "toCoursesList", source = "studentToCoursesDto")
+    StudentEntity studentDtoToStudentEntity(StudentDto studentDto);
+
+    default StudentEntity cope (StudentEntity studentEntity, StudentDto studentDto){		<--- заменит значения
+        studentEntity.setFirstName(studentDto.getFirstName());
+        studentEntity.setLastName(studentDto.getLastName());
+        return studentEntity;
+    }
+}

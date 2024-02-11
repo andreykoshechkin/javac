@@ -1,0 +1,39 @@
+Server:
+
+        try (ServerSocket serverSocket = new ServerSocket(8888);
+             Socket socket = serverSocket.accept();
+             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream())) {
+
+            Scanner scanner = new Scanner(System.in);
+            String s = dataInputStream.readUTF();
+
+
+            while (!"stop".equals(s)) {
+                System.out.println("Сообщение от клиента: " + s);
+                String massage = scanner.nextLine();
+
+                dataOutputStream.writeUTF(massage);
+                s = dataInputStream.readUTF();
+
+            }
+        }
+============================================================================================================================
+Client:
+
+    InetAddress inetAddress = Inet4Address.getByName("localhost");
+        try (Socket socket = new Socket(inetAddress, 8888);
+             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream())) {
+
+            Scanner scanner = new Scanner(System.in);
+
+
+            while (scanner.hasNextLine()) {
+                String str = scanner.nextLine();
+                dataOutputStream.writeUTF(str);
+
+                String request = dataInputStream.readUTF();
+                System.out.println("Сообщение от сервера: " + request);
+            }
+        }

@@ -1,0 +1,55 @@
+1. 
+@Component
+public class ConnectionManager {
+
+    private final String username;
+    private final String password;
+    private final String url;
+
+    @Autowired
+    public ConnectionManager(
+            @Value("${db.username}")
+            String username,
+            @Value("${db.password}")
+            String password,
+            @Value("${db.url}")
+            String url) {
+        this.username = username;
+        this.password = password;
+        this.url = url;
+    }
+
+    @PostConstruct
+    private void init(){
+        System.out.println("Init connection");
+    }
+
+    @PreDestroy
+    private void destroy(){
+        System.out.println("Destroy connection");
+    }
+}
+
+2. 
+@Configuration
+@ComponentScan(basePackages = "org.example.*", scopedProxy = ScopedProxyMode.TARGET_CLASS)
+@Import(PropertySourceConfig.class)
+public class BaseConfig {
+
+    @Bean
+    public ConnectionManager conn() {							# Название метода будет нашим ID. Но мы можем указать id передав название в параметр аннотации -> @Bean("id")
+        return new ConnectionManager("redis", "redis-pass", "url/redis/5432:5432");
+    }
+}
+
+3.
+@Repository
+public class BaseRepository {
+
+    private final ConnectionManager connectionManager;
+
+    @Autowired
+    public BaseRepository(@Qualifier("conn") ConnectionManager connectionManager) {	#Теперь для бина BaseRepository, мы будем использовать бин с id conn
+        this.connectionManager = connectionManager;
+    }
+}

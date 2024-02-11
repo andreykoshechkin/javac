@@ -1,0 +1,10 @@
+/**
+ * 3. Дана строка вида "26-03-1968T09:24". Получить объект LocalDateTime, представляющий
+ * собой дату, полученную из этой строки.
+ */
+
+        String date = "26-03-1968T09:24";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm");
+
+        LocalDateTime localDateTime = LocalDateTime.parse(date, dateTimeFormatter);
+        System.out.println(localDateTime);

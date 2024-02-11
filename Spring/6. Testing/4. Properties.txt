@@ -1,0 +1,53 @@
+1. Для работы с properties. Чтобы в тестах испольховать не main properties, а те что предназначены для тестов 
+   1. Создаем application-test.yml
+	db:
+ 	 username: test
+  	 password: test
+        pool:
+   	 size: 14
+   	 timeout: 10
+
+
+   2. Указываем в тестах @ActiveProfiles("test")
+
+===================================================================================================================================================
+
+2. Чтобы не замограждать наш класс кодом мы можем создать аннотацию и над ней поставить нужные аннотации для теста
+    Пример:  Теперь аннотация it реализует 
+	@Target({ElementType.TYPE})
+	@Retention(RetentionPolicy.RUNTIME)
+	@BootstrapWith(SpringBootTestContextBootstrapper.class)
+	@ExtendWith({SpringExtension.class}) 
+	@ActiveProfiles("test")		<-- теперь ставить @ActiveProfiles("test") над тестовым классом не нужно
+	public @interface IT {
+	}
+
+===================================================================================================================================================
+
+3. Для инициализации бинов через консруктор, можно пойти 3мя путями
+   1. В аннотацию IT добавить @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+   2. Поставить @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL) прямо надд классом
+   3. Создаеть spring.properties c полем spring.test.constructor.autowire.mode=all
+
+===================================================================================================================================================
+ИТОГ:
+
+@IT
+@RequiredArgsConstructor
+public class UserServiceIT {
+
+    private final UserService userService;
+    private final DatabaseProperties databaseProperties;
+
+    @Test
+    void findById(){
+        UserReadDto userReadDto = UserReadDto.builder()
+                .id(1)
+                .build();
+
+        Optional<UserReadDto> actualResult = userService.findById(1);
+
+        Assertions.assertThat(actualResult).isPresent();
+        Assertions.assertThat(actualResult.get()).isEqualTo(userReadDto);
+    }
+}

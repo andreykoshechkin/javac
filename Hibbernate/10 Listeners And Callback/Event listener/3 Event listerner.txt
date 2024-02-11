@@ -1,0 +1,77 @@
+Listener и Audit-enver не работают вместе
+
+1.
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+public class Audit {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Serializable entityId;      //id сущности
+
+    private String entityName;          //покажет сущность
+
+    private String contentEntity;       //покажет, что именно изменилось в сущности.Вместо string можно использовать json, json более предпотчителен
+
+    private Operation operation;        //какое действие было сделано с сущность. это enum
+
+
+    public enum Operation {
+        SAVE, UPDATE, DELETE, INSERT
+    }
+}
+
+public class AuditTableListener implements PreDeleteEventListener, PreInsertEventListener {
+    @Override
+    public boolean onPreDelete(PreDeleteEvent preDeleteEvent) {
+        if (preDeleteEvent.getEntity().getClass() != Audit.class) { //делае действия только если эта сущность не Audit
+            Audit audit = Audit.builder()
+                    .entityId(preDeleteEvent.getId())
+                    .entityName(preDeleteEvent.getPersister().getEntityName())
+                    .contentEntity(preDeleteEvent.getEntity().toString())
+                    .operation(Audit.Operation.DELETE)
+                    .build();
+
+            preDeleteEvent.getSession().save(audit);    //с помощью сессии сохраняем наш audit в базу данных
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onPreInsert(PreInsertEvent preInsertEvent) {
+        if (preInsertEvent.getEntity().getClass() != Audit.class) {
+            Audit audit = Audit.builder()
+                    .entityId(preInsertEvent.getId())
+                    .entityName(preInsertEvent.getPersister().getEntityName())
+                    .contentEntity(preInsertEvent.getEntity().toString())
+                    .operation(Audit.Operation.INSERT)
+                    .build();
+            preInsertEvent.getSession().save(audit);
+        }
+        return false;
+    }
+}
+
+3. В Конфигуратион 
+    public static SessionFactory getBuilder() {
+        Configuration configuration = new Configuration();
+        configuration.addAttributeConverter(new DateConverterExample());
+        configuration.configure();
+        
+        var sessionFactory = configuration.buildSessionFactory();
+        var sessionFactoryImpl = sessionFactory.unwrap(SessionFactoryImpl.class); //Преобразуем sessionFactory в SessionFactoryImpl.class, чтобы добавить наш listener в группу всех Listener
+        var serviceRegistry = sessionFactoryImpl.getServiceRegistry().getService(EventListenerRegistry.class);//getServiceRegistry() занимается регистрацией разных сервисов
+        var auditTableListener = new AuditTableListener();
+        serviceRegistry.appendListeners(EventType.PRE_INSERT, auditTableListener);
+        serviceRegistry.appendListeners(EventType.PRE_DELETE, auditTableListener);
+
+    
+        //serviceRegistry.prependListeners(); //Добавит в начало
+        return sessionFactory;
+    }
+}

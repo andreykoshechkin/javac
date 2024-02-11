@@ -1,0 +1,36 @@
+В параметры статического метода передай другой bean:
+
+public class UserRepository {
+    private final ConnectionPool connectionPool;
+
+    public UserRepository(ConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
+    }
+
+    public static UserRepository of(ConnectionPool connectionPool) {
+        return new UserRepository(connectionPool);
+    }
+}
+
+
+
+application.xml:
+    <bean id="pool" class="org.example.spring.database.connection.ConnectionPool">
+        <constructor-arg name="username" value="postgres"/>
+        <constructor-arg name="password" value="123"/>
+        <constructor-arg>
+            <list>
+                <value>11.31</value>
+                <value>20.44</value>
+            </list>
+        </constructor-arg>
+
+        <constructor-arg>
+            <map>
+                <entry key="column" value="richard"/>
+            </map>
+        </constructor-arg>
+    </bean>
+    <bean id="userRepository" class="org.example.spring.database.repository.UserRepository" factory-method="of"> 	<---В метод of
+        <constructor-arg ref="pool"/> 	<---передай бин ConnectionPool
+    </bean>

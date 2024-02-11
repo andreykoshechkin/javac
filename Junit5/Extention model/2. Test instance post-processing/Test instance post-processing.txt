@@ -1,0 +1,16 @@
+Test instance post-processing - - Позволяет что-то изменить но уже после создания экземпляра класса. Для этого нужно имплементить интерфейс  TestInstancePostProcessor
+
+Пример: Я получаю поля и в цикле прохожусь по ним с условием, имеет ли какое-то поле какую-то аннотацию и если имеет, то устанавливаю testInstance нашему экземпляру класса
+public class PostProcessingExample implements TestInstancePostProcessor {
+    @Override
+    public void postProcessTestInstance(Object testInstance, ExtensionContext extensionContext) throws Exception {
+        System.out.println("Post Processor extension");
+        Field[] declaredFields = testInstance.getClass().getDeclaredFields();
+        for (Field declaredField : declaredFields) {
+            if(declaredField.isAnnotationPresent(ТутКакая-то аннотация)){
+                declaredField.set(testInstance, new UserService());
+
+            }
+        }
+    }
+}

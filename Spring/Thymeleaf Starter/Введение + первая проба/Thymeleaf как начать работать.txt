@@ -1,0 +1,14 @@
+1. ThymeleafAutoConfiguration - это класс конфигурации, в котором содержиться ссылка на properties для thymeleaf
+2. ThymeleafProperties - это properties класс, в нем есть все необходимые проперти для настройки thymeleaf.
+   public static final String DEFAULT_PREFIX = "classpath:/templates/"; <--- Если мы хотим работать с themeleaf, то html страницы должны быть 
+   в директории templates. Пример: resources -> templates -> user -> users.html
+   Примечание: user - это директория и в нашем контроллере мы делали return "user/users"; user - директория, users html страница.
+   
+      @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    private String findAll(Model model) {
+        model.addAttribute("users", userService.findAll());
+        return "user/users";
+    }
+   
+3. html страницы должна содержать строчку <html lang="en" xmlns:th="http://www.thymeleaf.org"> 

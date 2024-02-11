@@ -1,0 +1,34 @@
+Внедрение других объектов.
+
+UserRepository зависит от ConnectionPool:
+1. Создаем бин на ConnectionPool
+2. Создаем бин на UserRepository и в конструктор бина через метод ref передаем id бина ConnectionPool
+====================================================================================================================
+Пример:
+1)Бин ConenctionPool
+ <bean id="pool" class="org.example.spring.database.connection.ConnectionPool">
+        <constructor-arg name="password" value="12345"/>
+        <constructor-arg name="username" ref="driver"/>
+        <constructor-arg name="properties">
+            <map>
+                <entry key="url" value="postgresUrl"/>
+                <entry key="password" value="19999"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg name="listDouble">
+            <list>
+                <value>1000.2</value>
+                <value>131.51</value>
+                <value>8.11</value>
+                <value>46.19</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+
+2) Бин UserRepository
+    <bean id="userRepository" class="org.example.spring.database.repository.UserRepository">
+        <constructor-arg ref="pool"/>	<--- В консруктор передаем бин ConnectionPoll
+    </bean>
+
+====================================================================================================================

@@ -1,0 +1,33 @@
+
+DDl
+getUpdateCount() 	//Возвращает количество записей из нашей таблицы
+executeUpdate()		//Возвращает количество записей из нашей таблицы <-- в приоритете	-
+createStatement()	//Создает Statement объект для отправки операторов SQL в базу данных.(Из java в базу данных)
+executeUpdate()		//Позволяет выполнить SQL команду
+
+
+
+String sql = """
+                CREATE TABLE info (
+                id SERIAL PRIMARY KEY,
+		name VARCHAR (128)
+		)
+                """;
+
+Statement statement = myConnection.createStatement()) - Вернет объект типа statment; 
+boolean Result = statement.execute(sql); - выполнит наш запрос,
+
+
+ String sql = """
+                CREATE TABLE IF NOT EXISTS game_info (
+                 id SERIAL PRIMARY KEY,
+                 name VARCHAR(128) NOT NULL,
+                 type VARCHAR (10) NOT NULL 
+                 );
+                """;
+
+        try (Connection connection = ConnectionManager.getCon();
+             Statement statement = connection.createStatement()) {
+             statement.executeUpdate(sql);
+  		
+        }

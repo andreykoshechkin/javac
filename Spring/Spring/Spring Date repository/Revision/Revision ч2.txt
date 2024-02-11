@@ -1,0 +1,6 @@
+Мы можем перемещаться по ревизиям так как это делает git. В hibernate для этого мы использовали AuditReaderFactory
+
+1. Repository долже реализовать RevisionRepository<Сущность, типIdУСущности, типIdУРевизии>
+   пример:RevisionRepository<UserEntity, Long, Long>
+
+2. метод userRepository.findLastChangeRevision(id из user_aud);

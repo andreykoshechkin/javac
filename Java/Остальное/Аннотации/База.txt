@@ -1,0 +1,7 @@
+@Target(ElementType.PACKAGE)	только для пакетов
+@Target(ElementType.TYPE)	только для классов
+@Target(ElementType.CONSTRUCTOR)только для конструкторов
+@Target(ElementType.METHOD)	только для методов
+@Target(ElementType.FIELD)	только для атрибутов(переменных) класса
+@Target(ElementType.PARAMATER)	только для параметров метода
+@Target(ElementType.LOCAL_VARIABLE)	только для локальных переменных

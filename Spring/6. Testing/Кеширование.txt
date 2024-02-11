@@ -1,0 +1,29 @@
+Правило кеширование в it тестах: 
+ 1. Все IT тесты должны быть сконфигурированы одинково. Если один IT тест использует аннотацию @SpringBootTest, а другой использует custom аннотацию @IT, то у них будет разный контекст,
+    следовательно, в этом случае, будет создано два контекста. ТАК ЧТО, У ИНТЕГРАЦИОННЫХ ТЕСТОВ ДОЛЖЕН БЫТЬ ОДИН КОНФИГ. ЛИБО МЫ СТАВИТЬ везде @IT ЛИБО СТАВИМ @SpringBootTest
+
+ 2. В тех случаях, когда в IT тестах мы хотим замокать какой-то бин, с помощью аннотаций @MockBean(мок для теста) and @SpyBean (спай для теста), то в этом случае, у нас так же будет несколько контекстов
+    Решение: Создать один конфигурационный класс и уже внутри этого класса, мокать бины. + Мы должны переиспользовать этот конфигурационный класс в каждом тесте,
+    для этого добавим в @SpringBootTest(classes = IntegrationTestConfiguration.class)
+   
+     @TestConfiguration			<-- Ищет аннотацию @SpringBootApplication
+     public class IntegrationTestConfiguration {
+
+    @SpyBean(name = "connectionManager")
+    private ConnectionManager connectionManager;
+}
+
+
+
+
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@BootstrapWith(SpringBootTestContextBootstrapper.class)
+@ExtendWith({SpringExtension.class})
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@SpringBootTest(classes = IntegrationTestConfiguration.class)
+public @interface IntegrationTestRunner {
+}
+
+
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)	<-- Создает постоянно новый контекст для каждого теста 

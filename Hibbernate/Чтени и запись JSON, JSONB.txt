@@ -1,0 +1,27 @@
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Builder
+@Table(name = "users")
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),	<-- Для записи значений в базу данных. В базе данных есть поле с типом JSONB
+        @TypeDef(name = "json", typeClass = JsonStringType.class)	<-- Для чтения значение. Для чтения используется JsonStringType
+})
+public class UserEntity implements BaseIdentity<Long> {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String username;
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
+    @Type(type = "jsonb")
+    private String description;
+    public enum Role {
+        USER, ADMIN
+    }
+}

@@ -1,0 +1,25 @@
+@Service
+@RequiredArgsConstructor
+public class ImageService {
+
+    //Куда сохранять. Сохранит картинку либо в bucket, либо в директорию image)
+    @Value("${app.image.bucket:C:\\Users\\Koshechkin\\IdeaProjects\\spring-fraemwork-starter\\image}")
+    private final String bucket;
+
+
+    @SneakyThrows
+    public void uploadImage (String image, InputStream content){
+
+        //Получаем полный путь места, куда сохранится картинка
+        Path fullPath = Path.of(bucket, image);
+
+        try (content){  //Закрываем InputStream, чтобы другие классы который будут вызывать метод uploadImage не закрывали его
+
+            //Создает директорию, где лежит картинка
+            Files.createDirectories(fullPath.getParent());
+
+            //Записываем картинку. StandardOpenOption.CREATE - если директории нет то создай ее, TRUNCATE_EXISTING - если директория есть то перезапиши ее
+            Files.write(fullPath, content.readAllBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        }
+    }
+}

@@ -1,0 +1,43 @@
+Правило хорошего тона гласит, что мы должны хранить данные для подключение к ДБ(URL, USERNAME, PASSWORD) в файле с расширением Properties и именем Application в папке resources
+(папка должны быть отмечена как resources).
+
+Пример:  Application.properties
+В самом файле мы должны заполнить ключ и значение. Ключ - какое-то название. Значение - это URL, USERNAME, PASSWORD из базы данных. В КОНЦЕ НЕ СТАВИМ ";"
+Пример: db.URL = ""
+	db.USERNAME = ""
+	db.PASSWORd = ""
+
+
+Далее мы должны создать класс, который будет работать с данными properties файла и иметь private конструктор.
+Для пердставление properties файла есть специальный класс, который нызвается Properties. Он должен быть private static finale.
+Теперь нам нужно загрузить properties file в созданный класс типа Properties. Для этого мы создаем отдельный метотд.
+    private static void loadProperties() {
+        PropertiesUtil.class.getClassLoader().getResourceAsStream("application.properties");
+   }
+
+getResourceAsStream() 	//Загружает данные из properties файла.
+
+============================================================================================================================================================
+ПОЛНЫЙ ПРИМЕР СОЗДАНИ КЛАССА 
+public final class PropertiesUtil {
+
+    private static final Properties properties = new Properties();
+
+    static {
+        loadProperties();
+    }
+
+    private static String get(String key) {
+        return properties.getProperty(key); 
+    }
+
+    private static void loadProperties() {
+        try (InputStream inputStream = PropertiesUtil.class.getClassLoader().getResourceAsStream("application.properties")) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+}
+==================================================================================================================================================================

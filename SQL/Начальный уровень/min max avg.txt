@@ -1,0 +1,15 @@
+ Ко всем этим командам, мы можем применять Альясы
+
+SELECT
+    sum(salary), - сумма salary
+    avg(salary),- среднее salary
+    max(salary) - максимально значение salary
+    count(*) - сколько элементов в выборки
+FROM company_table;
+
+SELECT
+  upper(first_name) Up, - приведение в вверхний
+  lower(last_name) Low, - приведение в  нижний регистр
+  concat(first_name, ' ', last_name) Fio - объединение строкэ
+  now() - показывает текущее время
+FROM company_table;

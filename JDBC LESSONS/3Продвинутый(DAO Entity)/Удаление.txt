@@ -1,0 +1,15 @@
+  public static boolean DeleteForAirportTable(String id) {
+
+
+        try (Connection connection = MyConnection.getConn();
+             PreparedStatement preparedStatement = connection.prepareStatement(delete)) {
+            connection.setAutoCommit(false);
+            preparedStatement.setObject(1, id);
+            value = preparedStatement.executeUpdate();
+
+            connection.commit();
+            connection.rollback();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return value > 0;

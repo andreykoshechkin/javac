@@ -1,0 +1,16 @@
+
+Мы можем давать имя поляем еще и через ключевое слово AS
+SELECT
+    e.username AS Почта,
+    e.salary AS Зарплата,
+    c.name AS Компания
+FROM company_storage.employee e
+JOIN company_storage.company c ON c.id = e.company_id
+ORDER BY e.first_name;
+
+
+Если мы хотим чтобы результат запроса показал тех у кого company_id == null, то мы в where должны использовать IS NULL
+SELECT *
+from employee e 
+WHERE e.company_id IS NULL
+

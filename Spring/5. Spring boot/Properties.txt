@@ -1,0 +1,27 @@
+В Spring boot есть зарезервированные названия properties фалов! Одно из зарезервированных названий это application.properties, он автоматически подхватывается, что дает 
+возвомжно не указывать аннотаций @PropertySources.
+
+SpringProperties 		//Утилитный класс, один из его методов это getProperty, благодоря которому мы можем получить значение properties по ключю из spring.properties
+
+======================================================================================================================================================
+Создание properties через profile:
+Создаем в директории resources application-qaProperties.properties    //
+Если в application.properties мы установили propfile (spring.profiles.active=qaProperties) и название другого properties файла будет application-названиеProfile.properties 
+То те значение (если у нах одинаковый ключ) из application-названиеProfile.properties перекрою те значения что есть у  application.properties.
+======================================================================================================================================================
+Пример:
+Application.properties:
+			db.username=postgres
+			db.password=postgres
+			db.poolSize=10
+			spring.profiles.active=qaProperties
+
+application-qaProperties.properties:
+			db.poolSize=22
+
+значение poolSize из spring-qaProperties.properties перекроет то значение, которое есть у Application.properties: 					
+
+======================================================================================================================================================
+Список зарезервированных названий properties:
+application.properties
+spring.properties 

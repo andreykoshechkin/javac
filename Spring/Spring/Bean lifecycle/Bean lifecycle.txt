@@ -1,0 +1,37 @@
+В IoC Container приходит Bean Definition, и в первую очередь вызывается BeanFactoryPostProcessors, далее происходит сортировка, в цикле forEach проходимся по Bean Definition 
+и инициализируем объект, потом происходит вызов сеттеров, далее происходит инициализации callback, после чего получаем наш bean, а завевршаеться весь цикл вызовом Destoy callback.
+
+
+
+Инициализации callback: Дает нам возможность вызвать еще какие-то методы у бинов перед тем как мы получим готовый bean.
+Destoy callback:        Последний этап жиненого цикла бина. Вызовется только после закрытия соединения @Cleanup ApplicationContext. Вызываеться только для singlton bean 
+
+Метода Main:
+  try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("application.xml")) {
+            UserRepository userService1 = context.getBean("userRepository", UserRepository.class);    №3 <--- Вернеться бин
+            System.out.println();
+        }
+
+Bean:
+
+    <bean id="userRepository" class="org.example.spring.database.repository.UserRepository"
+          init-method="prepare"
+          destroy-method="destroy">
+        <constructor-arg ref="connectionPool"/>
+    </bean>
+
+UserRepository:
+public class UserRepository {
+    private final ConnectionPool connectionPool;
+
+    public UserRepository(ConnectionPool connectionPool) {	#1 <--- Сначало вызоветься консруктор
+        this.connectionPool = connectionPool;
+    }
+    public void prepare(){					#2 <--- вызоветься inite-method 
+        System.out.println("Init pool");
+    }
+
+    public void destroy(){					#4 <--- вызоветься destroy-method
+        System.out.println("Close pool");
+    }
+}

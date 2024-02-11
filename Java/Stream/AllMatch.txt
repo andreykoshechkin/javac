@@ -1,0 +1,7 @@
+AllMatch 	//Возвращает true или false взависимости от условия
+
+List<Pepople> list = ....
+
+boolean result = list.stream().allMatch(o1 -> o1.getAge > 10);		вернет true если все элементы колекции больше 10 
+
+AnuMatch 	//Почти тоже что и AllMatch только вернет true если хотя бы один из элементов колекции удовлетворяет условию

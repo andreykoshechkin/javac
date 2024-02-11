@@ -1,0 +1,38 @@
+==========================================================================================
+Repository:
+    List<CompanyEntity> findAll(Sort sort);
+
+    List<CompanyEntity> findAllExampleBy(Pageable pageable);
+
+==========================================================================================
+1. Способ (Не рекомендован)
+        Sort sorted = Sort.by("name");
+        companyRepository.findAll(sorted).forEach(System.out::println);
+
+2 Способ(Рекомендован)
+	Sort.TypedSort<CompanyEntity> sort = Sort.sort(CompanyEntity.class);
+        sort.by(CompanyEntity::getName).ascending();
+        companyRepository.findAll(sort).forEach(System.out::println);
+
+        Sort.TypedSort<CompanyEntity> sort = Sort.sort(CompanyEntity.class);  
+        Sort descending = sort.by(CompanyEntity::getName).descending();
+        companyRepository.findAll(descending).forEach(System.out::println);
+
+3 Способ (Рекомендован)
+	
+        Pageable pageable = PageRequest.of(1,2,Sort.by("id"));			<-- Первый параметр=Offset, Второй параметр=Limit. Offset начинается с 0
+        companyRepository.findAllBy(pageable).forEach(System.out::println);
+
+	Pageable pageable = PageRequest.of(0,3);				<-- Пропусти первую запись и верни мне 3 следуюзие записи
+										    Резултат: id=2,id=3,id=4
+
+
+
+==========
+Пример использование Sort:
+UserRepository:
+ List<UserEntity> findByFirstname(String firstname, Sort sort);
+
+UserRepositoryIT:
+   List<UserEntity> users = userRepository.findByFirstname("Kate", Sort.by("id").descending());
+        users.forEach(System.out::println);

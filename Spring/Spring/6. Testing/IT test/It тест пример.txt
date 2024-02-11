@@ -1,0 +1,53 @@
+@IT
+@Transactional
+@RequiredArgsConstructor
+public class UserServiceIT extends TestContainerRunner {
+
+    private final UserService userService;
+
+    @Test
+     void findAll(){
+        List<UserReadDto> actualResult = userService.findAll();
+        Assertions.assertThat(actualResult).hasSize(8);
+    }
+
+    @Test
+     void findById(){
+        Optional<UserReadDto> actualResult = userService.findById(1L);
+        Assertions.assertThat(actualResult).isPresent();
+        org.junit.jupiter.api.Assertions.assertEquals(actualResult.get().getUsername(), "ivan@gmail.com");
+    }
+}
+
+========================================================================================================================
+Аннотация @IT
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@BootstrapWith(SpringBootTestContextBootstrapper.class)
+@ExtendWith({SpringExtension.class})
+@ActiveProfiles("test")
+@ContextConfiguration(classes = Main.class, initializers = ConfigDataApplicationContextInitializer.class)
+public @interface IT {
+}
+
+========================================================================================================================
+Тест контейнер:
+
+@IT
+@Sql({
+        "classpath:/sql/date.sql"
+})
+public abstract class TestContainerRunner {
+
+    private final static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:15.2");
+
+    @BeforeAll
+    public static void run(){
+        container.start();
+    }
+
+    @DynamicPropertySource
+    public static void getProperties(DynamicPropertyRegistry registry){
+        registry.add("spring.datasource.url", container::getJdbcUrl);
+    }
+}

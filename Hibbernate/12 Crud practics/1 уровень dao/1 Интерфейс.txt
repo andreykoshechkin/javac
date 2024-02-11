@@ -1,0 +1,7 @@
+    public interface RepositoryDao<K extends Serializable, E extends GenerationId<K>> {
+    E save(E entity);
+    void deleteById(K id);
+    void updateByEntity(E entity);
+    Optional<E> findById(K id);
+    List<E> findAll();
+}

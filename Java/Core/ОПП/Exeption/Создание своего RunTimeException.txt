@@ -1,0 +1,12 @@
+
+
+public class ExampleException extends RuntimeException{
+
+/*   public ExampleException(String text){
+        super(text);
+ }*/
+
+    @Override
+    public String getMessage() {
+        return "kakayo-ro ere";
+    }

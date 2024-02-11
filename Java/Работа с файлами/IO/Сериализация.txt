@@ -1,0 +1,19 @@
+ObjectInputStream - десирилизует 
+ObjectOutputStrem - сериализует
+
+Класс который мы сериализуем должен иметь SerialVersionUID.
+SerialVersionUID нужен чтобы мы могли 
+SerialVersionUID всегда должен быть static final long.
+
+ try (ObjectInputStream obIn = new ObjectInputStream(new FileInputStream("C:\\Users\\79964\\Desktop\\employee.txt"));) {
+            Employee em  = (Employee) obIn.readObject();
+            Employee e1  = (Employee) obIn.readObject();
+            System.out.println(em);
+            System.out.println(e1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+Вдруг кому нужно, как в Idea IDE генерить serialVersionUID:
+File → Setting → Editor → Inspections → Java → Serialization issues → Serializable class without 'serialVersionUID' - установите флаг и нажмите 'OK'.
+Теперь, если ваш класс реализует Serializable, вы увидите предупреждение, и alt+Enter для имени класса сгенерирует private static final long serialVersionUID.

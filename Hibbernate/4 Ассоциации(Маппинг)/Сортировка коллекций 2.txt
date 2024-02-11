@@ -1,0 +1,29 @@
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString(of = "name")
+@EqualsAndHashCode(exclude = "users")
+@Builder
+@Entity
+@Table(name = "company")
+public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    @OneToMany(mappedBy = "company")
+    @OrderBy("username")		<---- Указываем поле нашей сущности
+    private List<Users> users = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "company_locale")
+    private List<CompanyLocale> companyLocales = new ArrayList<>();
+}
+
+    @OneToMany(mappedBy = "company")
+    @OrderBy("info.lastName")		<-- если мы хотим отсортировать по полю, которое является встраиваемой сущностью(У Users есть поле UsersInformation info где хранится firstname,lastname и тд)
+    private List<Users> users = new ArrayList<>();

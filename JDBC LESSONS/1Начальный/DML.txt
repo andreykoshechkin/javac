@@ -1,0 +1,11 @@
+
+getUpdateCount() 	//Возвращает количество записей из нашей таблицы
+.executeUpdate()	//Возвращает количество записей из нашей таблицы <-- в приоритете
+ в 
+  try (Connection connection = ConnectionManager.getCon();
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+            System.out.println(connection.getSchema());
+            System.out.println(statement.getUpdateCount()); <-----
+            System.out.println();
+        }

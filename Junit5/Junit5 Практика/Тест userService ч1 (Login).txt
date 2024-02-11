@@ -1,0 +1,42 @@
+    @Test
+    void loginSuccess() {
+        UserEntity userEntity = UserEntity.builder()
+                .id(1111L)
+                .email("test@gmail.com")
+                .password("12345")
+                .gender(Gender.MALE)
+                .country(Country.Russia)
+                .username("testUsername")
+                .birthday(LocalDate.of(1999, 1, 1))
+                .build();
+
+        UserDto userDto = UserDto.builder()
+                .id("1111")
+                .email("test@gmail.com")
+                .password("12345")
+                .gender(Gender.MALE.name())
+                .country(Country.Russia.name())
+                .username("testUsername")
+                .birthday(LocalDate.of(1999, 1, 1).toString())
+                .build();
+
+        doReturn(Optional.of(userEntity)).when(userDao).findUserByEmailAndPassword(userEntity.getEmail(), userEntity.getPassword());
+        doReturn(userDto).when(readMapper).transfer(userEntity);
+
+        Optional<UserDto> actualResult = userService.findUserByEmailAndPassword(userDto.getEmail(), userDto.getPassword());
+
+        Assertions.assertThat(actualResult).isPresent();
+        Assertions.assertThat(actualResult.get()).isEqualTo(userDto);
+
+    }
+
+
+    @Test
+    void loginFail() {
+
+        doReturn(Optional.empty()).when(userDao).findUserByEmailAndPassword(any(), any());
+        Optional<UserDto> actualResult = userService.findUserByEmailAndPassword("dummy", "dummy");
+        verifyNoInteractions(readMapper);		<----  verifyNoInteractions вернет true если класс readMapper вообще не был вызван
+
+        Assertions.assertThat(actualResult).isEmpty();
+    }

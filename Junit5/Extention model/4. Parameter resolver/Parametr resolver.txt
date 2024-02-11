@@ -1,0 +1,38 @@
+Parameter resolver - нужен, в случае, когда один класс является зависимостью для другого класса. В примере ниже, класс userService является зависимость для RunnerTest 
+
+========================================================================================================================
+@ExtendWith(
+        UserServiceParameterResolver.class
+)
+class RunnerTest {
+
+
+    private UserService userService;
+
+    @BeforeAll
+    void prepareAll() {
+
+    }
+
+    @BeforeEach
+    void prepareEach(UserService userService) {
+     this.userService = userService;
+    }
+
+=========================================================================================================================
+Реализация parameter resolver:
+
+public class UserServiceParameterResolver implements ParameterResolver {
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return parameterContext.getParameter().getType() == UserService.class;
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        ExtensionContext.Store store = extensionContext.getStore(ExtensionContext.Namespace.create(UserService.class)); <-- кешируем объект
+        return  store.getOrComputeIfAbsent(UserService.class);
+    }
+}
+
+========================================================================================================================
