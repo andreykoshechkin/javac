@@ -1,0 +1,31 @@
+Вот список основных методов класса Button в Vaadin:
+
+setText(String text): Устанавливает текст на кнопке.
+
+setThemeName(String themeName): Устанавливает тему кнопки.
+
+setDisableOnClick(boolean disableOnClick): Устанавливает, нужно ли отключать кнопку после нажатия на нее.
+
+setEnabled(boolean enabled): Устанавливает, активна ли кнопка.
+
+setTabIndex(int tabIndex): Устанавливает индекс навигации кнопки.
+
+setClickShortcut(Key key): Устанавливает горячую клавишу для кнопки.
+
+setClickShortcut(int keyCode, int... modifiers): Устанавливает горячую клавишу для кнопки по коду клавиши и модификаторам.
+
+setIcon(Component icon): Устанавливает иконку на кнопке.
+
+setIcon(Icon icon): Устанавливает иконку на кнопке с использованием Icon объекта.
+
+addClickListener(ComponentEventListener<ClickEvent<Button>> listener): Добавляет слушатель событий нажатия на кнопку.
+
+removeClickListener(ComponentEventListener<ClickEvent<Button>> listener): Удаляет слушатель событий нажатия на кнопку.
+
+click(): Программно вызывает событие нажатия на кнопку.
+
+getElement(): Возвращает элемент кнопки для настройки дополнительных свойств.
+
+addThemeVariants(ThemeVariant... variants): Добавляет варианты темы к кнопке.
+
+removeThemeVariants(ThemeVariant... variants): Удаляет варианты темы из кнопки.

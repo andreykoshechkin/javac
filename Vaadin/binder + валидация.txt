@@ -1,0 +1,74 @@
+@Route("main")
+public class RequestAccView extends VerticalLayout {
+
+    private Grid<RequestAcc> grid;
+    private Binder<RequestAcc> binder;
+
+    @Autowired
+    private RequestAccService requestAccService;
+
+    public RequestAccView() {
+        grid = new Grid<>(RequestAcc.class);
+
+        TextField textFieldFirstName = new TextField("Firstname");
+        TextField textFieldLastName = new TextField("Lastname");
+        TextField numberField = new TextField("INN");
+        DatePicker datePicker = new DatePicker("Дата");
+
+        Button buttonRead = new Button("Показать");
+        Button buttonCreate = new Button("Создать");
+
+        binder = new Binder<>(RequestAcc.class);
+
+        binder.bind(textFieldFirstName, RequestAcc::getFirstName, RequestAcc::setFirstName);
+        binder.bind(textFieldLastName, RequestAcc::getLastName, RequestAcc::setLastName);
+        binder.forField(numberField)
+                .withConverter(new StringToLongConverter("Введите корректное значение"))
+                .bind(RequestAcc::getInn, RequestAcc::setInn);
+        binder.bind(datePicker, RequestAcc::getDate, RequestAcc::setDate);
+
+
+        // Правило проверки для поля FirstName
+        binder.forField(textFieldFirstName)
+                .asRequired("Пожалуйста, введите имя")
+                .withValidator(firstName -> firstName.length() >= 2, "Имя должно содержать как минимум 2 символа")
+                .bind(RequestAcc::getFirstName, RequestAcc::setFirstName);
+
+        // Правило проверки для поля LastName
+        binder.forField(textFieldLastName)
+                .asRequired("Пожалуйста, введите фамилию")
+                .withValidator(lastName -> lastName.length() >= 2, "Фамилия должна содержать как минимум 2 символа")
+                .bind(RequestAcc::getLastName, RequestAcc::setLastName);
+
+        // Правило проверки для поля INN
+        binder.forField(numberField)
+                .asRequired("Пожалуйста, введите ИНН")
+                .withConverter(new StringToLongConverter("Введите корректное значение ИНН"))
+                .withValidator(inn -> inn >= 12, "ИНН должен содержать 10 цифр")
+                .bind(RequestAcc::getInn, RequestAcc::setInn);
+
+        // Правило проверки для поля DatePicker
+        binder.forField(datePicker)
+                .asRequired("Пожалуйста, выберите дату")
+                .bind(RequestAcc::getDate, RequestAcc::setDate);
+
+
+        buttonCreate.addClickListener(event -> {
+            RequestAcc requestAcc = new RequestAcc();
+            try {
+                binder.writeBean(requestAcc);
+                requestAccService.create(requestAcc);
+                Notification.show("Запись создана успешно!");
+            } catch (ValidationException e) {
+                Notification.show("Ошибка валидации: " + e.getMessage());
+            }
+        });
+
+        buttonRead.addClickListener(event -> {
+            List<RequestAcc> all = requestAccService.findAll();
+            grid.setItems(all);
+        });
+
+        add(numberField, textFieldFirstName, textFieldLastName, buttonCreate, datePicker, buttonRead, grid);
+    }
+}

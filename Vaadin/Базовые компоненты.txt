@@ -1,0 +1,37 @@
+Button (Кнопка):
+setText(String text): Устанавливает текст кнопки.
+addClickListener(ClickListener listener): Добавляет слушателя событий на нажатие кнопки.
+
+TextField (Текстовое поле):
+setPlaceholder(String placeholder): Устанавливает подсказку для текстового поля.
+setValue(String value): Устанавливает значение текстового поля.
+getValue(): Получает текущее значение текстового поля.
+
+Label (Метка):
+setText(String text): Устанавливает текст метки.
+
+Grid (Таблица):
+
+// Установка колонок таблицы
+requestAccGrid.addColumn(RequestAcc::getId).setHeader("ID");
+       
+setItems(Collection<T> items): Устанавливает элементы, отображаемые в таблице.
+addItemClickListener(ComponentEventListener<Grid.ItemClickEvent<T>> listener): Добавляет слушателя событий на щелчок по элементу таблицы.
+
+ComboBox (Выпадающий список):
+setItems(Collection<T> items): Устанавливает элементы выпадающего списка.
+setValue(T value): Устанавливает выбранное значение выпадающего списка.
+addValueChangeListener(HasValue.ValueChangeListener<? super ComponentValueChangeEvent<ComboBox<T>, T>> listener): Добавляет слушателя событий на изменение значения выпадающего списка.
+
+DatePicker (Выбор даты):
+setValue(LocalDate value): Устанавливает выбранную дату.
+addValueChangeListener(HasValue.ValueChangeListener<? super ComponentValueChangeEvent<DatePicker, LocalDate>> listener): Добавляет слушателя событий на изменение выбранной даты.
+
+RadioButton (Радиокнопка):
+setLabel(String label): Устанавливает метку для радиокнопки.
+setValue(Boolean value): Устанавливает выбрано ли значение.
+
+CheckBox (Флажок):
+setLabel(String label): Устанавливает метку для флажка.
+setValue(Boolean value): Устанавливает выбрано ли значение.
+

@@ -1,0 +1,26 @@
+public class RequestAccView extends VerticalLayout {
+
+    // Ваши другие поля...
+
+    public RequestAccView() {
+
+        // Инициализация других компонентов...
+
+        Binder<RequestAcc> binder = new Binder<>(RequestAcc.class);
+
+        // Привязка полей к компонентам
+        binder.bind(textFieldFirstName, RequestAcc::getFirstName, RequestAcc::setFirstName);
+        binder.bind(textFieldLastName, RequestAcc::getLastName, RequestAcc::setLastName);
+        
+        // Привязка NumberField с конвертером
+        binder.forField(numberField)
+              .withConverter(new StringToLongConverter("Введите корректное значение"))
+              .bind(RequestAcc::getInn, RequestAcc::setInn);
+
+        // Привязка DatePicker
+        binder.bind(datePicker, RequestAcc::getDate, RequestAcc::setDate);
+        
+        // Добавление компонентов на макет
+        add(numberField, textFieldFirstName, textFieldLastName, buttonRead, grid);
+    }
+}
