@@ -1,0 +1,35 @@
+CREATE OR REPLACE FUNCTION increment_function()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        -- Проверяем, равен ли username 'test'
+        IF NEW.username = 'test' THEN
+            -- Обновляем компанию для сотрудника с username 'test'
+            UPDATE employee
+            SET company_id = NEW.company_id
+            WHERE id = NEW.id;
+        END IF;
+        
+        -- Обновляем счетчик в таблице company
+        UPDATE company
+        SET count = count + 1
+        WHERE id = NEW.company_id;
+        
+    ELSIF TG_OP = 'DELETE' THEN
+        -- Обновляем счетчик в таблице company при удалении сотрудника
+        UPDATE company
+        SET count = count - 1
+        WHERE id = OLD.company_id;
+    END IF;
+    
+    RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER incrementCountToCompany
+AFTER INSERT OR DELETE
+ON employee
+FOR EACH ROW
+EXECUTE FUNCTION increment_function();

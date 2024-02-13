@@ -1,0 +1,28 @@
+CREATE OR REPLACE TRIGGER incrementCountToCompany
+    AFTER
+        INSERT OR DELETE
+    ON employee
+    FOR EACH ROW
+EXECUTE FUNCTION increment_function();
+
+
+CREATE OR REPLACE FUNCTION increment_function()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE company
+        set count = company.count + 1
+        WHERE id = NEW.company_id;
+    ELSIF TG_OP = 'DELETE' THEN
+        update company
+        set count = company.count - 1
+        WHERE id = OLD.company_id;
+        
+
+    end IF;
+    RETURN NULL;
+END;
+$$;
