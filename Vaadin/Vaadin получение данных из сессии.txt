@@ -1,0 +1,11 @@
+// Получение текущего пользователя из сессии
+UI currentUI = UI.getCurrent();
+VaadinSession session = currentUI.getSession();
+WrappedSession wrappedSession = session.getSession();
+String email = (String) wrappedSession.getAttribute("email");
+
+if (email != null) {
+    // Пользователь авторизован и у вас есть его email
+} else {
+    // Пользователь не авторизован, или email не установлен, выполните действия по необходимости
+}

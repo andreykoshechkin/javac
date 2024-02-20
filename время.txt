@@ -1,0 +1,1 @@
+String hql = "FROM Record WHERE data = current_date() AND time = current_time()";
