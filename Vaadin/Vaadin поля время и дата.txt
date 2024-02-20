@@ -1,0 +1,9 @@
+DateTimeField
+setCaption("Выберите время:");
+        setDateFormat("HH:mm"); // Установка формата времени
+        setResolution(DateTimeResolution.MINUTE); // Установка разрешения (минуты)
+
+
+DateField 
+setCaption("Выберите дату:");
+        setDateFormat("yyyy-MM-dd"); // Установка формата даты
