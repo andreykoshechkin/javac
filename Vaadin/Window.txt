@@ -1,0 +1,137 @@
+1)
+public class MyUI extends UI {
+
+    @Override
+    protected void init(VaadinRequest vaadinRequest) {
+        VerticalLayout layout = new VerticalLayout();
+        setContent(layout);
+
+        Button openWindowButton = new Button("Открыть окно");
+        openWindowButton.addClickListener(event -> {
+            // Создаем новое окно
+            Window window = new Window("Модальное окно");
+            window.setWidth("400px");
+            window.setHeight("200px");
+
+            // Добавляем содержимое в окно
+            window.setContent(new Label("Пример содержимого окна"));
+
+            // Добавляем кнопку для закрытия окна
+            Button closeButton = new Button("Закрыть");
+            closeButton.addClickListener(closeEvent -> getUI().removeWindow(window));
+            window.setContent(new VerticalLayout(new Label("Пример содержимого окна"), closeButton));
+
+            // Добавляем окно на текущий UI
+            addWindow(window);
+        });
+
+        layout.addComponent(openWindowButton);
+    }
+}
+
+
+@Route("window-example")
+public class WindowExampleView extends VerticalLayout {
+
+    private NotificationRepository notificationRepository;
+    
+    public WindowExampleView() {
+        // Создаем кнопку, которая открывает окно
+        Button openWindowButton = new Button("Открыть окно");
+        openWindowButton.addClickListener(e -> {
+            // Создаем новое окно
+            Dialog dialog = new Dialog("Напоминание");
+            dialog.setHeight("400px");
+            dialog.setWidth("400px");
+            
+            // Создаем содержимое окна
+            VerticalLayout content = new VerticalLayout();
+            content.addComponent(new Label("Пример содержимого окна1"));
+            content.addComponent(new Label("Пример содержимого окна2"));
+            
+            // Создаем кнопку для закрытия окна
+            Button closeButton = new Button("Закрыть");
+            closeButton.addClickListener(event -> dialog.close());
+            content.addComponent(closeButton);
+            
+            // Устанавливаем содержимое окна
+            dialog.setContent(content);
+            
+            // Открываем окно
+            dialog.open();
+        });
+
+        // Добавляем кнопку на основное содержимое
+        addComponent(openWindowButton);
+    }
+}
+
+@Route("window-example")
+public class WindowExampleView extends VerticalLayout {
+
+    private NotificationRepository notificationRepository;
+
+    public WindowExampleView() {
+        // Создаем кнопку, которая открывает окно
+        Button openWindowButton = new Button("Открыть окно");
+        openWindowButton.addActionListener(e -> {
+            // Создаем новое окно
+            Dialog dialog = new Dialog("Напоминание");
+            dialog.setHeight("400px");
+            dialog.setWidth("400px");
+
+        });
+    }
+
+
+@Route("window-example")
+public class WindowExampleView extends VerticalLayout {
+
+    private Binder<NotificationEntity> binder;
+    private DatePicker datePicker;
+    private TimePicker timePicker;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    public WindowExampleView() {
+        // Создаем кнопку, которая открывает окно
+        Button openWindowButton = new Button("Открыть окно");
+        
+        datePicker = new DatePicker("Дата");
+        timePicker = new TimePicker("Время");
+        
+        Button sendButton = new Button("Отправить");
+
+        binder = new Binder<>(NotificationEntity.class);
+        binder.forField(datePicker)
+              .bind(NotificationEntity::getDateEnd, NotificationEntity::setDateEnd);
+        binder.forField(timePicker)
+              .bind(NotificationEntity::getDateEnd, NotificationEntity::setDateEnd);
+        
+        VerticalLayout content = new VerticalLayout(datePicker, timePicker, sendButton);
+        
+        Dialog dialog = new Dialog("Введите данные:");
+        dialog.add(content);
+        
+        sendButton.addClickListener(event -> {
+            // Получаем выбранную дату и время и объединяем их в LocalDateTime
+            LocalDateTime dateTime = LocalDateTime.of(datePicker.getValue(), timePicker.getValue());
+            
+            // Создаем новый объект NotificationEntity
+            NotificationEntity notificationEntity = new NotificationEntity();
+            notificationEntity.setDateEnd(dateTime);
+            
+            // Сохраняем объект в репозитории
+            notificationRepository.saveAndFlush(notificationEntity);
+            
+            // Закрываем диалог
+            dialog.close();
+        });
+        
+        openWindowButton.addClickListener(e -> dialog.open());
+
+        // Добавляем кнопку на основное содержимое
+        add(openWindowButton);
+    }
+}
