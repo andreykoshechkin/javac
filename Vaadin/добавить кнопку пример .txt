@@ -1,0 +1,58 @@
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.data.binder.Binder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Duration;
+
+public class NotificationView extends HorizontalLayout {
+
+    private final Dialog dialog;
+    private final NotificationService notificationService;
+    private final Binder<NotificationDto> binder;
+    private final Button button; // Поле для кнопки "Напоминание"
+
+    public NotificationView(NotificationService notificationService) {
+        this.notificationService = notificationService;
+
+        button = new Button("Напоминание"); // Инициализация кнопки "Напоминание"
+        dialog = new Dialog();
+        binder = new Binder<>(NotificationDto.class);
+
+        button.addClickListener(event -> {
+            dialog.removeAll();
+            dialog.open();
+
+            DatePicker date = new DatePicker("Дата");
+            date.setValue(LocalDate.now().plusDays(1L));
+
+            TimePicker time = new TimePicker("Время");
+            time.setStep(Duration.ofMinutes(1));
+            time.getElement().setProperty("timeFormat", "HH:mm");
+
+            Button save = new Button("Сохранить");
+
+            save.addClickListener(event2 -> {
+                LocalDateTime dateTime = LocalDateTime.of(date.getValue(), time.getValue());
+                NotificationDto notification = new NotificationDto();
+                notification.setDate_notification(dateTime);
+                notificationService.save(notification);
+                Notification.show("Напоминание сохранено!");
+                dialog.close();
+            });
+
+            dialog.add(date, time, save);
+        });
+
+        add(button);
+    }
+
+    // Метод для получения кнопки "Напоминание"
+    public Button getButton() {
+        return button;
+    }
+}
