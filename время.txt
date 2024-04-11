@@ -1,1 +1,45 @@
-String hql = "FROM Record WHERE data = current_date() AND time = current_time()";
+public class TestViewExample extends VerticalLayout {
+
+    /*private final List<ItemData> items;
+    private final List<ItemData> selectedItems = new ArrayList<>();*/
+
+    private static String res = "";
+
+
+    public TestViewExample() {
+        final VerticalLayout layout = new VerticalLayout();
+
+        // Создаем Grid с флажками
+        final Grid<String[]> gridWithCheckbox = new Grid<>();
+        gridWithCheckbox.setSelectionMode(Grid.SelectionMode.MULTI);
+        gridWithCheckbox.addColumn(row -> row[0]).setHeader("Column 1");
+        gridWithCheckbox.addColumn(row -> row[1]).setHeader("Column 2");
+        gridWithCheckbox.addColumn(row -> "").setHeader("Checkbox");
+        gridWithCheckbox.setItems(new String[]{"Row 1", "Value 1"}, new String[]{"Row 2", "Value 2"});
+
+        // Создаем второй Grid
+        final Grid<String[]> secondGrid = new Grid<>();
+        secondGrid.addColumn(row -> row[0]).setHeader("Column A");
+        secondGrid.addColumn(row -> row[1]).setHeader("Column B");
+        secondGrid.setVisible(false); // По умолчанию второй Grid скрыт
+
+        // Обработчик событий при выборе строки в первой таблице
+        gridWithCheckbox.addSelectionListener(event -> {
+            // Если выбрана хотя бы одна строка
+            if (!event.getAllSelectedItems().isEmpty()) {
+                // Очищаем вторую таблицу и добавляем в неё выбранную запись
+                secondGrid.setItems(event.getAllSelectedItems());
+                // Показываем вторую таблицу
+                secondGrid.setVisible(true);
+            } else {
+                // Если не выбрано ни одной строки, скрываем вторую таблицу
+                secondGrid.setVisible(false);
+            }
+        });
+
+
+        layout.add(gridWithCheckbox, secondGrid);
+
+        add(layout);
+    }
+}
