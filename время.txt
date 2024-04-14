@@ -1,3 +1,137 @@
+************************************************************************************************************************
+database: 
+DECLARE
+    pCovenantfact NUMBER;
+    pResult VARCHAR2(100);
+    pCusNum NUMBER := 123; -- Замените на реальное значение
+    pDateCalc DATE := SYSDATE; -- Замените на реальную дату или оставьте по умолчанию
+BEGIN
+    pResult := aml.P_FRONT_EVALUATION.getCovenantValue(pCusNum, pCovenantfact, pDateCalc);
+    -- Здесь вы можете использовать значение pCovenantfact
+    DBMS_OUTPUT.PUT_LINE('Значение pCovenantfact: ' || pCovenantfact);
+    -- Вывод результата функции
+    DBMS_OUTPUT.PUT_LINE('Результат выполнения функции: ' || pResult);
+END;
+
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import java.sql.Types;
+import java.util.List;
+
+public class CallPLSQLFunctionWithEntityManager {
+    public static void main(String[] args) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("YourPersistenceUnitName");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        try {
+            entityManager.getTransaction().begin();
+
+            // Вызов функции через нативный SQL-запрос
+            Query query = entityManager.createNativeQuery("SELECT aml.P_FRONT_EVALUATION.getCovenantValue(?, ?, ?) AS result, pCovenantfact FROM DUAL");
+            query.setParameter(1, 123); // Замените на ваше значение pCusNum
+            query.setParameter(2, new java.sql.Date(System.currentTimeMillis())); // Замените на вашу дату pDateCalc
+            query.setParameter(3, Types.VARCHAR); // Для указания типа выходного параметра
+
+            List<Object[]> resultList = query.getResultList();
+            for (Object[] result : resultList) {
+                String functionResult = (String) result[0]; // Результат функции
+                int covenantFact = (int) result[1]; // pCovenantfact
+                System.out.println("Результат выполнения функции: " + functionResult);
+                System.out.println("Значение pCovenantfact: " + covenantFact);
+            }
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+    }
+}
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+public class YourClass {
+
+    private EntityManager entityManager; // Предполагается, что у вас есть экземпляр EntityManager
+
+    public void callFunction() {
+        // Создаем запрос на вызов функции
+        Query query = entityManager.createNativeQuery("begin ? := aml.P_FRONT_EVALUATION.getCovenantValue(?); end;");
+
+        // Устанавливаем параметры
+        query.setParameter(1, new Long(0)); // Placeholder для pCovenantfact
+        query.setParameter(2, 123); // Замените 123 на реальное значение для pCusNum
+
+        // Выполняем запрос
+        query.executeUpdate();
+
+        // Получаем результат из первого параметра
+        Long covenantfact = (Long) query.getOutputParameterValue(1); // Предполагается, что функция возвращает числовое значение
+    }
+}
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.sql.Date;
+
+public class YourServiceClass {
+    private final EntityManager entityManager;
+
+    public YourServiceClass(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    public Integer callCovenantFunction(Integer pCusNum, Date pDateCalc) {
+        Query query = entityManager.createNativeQuery("SELECT aml.P_FRONT_EVALUATION.getCovenantValue(:pCusNum, sysdate) FROM DUAL");
+        query.setParameter("pCusNum", pCusNum);
+
+        Integer pCovenantfact = (Integer) query.getSingleResult();
+        return pCovenantfact;
+    }
+}
+
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.sql.Date;
+import java.util.List;
+
+public class YourServiceClass {
+    private final EntityManager entityManager;
+
+    public YourServiceClass(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    public void callCovenantProcedure(Integer pCusNum, Date pDateCalc) {
+        Query query = entityManager.createNativeQuery("BEGIN aml.P_FRONT_EVALUATION.getCovenantValue(:pCusNum, :pCovenantfact, :pResult, :pDateCalc); END;");
+        query.setParameter("pCusNum", pCusNum);
+        query.setParameter("pDateCalc", pDateCalc);
+        query.setParameter("pCovenantfact", 0); // Placeholder for OUT parameter
+        query.setParameter("pResult", ""); // Placeholder for OUT parameter
+
+        List<Object[]> results = query.getResultList();
+        for (Object[] result : results) {
+            Integer pCovenantfact = (Integer) result[0];
+            String pResult = (String) result[1];
+
+            System.out.println("pCovenantfact: " + pCovenantfact);
+            System.out.println("Result: " + pResult);
+        }
+    }
+}
+
+************************************************************************************************************************
+
 public class TestViewExample extends VerticalLayout {
 
     /*private final List<ItemData> items;
