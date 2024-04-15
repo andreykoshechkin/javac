@@ -1,3 +1,30 @@
+  private CheckboxGroup<User> getCheckBoxGroup(User user) {
+        CheckboxGroup<User> checkboxGroup = new CheckboxGroup<>();
+        // checkboxGroup.setItemCaptionGenerator(User::getName); // Назначение метки для элементов
+
+        // Передача только выбранного пользователя
+        checkboxGroup.setItems(Collections.singletonList(user));
+
+        // Обработчик выбора элементов
+        checkboxGroup.addValueChangeListener(event -> {
+            Set<User> selectedUsers = event.getValue();
+            if (!selectedUsers.isEmpty()) {
+                // Очищаем выбор, кроме текущего выбранного элемента
+                User selectedUser = selectedUsers.iterator().next();
+                for (User u : checkboxGroup.getValue()) {
+                    if (!u.equals(selectedUser)) {
+                        checkboxGroup.deselect(u);
+                    }
+                }
+                conditionActionGrid.setItems(getConditionActions(selectedUser));
+                conditionActionGrid.setVisible(true);
+            } else {
+                conditionActionGrid.setVisible(false);
+            }
+        });
+        return checkboxGroup;
+    }
+
 ************************************************************************************************************************
 database: 
 DECLARE
