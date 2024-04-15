@@ -1,0 +1,58 @@
+1)
+create or replace procedure your_procedure_name(pCusName_in in number, pCovenantFact_out out number, pDateCalc_in in date default sysdate) is
+    vResult varchar2(100); -- Измените размер в зависимости от ожидаемой длины возвращаемого значения
+begin
+    -- Вызываем функцию из пакета aml.p_fron_evalution
+    vResult := aml.p_fron_evalution.getCovenantValue(pCusName_in, pCovenantFact_out, pDateCalc_in);
+    
+    -- Можно выполнить другие операции с результатом, если нужно
+    
+    -- Пример вывода результата на экран
+    dbms_output.put_line('Результат выполнения функции: ' || vResult);
+    
+    -- Если необходимо, выполните другие операции здесь
+    
+    -- При необходимости, обработайте исключения
+    
+exception
+    when others then
+        -- Обработка исключений
+        dbms_output.put_line('Произошла ошибка: ' || sqlerrm);
+end;
+/
+
+
+ StoredProcedureQuery procedureQuery = entityManager.createStoredProcedureQuery("your_procedure_name");
+            
+            // Устанавливаем входные параметры
+            procedureQuery.registerStoredProcedureParameter("pCusName_in", Integer.class, javax.persistence.ParameterMode.IN);
+            procedureQuery.registerStoredProcedureParameter("pCovenantFact_out", Integer.class, javax.persistence.ParameterMode.OUT);
+            procedureQuery.registerStoredProcedureParameter("pDateCalc_in", java.util.Date.class, javax.persistence.ParameterMode.IN);
+            
+            procedureQuery.setParameter("pCusName_in", 123); // Замените на конкретное значение
+            procedureQuery.setParameter("pDateCalc_in", new java.sql.Date(System.currentTimeMillis())); // Замените на нужную дату
+            
+            // Выполняем процедуру
+            procedureQuery.execute();
+            
+            // Получаем выходные параметры
+            Integer pCovenantFact_out = (Integer) procedureQuery.getOutputParameterValue("pCovenantFact_out");
+
+
+
+            CREATE OR REPLACE PROCEDURE call_covenant_value_proc (
+    pCusName IN NUMBER,
+    pCovenantFact OUT NUMBER,
+    pDateCalc IN DATE DEFAULT SYSDATE
+)
+IS
+BEGIN
+    -- Вызов функции из пакета
+    aml.p_fron_evalution.getCovenantValue(pCusName, pCovenantFact, pDateCalc);
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Обработка ошибок
+        pCovenantFact := NULL; -- Или другое значение по умолчанию
+END call_covenant_value_proc;
+/
+
