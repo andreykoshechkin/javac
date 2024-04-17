@@ -1,5 +1,5 @@
 @Mapper(imports ={GroupValue.class}, uses = MatrixStopFactoryMapper.class)
-public interface Mapper {
+public interface YourMapper {
 
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "name", source = "entity.packName")
