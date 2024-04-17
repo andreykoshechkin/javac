@@ -1,0 +1,56 @@
+@Mapper(imports ={GroupValue.class}, uses = MatrixStopFactoryMapper.class)
+public interface Mapper {
+
+    @Mapping(target = "id", source = "entity.id")
+    @Mapping(target = "name", source = "entity.packName")
+    @Mapping(target = "sum", source = "entity.dicSrvDetailEntity.sum")
+    FrondDicMatrixServiceDto toDto(FrondDicMatrixServiceEntity entity);
+}
+
+
+@Table
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+public class DicSrvDetailEntity {
+
+    @Id
+    @Column(name = "CTD_CTD_ID")
+    private Long id;
+
+    @Column(name = "CTD_IDSMR")
+    private Long idsmr; // Филиал
+
+    @Column(name = "CTD_DT_BEG")
+    private LocalDateTime beginDate;
+
+    @Column(name = "CTD_SUM")
+    private BigDecimal sum;
+
+    @OneToMany(mappedBy = "dicSrvDetailEntity")
+    private List<FrondDicMatrixServiceEntity> frondDicMatrixServiceEntity;
+}
+
+
+@Table
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+public class FrondDicMatrixServiceEntity {
+
+    @Id
+    @Column(name = "FDM_FDM_ID")
+    private Long id;
+
+    @Column(name = "FDM_NAME")
+    private String packName;
+
+    @Column(name = "FDM_CLIENT")
+    private String clientType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CTD_CTD_IT")
+    private DicSrvDetailEntity dicSrvDetailEntity;
+}
