@@ -1,0 +1,61 @@
+String hql = "SELECT pp.id, pp.name, tb.id, tb.someField, tb.commission FROM PackPay pp " +
+             "JOIN pp.dicTable dt " +
+             "JOIN dt.tableBases tb";
+Query query = session.createQuery(hql);
+List<Object[]> results = query.list();
+
+
+public class YourDTO {
+    private Long packPayId;
+    private String packPayName;
+    private Long tableBaseId;
+    private String someField;
+    private BigDecimal commission; // Поле для комиссии
+    
+    // Геттеры и сеттеры
+}
+
+@Entity
+@Table(name = "packPayTable")
+public class PackPay {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String name;
+    
+    @ManyToOne
+    @JoinColumn(name = "FDM_FDM_ID")
+    private DicTable dicTable;
+    
+    // Геттеры и сеттеры
+}
+
+@Entity
+@Table(name = "dicTable")
+public class DicTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @OneToMany(mappedBy = "dicTable")
+    private List<TableBase> tableBases;
+    
+    // Геттеры и сеттеры
+}
+
+@Entity
+@Table(name = "TableBase")
+public class TableBase {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    // Другие поля, если есть
+    
+    @ManyToOne
+    @JoinColumn(name = "FDM_FDM_ID")
+    private DicTable dicTable;
+    
+    // Геттеры и сеттеры
+}
