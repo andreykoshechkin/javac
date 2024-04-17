@@ -1,3 +1,65 @@
+// Шаг 1: Определение сущностей Hibernate
+
+@Entity
+@Table(name = "packPayTable")
+public class PackPay {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    @ManyToOne
+    @JoinColumn(name = "FDM_FDM_ID")
+    private DicTable dicTable;
+    // геттеры и сеттеры
+}
+
+@Entity
+@Table(name = "dicTable")
+public class DicTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    // Другие поля и связи
+    // геттеры и сеттеры
+}
+
+@Entity
+@Table(name = "TableBase")
+public class TableBase {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    // Другие поля и связи
+    // геттеры и сеттеры
+}
+
+// Шаг 2: Написание запроса HQL или использование Criteria API
+// Пример HQL запроса
+String hql = "SELECT p.id, p.name, dt.id, tb.id FROM PackPay p " +
+             "JOIN p.dicTable dt " +
+             "JOIN dt.tableBase tb";
+Query query = session.createQuery(hql);
+List<Object[]> results = query.list();
+
+// Шаг 3: Преобразование результатов запроса в DTO
+List<YourDTO> dtos = new ArrayList<>();
+for (Object[] result : results) {
+    YourDTO dto = new YourDTO();
+    dto.setPackPayId((Long) result[0]);
+    dto.setPackPayName((String) result[1]);
+    dto.setDicTableId((Long) result[2]);
+    dto.setTableBaseId((Long) result[3]);
+    dtos.add(dto);
+}
+
+
+@Repository
+public interface PackPayRepository extends JpaRepository<PackPay, Long> {
+    @Query("SELECT p.name, tb.date FROM PackPay p JOIN p.dicTable dt JOIN dt.tableBase tb WHERE p.id = :packPayId")
+    List<Object[]> findCommissionByPackPayId(@Param("packPayId") Long packPayId);
+}
+
+
 1)
 create or replace procedure your_procedure_name(pCusName_in in number, pCovenantFact_out out number, pDateCalc_in in date default sysdate) is
     vResult varchar2(100); -- Измените размер в зависимости от ожидаемой длины возвращаемого значения
