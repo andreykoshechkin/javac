@@ -1,3 +1,20 @@
+if (successList.isEmpty() || !errorList.isEmpty() || selectedItems > 1 || !name.equals("Andrey") || age > 14) {
+    throw new FrontException("Ошибка фронта");
+}
+
+if (!name.equals("Andrey")) {
+    throw new FrontException("Ошибка в имени");
+}
+
+if (age > 14) {
+    throw new FrontException("Слишком старый");
+}
+
+
+
+
+
+
 @Mapper(imports ={GroupValue.class}, uses = MatrixStopFactoryMapper.class)
 public interface YourMapper {
 
