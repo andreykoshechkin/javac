@@ -1,13 +1,17 @@
-if (successList.isEmpty() || !errorList.isEmpty() || selectedItems > 1 || !name.equals("Andrey") || age > 14) {
-    throw new FrontException("Ошибка фронта");
-}
+public class Main {
+    public static void main(String[] args) {
+        if (successList.isEmpty() || !errorList.isEmpty() || selectedItems > 1) {
+            throw new FrontException("Ошибка фронта");
+        }
 
-if (!name.equals("Andrey")) {
-    throw new FrontException("Ошибка в имени");
-}
+        if (!name.equals("Andrey")) {
+            throw new FrontException("Ошибка в имени");
+        }
 
-if (age > 14) {
-    throw new FrontException("Слишком старый");
+        if (age > 14) {
+            throw new FrontException("Слишком старый");
+        }
+    }
 }
 
 
