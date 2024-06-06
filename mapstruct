@@ -1,0 +1,88 @@
+ 
+@Mapper
+public interface CurrierMapper {
+    CurrierMapper INSTANCE = Mappers.getMapper( CurrierMapper.class );
+
+    BigDecimal BD1 = BigDecimal.ONE;
+    BigDecimal BD2 = new BigDecimal("2");
+
+    @Mapping(target = "freIdCur", source = "entity.freIdCur", qualifiedByName = { "mapFreIdCur" })
+    @Mapping(target = "freIdCurExt", source = "entity.freIdCurExt", qualifiedByName = { "mapFreIdCurExt" })
+    CurrierData entityToDto(CurrierReqEntity entity);
+
+    @Mapping(target = "freIdCur", source = "dto.freIdCur", qualifiedByName = { "mapFreIdCur" })
+    @Mapping(target = "freIdCurExt", source = "dto.freIdCurExt", qualifiedByName = { "mapFreIdCurExt" })
+    CurrierReqEntity dtoToEntity(CurrierData dto);
+
+    default BigDecimal mapFreIdCur(BigDecimal freIdCur, BigDecimal freTypCur) {
+        return freTypCur.equals(BD1) ? freIdCur : null;
+    }
+
+    default BigDecimal mapFreIdCurExt(BigDecimal freIdCurExt, BigDecimal freTypCur) {
+        return freTypCur.equals(BD2) ? freIdCurExt : null;
+    }
+}
+************************************************************************
+ 
+
+@Mapper
+public interface CurrierMapper {
+    CurrierMapper INSTANCE = Mappers.getMapper( CurrierMapper.class );
+
+    BigDecimal BD2 = new BigDecimal("2");
+
+    @Mapping(target = "freIdCur", source = "entity.freIdCur", qualifiedByName = { "mapFreIdCur" })
+    @Mapping(target = "freIdCurExt", source = "entity.freIdCurExt", qualifiedByName = { "mapFreIdCurExt" })
+    CurrierData entityToDto(CurrierReqEntity entity);
+
+    @Mapping(target = "freIdCur", source = "dto.freIdCur", qualifiedByName = { "mapFreIdCur" })
+    @Mapping(target = "freIdCurExt", source = "dto.freIdCurExt", qualifiedByName = { "mapFreIdCurExt" })
+    CurrierReqEntity dtoToEntity(CurrierData dto);
+
+    default BigDecimal mapFreIdCur(BigDecimal freTypCur, BigDecimal freIdCur) {
+        return freTypCur.equals(BigDecimal.ONE) ? freIdCur : null;
+    }
+
+    default BigDecimal mapFreIdCurExt(BigDecimal freTypCur, BigDecimal freIdCurExt) {
+        return freTypCur.equals(BD2) ? freIdCurExt : null;
+    }
+}
+
+******************
+
+public class CurrierMapper {
+
+    public static CurrierData mapToDto(CurrierReqEntity entity) {
+        CurrierData dto = new CurrierData();
+        dto.setId(entity.getId());
+        dto.setFreReqId(entity.getFreReqId());
+        dto.setFreTypCur(entity.getFreTypCur());
+        
+        if (entity.getFreTypCur().equals(BigDecimal.ONE)) {
+            dto.setFreIdCur(entity.getFreIdCur());
+        } else if (entity.getFreTypCur().equals(BD2)) {
+            dto.setFreIdCurExt(entity.getFreIdCurExt());
+        }
+        
+        // Можете также маппить curSrvEntity на curSrvData здесь
+        
+        return dto;
+    }
+
+    public static CurrierReqEntity mapToEntity(CurrierData dto) {
+        CurrierReqEntity entity = new CurrierReqEntity();
+        entity.setId(dto.getId());
+        entity.setFreReqId(dto.getFreReqId());
+        entity.setFreTypCur(dto.getFreTypCur());
+
+        if (dto.getFreTypCur().equals(BigDecimal.ONE)) {
+            entity.setFreIdCur(dto.getFreIdCur());
+        } else if (dto.getFreTypCur().equals(BD2)) {
+            entity.setFreIdCurExt(dto.getFreIdCurExt());
+        }
+
+        // Можете также маппить curSrvData на curSrvEntity здесь
+
+        return entity;
+    }
+}
