@@ -1,0 +1,18 @@
+  public static Integer getFreIdOrCurExt(Optional<Entity> entityOptional) {
+        return entityOptional
+            .map(Entity::getFreId)
+            .orElseGet(() -> entityOptional.map(Entity::getFreIdCurExt).orElse(null));
+    }
+
+
+  public static Integer getFreIdOrCurExt(Optional<Entity> entityOptional) {
+        return entityOptional
+                .flatMap(entity -> Optional.ofNullable(entity.getFreId()).or(() -> Optional.ofNullable(entity.getFreIdCurExt)))
+                .orElse(null);
+    }
+
+public Integer getFreIdOrCurExt(Optional<Entity> entityOptional) {
+    return entityOptional
+            .map(entity -> entity.getFreId() != null ? entity.getFreId() : entity.getFreIdCurExt())
+            .orElse(null);
+}
