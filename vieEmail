@@ -1,0 +1,22 @@
+@Data
+@Configuration
+@ConfigurationProperties(prefix = "front")
+public class EmailTemplate {
+
+    @Data
+    public static class Template {
+        private String body;
+        private String subject;
+    }
+
+    private Map<String, Template> templates;    Обратить внимание
+}
+
+front:
+  templates:
+    base:
+      body: Сообщение из BASE!!!! Информируем вас о том, что в период c {dataStart} по {dataEnd} произойдет списание денежных средств
+      subject: Оповещание
+    manager:
+      body: У клиента просроченная карта, сделай что-то"
+      subject: Оповещание
