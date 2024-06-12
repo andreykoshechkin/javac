@@ -1,3 +1,23 @@
+Загрузка дополнительного файла конфигурации:
+
+Вам нужно указать Spring Boot загружать дополнительный файл конфигурации. Это можно сделать, добавив настройки в application.yml или указав их через командную строку при запуске приложения.
+
+Способ 1: В application.yml
+
+В вашем основном application.yml добавьте следующую настройку:
+
+spring:
+  config:
+    import: "application-mail.yml"
+
+
+
+
+
+
+
+
+
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "front")
