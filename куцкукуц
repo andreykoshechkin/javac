@@ -1,0 +1,63 @@
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+private void processAndSendDocument(BigDecimal reqId, String email) {
+    // Получение списка FrontReqSac на основе reqId
+    List<FrontReqSac> frontReqSacs = getFrontReqSacsByReqId(reqId);
+
+    Optional<Document> newestDocument = frontReqSacs.stream()
+            .flatMap(frontReqSac -> frontReqSac.getDocuments().stream())
+            .max(Comparator.comparing(Document::getUploadDate));
+
+    if (newestDocument.isPresent()) {
+        Document docFile = newestDocument.get();
+        Path filePath = isConverterToPdf ? getPdfConverter(docFile) : getOdfConvereter(docFile);
+
+        try {
+            byte[] fileContent = Files.readAllBytes(filePath);
+            String fileName = docFile.getFileName();
+
+            // Сохранение документа в базу данных (если необходимо)
+            saveDocumentToDatabase(docFile);
+
+            // Отправка документа по электронной почте
+            sendMail(email, fileName, fileContent);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading file: " + filePath, e);
+        }
+    } else {
+        throw new RuntimeException("Document not found");
+    }
+}
+
+// Примерные заглушки для методов getPdfConverter и getOdfConvereter
+private Path getPdfConverter(Document document) {
+    // Реализация вашего метода
+    return Paths.get("/path/to/pdf/" + document.getFileName());
+}
+
+private Path getOdfConvereter(Document document) {
+    // Реализация вашего метода
+    return Paths.get("/path/to/odf/" + document.getFileName());
+}
+
+// Примерная заглушка для метода сохранения документа в базу данных
+private void saveDocumentToDatabase(Document document) {
+    // Реализация вашего метода сохранения документа в базу данных
+}
+
+// Примерный заглушка для метода получения FrontReqSacs на основе reqId
+private List<FrontReqSac> getFrontReqSacsByReqId(BigDecimal reqId) {
+    // Реализация вашего метода
+    return new ArrayList<>();
+}
+
+// Примерная заглушка для метода отправки письма
+private void sendMail(String email, String fileName, byte[] report) {
+    // Реализация вашего метода отправки письма
+}
