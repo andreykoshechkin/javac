@@ -1,0 +1,85 @@
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+public class MessageApp {
+
+    private void send() {
+        sendMessageWithoutDocument("T", null, null);
+    }
+
+    private Path getUploadDocument(BigDecimal reqId, boolean isConverter) {
+        List<FrontReqDocScan> documents = requestDocScan.findAll(reqId, defaultDocType());
+
+        if (documents.size() != defaultDocType()) {
+            throw new IllegalStateException("Не все документы сформированы для отправки на почту");
+        }
+
+        return documents.stream()
+                .flatMap(doc -> doc.getDocuments().stream())
+                .max(Comparator.comparing(RequestScanDocData::getUploadDate))
+                .map(docFile -> isConverter ? convertToPdf(docFile) : getDocumentPath(docFile))
+                .orElseThrow(() -> new IllegalStateException("Документ не найден"));
+    }
+
+    private EmailMessageBuilder getMessageContent(String templateKey, RequestAccData reqAccData, FrontReqData frontReqData, Path path) {
+        MailProperties.Template template = mailProperties.getTemplates().get(templateKey);
+        String email = String.format(MAIL_DOMAIN, reqAccData.getLogin());
+
+        return EmailMessageBuilder.builder()
+                .email(email)
+                .body(template.getBody())
+                .subject(template.getSubject())
+                .fileName(Optional.ofNullable(path).map(Path::getFileName).map(Path::toString).orElse(null))
+                .filePath(Optional.ofNullable(path).map(Path::toString).orElse(null))
+                .build();
+    }
+
+    @SneakyThrows
+    private void sendMessageWithDocument(String templateKey, RequestAccData reqAccData, FrontReqData frontReqData, boolean isConverter, boolean delete) {
+        Path uploadDocument = getUploadDocument(reqAccData.getReqId(), isConverter);
+
+        EmailMessageBuilder messageContent = getMessageContent(templateKey, reqAccData, frontReqData, uploadDocument);
+        mailService.sendMail(
+                messageContent.getEmail(),
+                messageContent.getSubject(),
+                messageContent.getBody(),
+                reqAccData.getReqId(),
+                uploadDocument.getFileName().toString(),
+                Files.readAllBytes(uploadDocument)
+        );
+
+        if (delete) {
+            Files.deleteIfExists(uploadDocument);
+        }
+    }
+
+    private void sendMessageWithoutDocument(String templateKey, RequestAccData reqAccData, FrontReqData frontReqData) {
+        EmailMessageBuilder messageContent = getMessageContent(templateKey, reqAccData, frontReqData, null);
+        mailService.sendMail(
+                messageContent.getEmail(),
+                messageContent.getSubject(),
+                messageContent.getBody(),
+                reqAccData.getReqId()
+        );
+    }
+
+    private Path convertToPdf(RequestScanDocData docFile) {
+        // Конвертация документа в PDF
+        // Возвращает путь к PDF файлу
+        return null; // Заглушка для примера
+    }
+
+    private Path getDocumentPath(RequestScanDocData docFile) {
+        // Возвращает путь к ODF файлу
+        return null; // Заглушка для примера
+    }
+
+    private int defaultDocType() {
+        // Возвращает количество ожидаемых документов
+        return 1; // Заглушка для примера
+    }
+}
