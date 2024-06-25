@@ -1,0 +1,9 @@
+UPDATE history
+SET history_text =
+        regexp_replace(
+                history_text,
+                '\d{12}(?=[^,]*(,|$))',
+                '**** **** **** \1',
+                'g'
+        )
+WHERE req_id  IN (43,1111);
