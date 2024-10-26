@@ -1,0 +1,27 @@
+CREATE TABLE FRONT_DOGOVOR
+(
+    dogNum     BIGINT UNIQUE,
+    dateCreate TIMESTAMP
+);
+
+
+CREATE OR REPLACE PROCEDURE createDogovor(IN dogNum bigint, OUT result varchar)
+    LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    l_msg VARCHAR(256);
+BEGIN
+    INSERT INTO FRONT_DOGOVOR(dogNum, dateCreate)
+    VALUES (dogNum, now());
+
+    l_msg := 'Договор успешно заведен: ' || dogNum;
+    result := 'Договор успешно заведен: ' || dogNum;
+
+    RAISE NOTICE '%', l_msg;
+END ;
+
+$$;
+
+
+call createDogovor(303001)
