@@ -1,0 +1,38 @@
+CREATE OR REPLACE PROCEDURE createDogovor(IN dogNumber bigint, OUT result varchar)
+    LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    l_msg VARCHAR(256);
+BEGIN
+    -- Проверяем, существует ли договор с данным номером
+    IF NOT EXISTS (SELECT 1 FROM FRONT_DOGOVOR dg WHERE dg.dognum = dogNumber) THEN
+        -- Если не существует, вставляем новый договор
+        INSERT INTO FRONT_DOGOVOR(dognum, dateCreate) -- Изменено на dognum
+        VALUES (dogNumber, now()); -- Используйте dogNumber для вставки
+
+        l_msg := 'Договор успешно заведен: ' || dogNumber;
+        result := l_msg; -- Устанавливаем результат
+    ELSE
+        l_msg := 'Ограничение уникальности, договор уже существует: ' || dogNumber;
+        result := l_msg; -- Устанавливаем результат
+    END IF;
+
+    -- Логируем сообщение
+    RAISE NOTICE '%', l_msg;
+END;
+$$;
+
+
+
+
+DO $$
+DECLARE
+    result varchar;  -- Объявление переменной для OUT параметра
+BEGIN
+-- Вызов процедуры с одним номером договора
+CALL createDogovor(3554411, result);
+
+    -- Вывод результата
+RAISE NOTICE 'Результат: %', result;
+END $$;
