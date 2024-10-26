@@ -1,0 +1,52 @@
+Есть функция: Которая имеет OUT параметр p_err, сама фкнция возвращает number. Чтобы получить p_err и иметь возможность получить возвращаемое значение, 
+можно сделать процедуру-обертку.
+
+---Функция---
+
+FUNCTION Cus_Act2(
+    P_ern OUT VARCHAR2,                          -- Сообщение об ошибке, если есть; иначе null.
+    P_act IN NUMBER,                             -- Тип действия: 1 - добавление, 2 - редактирование, 3 - удаление.
+    P_Cus IN xxi.account2.CUS_TYPE,              -- Структура данных клиента.
+    P_plecs IN xxi.account2.T_GCS,               -- Таблица категорий/групп клиента.
+    P_adr IN xxi.account2.TAB_ADDR,              -- Таблица адресов клиента.
+    P_dem IN xxi.account2.T_DCM,                 -- Таблица документов клиента.
+    P_tel IN xxi.account2.T_TEL,                 -- Таблица телефонов клиента.
+    P_mode IN NUMBER DEFAULT 1,                  -- Режим вызова: 1 - обновлять данные в дочерних таблицах, 0 - только данные.
+    P_eml IN xxi.account2.T_EMAIL,               -- Таблица адресов электронной почты клиента.
+    P_mfv IN NUMBER DEFAULT 1,                   -- Запуск ФПЗ: 1 - разрешен, 0 - запрещен.
+    P_evn IN xxi.account2.T_EVENTS DEFAULT xxi.cus.laction.tab_events -- Таблица событий.
+) RETURN NUMBER;
+
+
+---Процедура-обертка---
+
+CREATE OR REPLACE PROCEDURE Cus_Act2_Wrapper (
+    P_ern OUT VARCHAR2,
+    P_act IN NUMBER,
+    P_Cus IN xxi.account2.CUS_TYPE,
+    P_plecs IN xxi.account2.T_GCS,
+    P_adr IN xxi.account2.TAB_ADDR,
+    P_dem IN xxi.account2.T_DCM,
+    P_tel IN xxi.account2.T_TEL,
+    P_mode IN NUMBER DEFAULT 1,
+    P_eml IN xxi.account2.T_EMAIL,
+    P_mfv IN NUMBER DEFAULT 1,
+    P_evn IN xxi.account2.T_EVENTS DEFAULT xxi.cus.laction.tab_events,
+    P_result OUT NUMBER -- выходной параметр для результата функции
+) AS
+BEGIN
+    -- Вызов функции Cus_Act2 и сохранение её результата в P_result
+    P_result := Cus_Act2(
+        P_ern => P_ern,
+        P_act => P_act,
+        P_Cus => P_Cus,
+        P_plecs => P_plecs,
+        P_adr => P_adr,
+        P_dem => P_dem,
+        P_tel => P_tel,
+        P_mode => P_mode,
+        P_eml => P_eml,
+        P_mfv => P_mfv,
+        P_evn => P_evn
+    );
+END;
