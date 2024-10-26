@@ -1,0 +1,68 @@
+CREATE OR REPLACE PROCEDURE Cus_Act2_Wrapper (
+    P_id IN NUMBER,
+    P_ern OUT VARCHAR2,
+    P_act IN NUMBER,
+    P_mode IN NUMBER DEFAULT 1,
+    P_result OUT NUMBER
+) AS
+    -- Локальные переменные для хранения данных
+    l_cus xxi.account2.CUS_TYPE;
+    l_plecs xxi.account2.T_GCS%ROWTYPE;
+    l_adr xxi.account2.TAB_ADDR%ROWTYPE;
+    l_dem xxi.account2.T_DCM%ROWTYPE;
+    l_tel xxi.account2.T_TEL%ROWTYPE;
+    l_eml xxi.account2.T_EMAIL%ROWTYPE;
+    l_evn xxi.account2.T_EVENTS%ROWTYPE;
+BEGIN
+    -- Курсор для выборки всех необходимых данных
+    FOR rec IN (
+        SELECT 
+            c.*, 
+            g.*, 
+            a.*, 
+            d.*, 
+            t.*, 
+            e.*, 
+            ev.*
+        FROM 
+            xxi.account2.CUS_TYPE c
+            LEFT JOIN xxi.account2.T_GCS g ON g.customer_id = c.id
+            LEFT JOIN xxi.account2.TAB_ADDR a ON a.customer_id = c.id
+            LEFT JOIN xxi.account2.T_DCM d ON d.customer_id = c.id
+            LEFT JOIN xxi.account2.T_TEL t ON t.customer_id = c.id
+            LEFT JOIN xxi.account2.T_EMAIL e ON e.customer_id = c.id
+            LEFT JOIN xxi.account2.T_EVENTS ev ON ev.customer_id = c.id
+        WHERE 
+            c.id = P_id
+    ) LOOP
+        -- Заполнение локальных переменных из полученных записей
+        l_cus := rec;   -- Присваиваем все данные клиента
+        l_plecs := rec; -- Присваиваем данные категорий
+        l_adr := rec;   -- Присваиваем данные адресов
+        l_dem := rec;   -- Присваиваем данные документов
+        l_tel := rec;   -- Присваиваем данные телефонов
+        l_eml := rec;   -- Присваиваем данные email
+        l_evn := rec;   -- Присваиваем данные событий
+    END LOOP;
+
+    -- Логика для обработки полученных данных
+    -- Вызов функции или другие действия
+    P_result := Cus_Act2(
+        P_ern => P_ern,
+        P_act => P_act,
+        P_Cus => l_cus,
+        P_plecs => l_plecs,
+        P_adr => l_adr,
+        P_dem => l_dem,
+        P_tel => l_tel,
+        P_mode => P_mode,
+        P_eml => l_eml,
+        P_mfv => 1,  -- Или другое значение, если необходимо
+        P_evn => l_evn
+    );
+
+EXCEPTION
+    WHEN OTHERS THEN
+        P_ern := SQLERRM;
+        RAISE; -- или обрабатывать исключение другим способом
+END;
