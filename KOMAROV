@@ -1,0 +1,74 @@
+@Component
+@Route("/get")
+public class TestExample extends VerticalLayout {
+    private final DataService dataService;
+    private final Grid<CheckResult> grid;
+
+    @Autowired
+    public TestExample(DataService dataService) {
+        this.dataService = dataService;
+        // Создаем Grid для отображения данных
+        grid = new Grid<>(CheckResult.class, false);
+        createDefaultColumns();
+        // Получаем и обрабатываем данные
+        // updateGridData(dataService.getResultList());
+
+        updateGridData(List.of());
+        // Добавляем Grid на страницу
+        add(grid);
+    }
+
+    private void updateGridData(List<ResultData> resultList) {
+        // Проверка текущего времени
+        LocalTime currentTime = LocalTime.now();
+        if (currentTime.equals(LocalTime.MIDNIGHT)) {
+            setGridMessage("Мы не работаем");
+            return;
+        }
+
+        List<CheckResult> results = resultList.stream()
+                .map(this::parseCheck)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
+
+        if (results.isEmpty()) {
+            setGridMessage("Проверки не пройдены");
+            return;
+        }
+
+        grid.setItems(results);
+    }
+
+    private void setGridMessage(String message) {
+        grid.removeAllColumns();
+        grid.addColumn(CheckResult::getFailedResultMessage).setHeader("Результат");
+        grid.setItems(Collections.singletonList(CheckResult.builder()
+                .failedResultMessage(message)
+                .build()));
+    }
+
+    private void createDefaultColumns() {
+        grid.addColumn(CheckResult::getFirstName).setHeader("FirstName");
+        grid.addColumn(CheckResult::getLastName).setHeader("LastName");
+        grid.addColumn(CheckResult::getMiddleName).setHeader("MiddleName");
+        grid.addColumn(CheckResult::getAccNumber).setHeader("Number");
+        grid.addColumn(CheckResult::getAccStatus).setHeader("Status");
+    }
+
+    private Optional<CheckResult> parseCheck(ResultData resultData) {
+        String checkResult = resultData.getTemplate();
+        Pattern pattern = Pattern.compile("^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+(\\S+)$");
+        Matcher matcher = pattern.matcher(checkResult);
+
+        if (matcher.matches()) {
+            return Optional.of(CheckResult.builder()
+                    .firstName(matcher.group(1)) // Имя
+                    .lastName(matcher.group(2))  // Фамилия
+                    .middleName(matcher.group(3)) // Отчество
+                    .accNumber(matcher.group(4)) // Номер счета
+                    .accStatus(matcher.group(5)) // Статус
+                    .build());
+        }
+        return Optional.empty();
+    }
+}
