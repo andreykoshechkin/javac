@@ -1,0 +1,80 @@
+
+Справочник по работе с библиотекой Apache POI:
+
+### Работа с книгами (Workbook)
+- `Workbook workbook = new XSSFWorkbook();` — создание новой книги формата XLSX.
+- `Workbook workbook = new HSSFWorkbook();` — создание новой книги формата XLS (старый формат).
+- `workbook.write(OutputStream out)` — запись содержимого книги в поток.
+- `workbook.close()` — закрытие книги для освобождения ресурсов.
+
+### Работа с листами (Sheet)
+- `Sheet sheet = workbook.createSheet("SheetName");` — создание нового листа.
+- `Sheet sheet = workbook.getSheetAt(0);` — получение листа по индексу.
+- `Sheet sheet = workbook.getSheet("SheetName");` — получение листа по имени.
+- `int lastRowNum = sheet.getLastRowNum();` — получение индекса последней строки.
+
+### Работа со строками (Row)
+- `Row row = sheet.createRow(int rowIndex);` — создание новой строки.
+- `Row row = sheet.getRow(int rowIndex);` — получение существующей строки.
+- `int rowNum = row.getRowNum();` — получение индекса строки.
+- `sheet.removeRow(row)` — удаление строки.
+
+### Работа с ячейками (Cell)
+- `Cell cell = row.createCell(int cellIndex);` — создание новой ячейки.
+- `Cell cell = row.getCell(int cellIndex);` — получение существующей ячейки.
+- `cell.setCellValue(String value)` — установка текстового значения.
+- `cell.setCellValue(double value)` — установка числового значения.
+- `cell.setCellValue(boolean value)` — установка булевого значения.
+- `cell.setCellValue(Date value)` — установка значения даты.
+- `cell.setCellStyle(CellStyle style)` — применение стиля к ячейке.
+
+### Работа с форматированием и стилями (CellStyle)
+- `CellStyle style = workbook.createCellStyle();` — создание нового стиля.
+- `style.setAlignment(HorizontalAlignment.CENTER);` — установка горизонтального выравнивания.
+- `style.setVerticalAlignment(VerticalAlignment.CENTER);` — установка вертикального выравнивания.
+- `style.setWrapText(true);` — включение переноса текста.
+- `style.setFillForegroundColor(IndexedColors.YELLOW.getIndex());` — установка цвета фона.
+- `style.setFillPattern(FillPatternType.SOLID_FOREGROUND);` — установка типа заливки.
+
+### Работа с шрифтами (Font)
+- `Font font = workbook.createFont();` — создание нового шрифта.
+- `font.setBold(true);` — установка жирного начертания.
+- `font.setFontHeightInPoints((short) 12);` — установка размера шрифта.
+- `font.setColor(IndexedColors.RED.getIndex());` — установка цвета шрифта.
+- `style.setFont(font);` — применение шрифта к стилю.
+
+### Работа с границами ячеек
+- `style.setBorderTop(BorderStyle.THIN);` — установка верхней границы.
+- `style.setBorderBottom(BorderStyle.THIN);` — установка нижней границы.
+- `style.setBorderLeft(BorderStyle.THIN);` — установка левой границы.
+- `style.setBorderRight(BorderStyle.THIN);` — установка правой границы.
+- `style.setTopBorderColor(IndexedColors.BLACK.getIndex());` — установка цвета верхней границы.
+
+### Форматирование данных
+- `DataFormat format = workbook.createDataFormat();` — создание формата данных.
+- `style.setDataFormat(format.getFormat("#,##0.00"));` — установка формата чисел.
+
+### Вставка изображений
+- `InputStream is = new FileInputStream("image.png");`
+- `byte[] bytes = IOUtils.toByteArray(is);`
+- `int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);`
+- `Drawing<?> drawing = sheet.createDrawingPatriarch();`
+- `ClientAnchor anchor = workbook.getCreationHelper().createClientAnchor();`
+- `drawing.createPicture(anchor, pictureIdx);` — вставка изображения.
+
+### Вставка комментариев
+- `Drawing<?> drawing = sheet.createDrawingPatriarch();`
+- `ClientAnchor anchor = workbook.getCreationHelper().createClientAnchor();`
+- `Comment comment = drawing.createCellComment(anchor);`
+- `comment.setString(new XSSFRichTextString("This is a comment"));`
+- `cell.setCellComment(comment);` — добавление комментария к ячейке.
+
+### Чтение данных
+- `FileInputStream file = new FileInputStream(new File("file.xlsx"));`
+- `Workbook workbook = new XSSFWorkbook(file);`
+- `Sheet sheet = workbook.getSheetAt(0);`
+- `Row row = sheet.getRow(0);`
+- `Cell cell = row.getCell(0);`
+- `String value = cell.getStringCellValue();` — чтение текстового значения из ячейки.
+
+Этот справочник содержит основные методы библиотеки Apache POI для работы с Excel-документами.
