@@ -1,0 +1,91 @@
+
+Справочник по библиотеке Vavr - Описание методов
+
+1. Option
+   - Метод: Option.of(T value)
+     Описание: Оборачивает значение в экземпляр Option. Если значение null, возвращается None, иначе Some.
+     Пример:
+     Option<String> someOption = Option.of("Привет");
+     Option<String> noneOption = Option.of(null);
+
+   - Метод: Option.getOrElse(T defaultValue)
+     Описание: Возвращает значение, если оно присутствует, или значение по умолчанию.
+     Пример:
+     String result = someOption.getOrElse("Значение по умолчанию");
+
+   - Метод: Option.map(Function<? super T, ? extends U> mapper)
+     Описание: Преобразует значение внутри Option, если оно присутствует.
+     Пример:
+     Option<Integer> length = someOption.map(String::length);
+
+2. Tuple
+   - Метод: Tuple.of(T1 value1, T2 value2, ... Tn valueN)
+     Описание: Создает кортеж с указанными значениями. Размеры кортежей от 1 до 8.
+     Пример:
+     Tuple2<String, Integer> pair = Tuple.of("Java", 8);
+
+   - Метод: _n (например, tuple._1)
+     Описание: Доступ к n-му элементу кортежа.
+     Пример:
+     String language = pair._1;
+     int version = pair._2;
+
+3. Try
+   - Метод: Try.of(CheckedSupplier<? extends T> supplier)
+     Описание: Выполняет вычисление и перехватывает исключения, возвращая Success или Failure.
+     Пример:
+     Try<Integer> result = Try.of(() -> 1 / 0); // Вернет Failure
+
+   - Метод: Try.recover(Function<? super Throwable, ? extends T> recoveryFunction)
+     Описание: Предоставляет значение для восстановления при неудаче.
+     Пример:
+     Integer safeResult = result.recover(throwable -> 1).get();
+
+   - Метод: Try.onFailure(Consumer<? super Throwable> action)
+     Описание: Выполняет действие, если Try представляет собой неудачу.
+     Пример:
+     result.onFailure(ex -> System.out.println("Ошибка: " + ex.getMessage()));
+
+4. Either
+   - Метод: Either.left(L value)
+     Описание: Создает экземпляр, представляющий левое (ошибочное) значение.
+     Пример:
+     Either<String, Integer> left = Either.left("Ошибка");
+
+   - Метод: Either.right(R value)
+     Описание: Создает экземпляр, представляющий правое (успешное) значение.
+     Пример:
+     Either<String, Integer> right = Either.right(42);
+
+   - Метод: fold(Function<? super L, ? extends T> leftMapper, Function<? super R, ? extends T> rightMapper)
+     Описание: Применяет функцию к левому или правому значению.
+     Пример:
+     String message = right.fold(
+         error -> "Ошибка: " + error,
+         success -> "Успех: " + success
+     );
+
+5. Lazy
+   - Метод: Lazy.of(Supplier<? extends T> supplier)
+     Описание: Создает ленивый экземпляр, который вычисляется только при необходимости.
+     Пример:
+     Lazy<Double> lazyValue = Lazy.of(Math::random);
+
+   - Метод: Lazy.get()
+     Описание: Возвращает вычисленное значение, если оно еще не вычислено.
+     Пример:
+     double value = lazyValue.get();
+
+6. Future
+   - Метод: Future.of(ExecutorService executor, Supplier<? extends T> supplier)
+     Описание: Запускает асинхронное вычисление.
+     Пример:
+     ExecutorService executor = Executors.newSingleThreadExecutor();
+     Future<Integer> future = Future.of(executor, () -> 5 + 10);
+
+   - Метод: Future.onComplete(Consumer<? super Try<T>> action)
+     Описание: Выполняет действие при завершении вычисления.
+     Пример:
+     future.onComplete(result -> System.out.println("Результат: " + result));
+
+Этот справочник описывает основные методы библиотеки Vavr и примеры их использования для функционального программирования в Java.
