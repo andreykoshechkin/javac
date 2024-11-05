@@ -1,0 +1,95 @@
+
+Справочник по настройке стилей в Apache POI:
+
+### Цвет ячейки
+- `setFillForegroundColor()` — устанавливает цвет переднего плана.
+- `setFillPattern()` — задает узор заливки ячейки.
+- Пример: 
+  ```java
+  style.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+  style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+  ```
+
+### Шрифт
+- `setFont()` — применяет шрифт к стилю ячейки.
+- Настройки шрифта:
+  - `setBold(true)` — устанавливает жирный шрифт.
+  - `setFontHeightInPoints((short) 12)` — размер шрифта.
+  - `setColor(IndexedColors.RED.getIndex())` — цвет шрифта.
+- Пример:
+  ```java
+  Font font = workbook.createFont();
+  font.setBold(true);
+  font.setFontHeightInPoints((short) 12);
+  font.setColor(IndexedColors.RED.getIndex());
+  style.setFont(font);
+  ```
+
+### Границы ячейки
+- Методы для установки границ:
+  - `setBorderTop(BorderStyle.THIN)` — верхняя граница.
+  - `setBorderBottom(BorderStyle.THIN)` — нижняя граница.
+  - `setBorderLeft(BorderStyle.THIN)` — левая граница.
+  - `setBorderRight(BorderStyle.THIN)` — правая граница.
+- Установка цвета границ:
+  - `setTopBorderColor(IndexedColors.BLACK.getIndex())` — цвет верхней границы.
+- Пример:
+  ```java
+  style.setBorderTop(BorderStyle.THIN);
+  style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+  ```
+
+### Выравнивание текста
+- Горизонтальное выравнивание:
+  - `setAlignment(HorizontalAlignment.CENTER)` — центрирование текста по горизонтали.
+- Вертикальное выравнивание:
+  - `setVerticalAlignment(VerticalAlignment.CENTER)` — центрирование текста по вертикали.
+- Пример:
+  ```java
+  style.setAlignment(HorizontalAlignment.CENTER);
+  style.setVerticalAlignment(VerticalAlignment.CENTER);
+  ```
+
+### Перенос текста
+- `setWrapText(true)` — включает перенос текста в ячейке.
+- Пример:
+  ```java
+  style.setWrapText(true);
+  ```
+
+### Формат чисел
+- Установка формата чисел:
+  - `setDataFormat(format.getFormat("#,##0.00"))` — формат числа с запятыми и двумя знаками после точки.
+- Пример:
+  ```java
+  DataFormat format = workbook.createDataFormat();
+  style.setDataFormat(format.getFormat("#,##0.00"));
+  ```
+
+### Вставка комментариев
+- Добавление комментариев к ячейке:
+  ```java
+  Drawing<?> drawing = sheet.createDrawingPatriarch();
+  ClientAnchor anchor = workbook.getCreationHelper().createClientAnchor();
+  Comment comment = drawing.createCellComment(anchor);
+  comment.setString(new XSSFRichTextString("This is a comment"));
+  cell.setCellComment(comment);
+  ```
+
+### Стили по умолчанию
+- Стиль для заголовка:
+  ```java
+  CellStyle headerStyle = workbook.createCellStyle();
+  headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+  headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+  headerStyle.setAlignment(HorizontalAlignment.CENTER);
+  ```
+
+- Стиль для данных:
+  ```java
+  CellStyle dataStyle = workbook.createCellStyle();
+  dataStyle.setAlignment(HorizontalAlignment.LEFT);
+  dataStyle.setWrapText(true);
+  ```
+
+Этот справочник поможет вам быстро ориентироваться в настройке стилей ячеек для работы с Apache POI.
