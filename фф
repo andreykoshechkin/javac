@@ -1,0 +1,72 @@
+public interface DepositOperationService {
+    DepositChatBankResponse process(RequestAccountData requestData);
+}
+
+public abstract class AbstractDepositOperationService implements DepositOperationService {
+
+    @Autowired protected DepositMapper depositMapper;
+    @Autowired protected ChatBankDepositService chatBankDepositService;
+    @Autowired protected AccountService accountService;
+
+    private static final String SUCCESS_CODE = String.valueOf(OK.value());
+
+    protected boolean isSuccessResponse(HasResponseCode response) {
+        return Optional.ofNullable(response)
+                       .map(HasResponseCode::getCode)
+                       .map(SUCCESS_CODE::equals)
+                       .orElse(false);
+    }
+
+  protected void handleFailure(RequestAccountData requestData, HasResponseCode response, String message) {
+    String code = Optional.ofNullable(response).map(HasResponseCode::getCode).orElse("UNKNOWN");
+    throw new FrontException(String.format("%s: код ответа %s", message, code));
+}
+
+protected void updateHistorySuccess(RequestAccountData requestData, String message) {
+    accountService.updateHistory(requestData.getRequestId(), message, CREATE_REQUEST);
+}
+
+protected void updateHistoryFailure(RequestAccountData requestData, String message) {
+    accountService.updateHistory(requestData.getRequestId(), message, CREATE_REQUEST);
+}
+}
+
+@Service
+public class CreateDepositRequestService extends AbstractDepositOperationService {
+
+    @Override
+    public DepositChatBankResponse process(RequestAccountData requestData) {
+        return Try.of(() -> {
+            var request = depositMapper.buildCreateDepositRequest(requestData);
+            var response = chatBankDepositService.sendRequestCreateDepositToDBO(request);
+
+            if (isSuccessResponse(response)) {
+                return response;
+            }
+            handleFailure(requestData, response, "создания заявки на депозит");
+            return null; // unreachable
+        }).onSuccess(resp -> updateHistorySuccess(requestData, resp, "создания заявки"))
+          .onFailure(FrontException.class, ex -> updateHistoryFailure(requestData, ex.getMessage()))
+          .get();
+    }
+}
+
+@Service
+public class UpdateDepositRequestService extends AbstractDepositOperationService {
+
+    @Override
+    public DepositChatBankResponse process(RequestAccountData requestData) {
+        return Try.of(() -> {
+            var request = depositMapper.buildUpdateDepositRequest(requestData);
+            var response = chatBankDepositService.sendRequestUpdateDepositToDBO(request);
+
+            if (isSuccessResponse(response)) {
+                return response;
+            }
+            handleFailure(requestData, response, "обновления заявки на депозит");
+            return null; // unreachable
+        }).onSuccess(resp -> updateHistorySuccess(requestData, resp, "обновления заявки"))
+          .onFailure(FrontException.class, ex -> updateHistoryFailure(requestData, ex.getMessage()))
+          .get();
+    }
+}
