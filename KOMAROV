@@ -1,74 +1,64 @@
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+@Slf4j
 @Component
-@Route("/get")
-public class TestExample extends VerticalLayout {
-    private final DataService dataService;
-    private final Grid<CheckResult> grid;
+public class MyScheduledTask {
 
-    @Autowired
-    public TestExample(DataService dataService) {
-        this.dataService = dataService;
-        // Создаем Grid для отображения данных
-        grid = new Grid<>(CheckResult.class, false);
-        createDefaultColumns();
-        // Получаем и обрабатываем данные
-        // updateGridData(dataService.getResultList());
+    private ExecutorService executor;
 
-        updateGridData(List.of());
-        // Добавляем Grid на страницу
-        add(grid);
+    @PostConstruct
+    public void init() {
+        // Инициализация пула потоков из 5 потоков
+        executor = Executors.newFixedThreadPool(5);
+        log.info("Пул потоков инициализирован (5 потоков)");
     }
 
-    private void updateGridData(List<ResultData> resultList) {
-        // Проверка текущего времени
-        LocalTime currentTime = LocalTime.now();
-        if (currentTime.equals(LocalTime.MIDNIGHT)) {
-            setGridMessage("Мы не работаем");
-            return;
+    @Scheduled(fixedRate = 60000) // каждые 60 секунд
+    public void runTask() {
+        executor.submit(() -> {
+            try {
+                log.info("Задача запущена в потоке {}", Thread.currentThread().getName());
+
+                // 👉 Здесь твоя основная логика
+                performWork();
+
+                log.info("Задача завершена в потоке {}", Thread.currentThread().getName());
+            } catch (Exception e) {
+                log.error("Ошибка при выполнении задачи", e);
+            }
+        });
+    }
+
+    private void performWork() throws InterruptedException {
+        // Пример логики
+        Thread.sleep(5000); // имитация работы
+        log.info("Выполнена основная логика задачи");
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        log.info("Завершение работы ExecutorService...");
+        executor.shutdown(); // запрещаем приём новых задач
+
+        try {
+            if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+                log.warn("Не удалось завершить задачи вовремя. Принудительная остановка...");
+                executor.shutdownNow(); // принудительное завершение
+            } else {
+                log.info("ExecutorService успешно завершил работу");
+            }
+        } catch (InterruptedException e) {
+            log.error("Прерывание при завершении ExecutorService", e);
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
         }
-
-        List<CheckResult> results = resultList.stream()
-                .map(this::parseCheck)
-                .flatMap(Optional::stream)
-                .collect(Collectors.toList());
-
-        if (results.isEmpty()) {
-            setGridMessage("Проверки не пройдены");
-            return;
-        }
-
-        grid.setItems(results);
-    }
-
-    private void setGridMessage(String message) {
-        grid.removeAllColumns();
-        grid.addColumn(CheckResult::getFailedResultMessage).setHeader("Результат");
-        grid.setItems(Collections.singletonList(CheckResult.builder()
-                .failedResultMessage(message)
-                .build()));
-    }
-
-    private void createDefaultColumns() {
-        grid.addColumn(CheckResult::getFirstName).setHeader("FirstName");
-        grid.addColumn(CheckResult::getLastName).setHeader("LastName");
-        grid.addColumn(CheckResult::getMiddleName).setHeader("MiddleName");
-        grid.addColumn(CheckResult::getAccNumber).setHeader("Number");
-        grid.addColumn(CheckResult::getAccStatus).setHeader("Status");
-    }
-
-    private Optional<CheckResult> parseCheck(ResultData resultData) {
-        String checkResult = resultData.getTemplate();
-        Pattern pattern = Pattern.compile("^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+(\\S+)$");
-        Matcher matcher = pattern.matcher(checkResult);
-
-        if (matcher.matches()) {
-            return Optional.of(CheckResult.builder()
-                    .firstName(matcher.group(1)) // Имя
-                    .lastName(matcher.group(2))  // Фамилия
-                    .middleName(matcher.group(3)) // Отчество
-                    .accNumber(matcher.group(4)) // Номер счета
-                    .accStatus(matcher.group(5)) // Статус
-                    .build());
-        }
-        return Optional.empty();
     }
 }
