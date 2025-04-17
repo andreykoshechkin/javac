@@ -1,0 +1,57 @@
+@Service
+@RequiredArgsConstructor
+public class AutoRequestStatusService {
+
+    private final FrontRegAutoProcessRepository repository;
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void updateStatus(Long requestId, AutoStatus newStatus) {
+        repository.findById(requestId).ifPresent(entity -> {
+            entity.setStatus(newStatus);
+            repository.saveAndFlush(entity);
+        });
+    }
+}
+
+
+@Service
+@RequiredArgsConstructor
+public class AutoProcessService {
+
+    private final FrontRegAutoProcessRepository repository;
+    private final StatusService statusService;
+
+    @Transactional
+    public void processPendingRequests() {
+        List<FrontRegAutoProcessEntity> requests = repository.findRequestSkipLocked();
+
+        for (FrontRegAutoProcessEntity request : requests) {
+            log.info("Обрабатываем заявку {} со статусом {}", request.getId(), request.getStatus());
+
+            statusService.updateStatus(request.getId(), AutoStatus.IN_PROGRESS); // отдельная транзакция
+            handlerDepositAutoRequest(request);
+            statusService.updateStatus(request.getId(), AutoStatus.COMPLETED);  // отдельная транзакция
+        }
+    }
+
+    private void handlerDepositAutoRequest(FrontRegAutoProcessEntity request) {
+        // логика автоматической обработки
+    }
+}
+
+
+public enum AutoStatus {
+    PENDING("Заявка в ожидании автоматической обработки"),
+    IN_PROGRESS("Заявка в процессе автоматической обработки"),
+    COMPLETED("Заявка завершила автоматическую обработку");
+
+    private final String description;
+
+    AutoStatus(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+}
