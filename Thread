@@ -1,0 +1,139 @@
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class TaskProcessor {
+    private final AutoProcessService taskService;
+    
+    // Настройки через конфигурацию (можно задать в application.properties)
+    @Value("${task.processor.batch.size:10}")
+    private final int batchSize;
+    
+    @Value("${task.processor.timeout.minutes:10}")
+    private final long taskTimeoutMinutes;
+    
+    // Пул потоков для выполнения задач
+    @Bean(name = "taskExecutor")
+    public ExecutorService taskExecutor() {
+        return Executors.newFixedThreadPool(5);
+    }
+    
+    // Пул потоков для мониторинга
+    @Bean(name = "monitoringExecutor")
+    public ExecutorService monitoringExecutor() {
+        return Executors.newCachedThreadPool();
+    }
+
+    // Запускается каждые 10 секунд
+    @Scheduled(fixedRate = 10000)
+    public void processPendingTasks() {
+        // Получаем список задач для обработки
+        List<BigDecimal> taskIds = taskService.getConditionData(batchSize);
+        
+        if (taskIds.isEmpty()) {
+            log.debug("Не найдено задач для обработки");
+            return;
+        }
+
+        // Обрабатываем каждую задачу в отдельном потоке
+        taskIds.forEach(taskId -> {
+            Future<?> future = taskExecutor().submit(() -> {
+                try {
+                    taskService.executeProcess(taskId);
+                    log.info("Задача {} успешно выполнена", taskId);
+                } catch (Exception e) {
+                    log.error("Ошибка выполнения задачи {}: {}", taskId, e.getMessage());
+                    // Здесь можно добавить логику повторных попыток
+                }
+            });
+            
+            // Запускаем мониторинг выполнения задачи
+            monitorTask(taskId, future);
+        });
+    }
+
+    // Мониторинг выполнения задачи
+    private void monitorTask(BigDecimal taskId, Future<?> future) {
+        monitoringExecutor().submit(() -> {
+            try {
+                // Ожидаем завершения задачи с таймаутом
+                future.get(taskTimeoutMinutes, TimeUnit.MINUTES);
+            } catch (TimeoutException e) {
+                handleTimeout(taskId, future);
+            } catch (Exception e) {
+                log.error("Ошибка мониторинга задачи {}", taskId, e);
+            }
+        });
+    }
+
+    // Обработка таймаута задачи
+    private void handleTimeout(BigDecimal taskId, Future<?> future) {
+        // Прерываем выполнение задачи
+        future.cancel(true);
+        log.warn("Задача {} превысила лимит времени ({} минут), отменяем...", 
+            taskId, taskTimeoutMinutes);
+
+        try {
+            // Даем задаче 2 секунды на корректное завершение
+            if (!future.isDone()) {
+                future.get(2, TimeUnit.SECONDS);
+            }
+        } catch (Exception e) {
+            log.debug("Задача {} не завершилась корректно", taskId);
+        }
+    }
+
+    // Корректное завершение работы при остановке приложения
+    @PreDestroy
+    public void cleanup() {
+        taskExecutor().shutdown();
+        monitoringExecutor().shutdown();
+        try {
+            if (!taskExecutor().awaitTermination(60, TimeUnit.SECONDS)) {
+                taskExecutor().shutdownNow();
+            }
+            if (!monitoringExecutor().awaitTermination(60, TimeUnit.SECONDS)) {
+                monitoringExecutor().shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+@Service
+@RequiredArgsConstructor
+public class AutoProcessService {
+    private final AutoProcessRepository autoProcessRepository;
+
+    // Получаем список ID задач для обработки
+    public List<BigDecimal> getConditionData(int batchSize) {
+        List<DepositAutoEntity> entities = autoProcessRepository.findConditionCheck(batchSize);
+        return entities.stream()
+                      .map(DepositAutoEntity::getId)
+                      .collect(Collectors.toList());
+    }
+
+    // Основной метод обработки задачи
+    @Transactional
+    public void executeProcess(BigDecimal taskId) {
+        // Основная логика обработки
+        // Обновляем статус задачи при успешном завершении
+        autoProcessRepository.updateStatus(taskId, "COMPLETED");
+    }
+}
+
+public interface AutoProcessRepository extends JpaRepository<DepositAutoEntity, BigDecimal> {
+    // Запрос для получения задач с блокировкой (SKIP LOCKED)
+    @Query(value = "SELECT * FROM your_table " +
+           "WHERE status = 'Deposit_auto_process' " +
+           "ORDER BY created_date ASC " +  // Обрабатываем старые задачи первыми
+           "FOR UPDATE SKIP LOCKED LIMIT :batchSize", nativeQuery = true)
+    List<DepositAutoEntity> findConditionCheck(@Param("batchSize") int batchSize);
+
+    // Метод для обновления статуса задачи
+    @Modifying
+    @Query("UPDATE DepositAutoEntity d SET d.status = :status WHERE d.id = :id")
+    void updateStatus(@Param("id") BigDecimal id, @Param("status") String status);
+}
+
+
