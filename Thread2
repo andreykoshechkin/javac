@@ -1,0 +1,85 @@
+@Scheduled(fixedDelayString = "${frontoffice.deposit.scheduler.auto-checks.delay}")
+public void doHandler() {
+    log.info("Начало обработки...");
+
+    try {
+        List<DepositAutoProcessDto> dtoList = depositAutoRequestService.findAutoProcessData();
+        
+        if (dtoList.isEmpty()) {
+            log.info("Нет заявок для обработки");
+            return;
+        }
+
+        // Обрабатываем заявки с использованием SKIP LOCKED
+        dtoList.forEach(item -> {
+            BigDecimal requestId = item.getRequestId();
+
+            Future<?> future = primaryExecutorService.submit(() -> {
+                try {
+                    // Получаем заявки с использованием SKIP LOCKED
+                    depositAutoRequestService.findAutoProcessSkipLocked(requestId);
+                } catch (SQLException e) {
+                    log.error("Ошибка выполнения автоматической обработки заявки {}: {}", requestId, e.getMessage());
+                }
+            });
+
+            // Мониторим задачу
+            monitorTask(requestId, future);
+        });
+
+    } finally {
+        log.info("Конец обработки...");
+    }
+}
+
+
+public List<DepositAutoProcessDto> findAutoProcessData() {
+    List<DepositAutoProcessDto> conditionAutoProcessData = depositAutoProcessRepository.findAutoProcessData();
+    if (conditionAutoProcessData.isEmpty()) {
+        return Collections.emptyList(); // Возвращаем пустой список, если нет данных
+    }
+
+    log.info("Получаем список заявок на автоматическую обработку: Количество заявок - {}", conditionAutoProcessData.size());
+    return conditionAutoProcessData;
+}
+
+public void findAutoProcessSkipLocked(BigDecimal requestId) {
+    try {
+        // Применяем блокировку SKIP LOCKED
+        Optional<DepositAutoProcessDto> dto = depositAutoProcessRepository.findAutoProcessSkipLocked(requestId);
+
+        if (dto.isPresent()) {
+            // Обработка заявки, если она была захвачена
+            processAutoRequest(dto.get());
+        } else {
+            log.info("Заявка с requestId {} не была захвачена, пропускаем...", requestId);
+        }
+
+    } catch (SQLException e) {
+        log.error("Ошибка при получении данных с блокировкой для заявки {}: {}", requestId, e.getMessage());
+    }
+}
+
+@Transactional(propagation = Propagation.REQUIRES_NEW)
+public void processAutoRequest(DepositAutoProcessDto item) {
+    BigDecimal requestId = item.getRequestId();
+    try {
+        log.info("Выполняется основная часть бизнес-логики для заявки - {}", requestId);
+
+        // Логика обработки заявки
+        depositAutoProcessRepository.createInvDog(requestId);
+        depositAutoProcessRepository.updateConditionInvDog(requestId);
+
+        log.info("Договор успешно заведен. Номер заявки - {}", requestId);
+
+    } catch (FrontException e) {
+        log.error("Ошибка при обработке заявки {}. Причина: {}", requestId, e.getErrMessage());
+        try {
+            requestAccountService.updateStatus(item.getFilNum(), requestId, REJECTED);
+        } catch (Exception ex) {
+            log.error("Не удалось обновить статус заявки {}", requestId, ex);
+        }
+    } catch (Exception e) {
+        log.error("Неожиданная ошибка при обработке заявки {}: {}", requestId, e.getMessage());
+    }
+}
