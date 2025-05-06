@@ -1,0 +1,29 @@
+/**
+ * Возвращает используемый счёт: сначала внутренний, затем внешний.
+ */
+private String resolveAccount(String internalAcc, String externalAcc) {
+    return StringUtils.isNotEmpty(internalAcc) ? internalAcc : externalAcc;
+}
+
+
+/**
+ * Универсальное определение названия банка:
+ * - Если указан внутренний счёт (internalAcc), используется информация клиента.
+ * - Если нет — используется БИК внешнего банка (externalBik).
+ *
+ * @param internalAcc внутренний счёт (может быть null или пустым)
+ * @param externalBik БИК внешнего банка (может быть null)
+ * @param cusNum номер клиента (для запроса к клиентскому счёту)
+ * @param filNum номер филиала (для запроса к клиентскому счёту)
+ * @return название банка или "Неизвестный банк"
+ */
+private String resolveBankNameByAccount(String internalAcc, String externalBik, BigDecimal cusNum, String filNum) {
+    return Optional.ofNullable(internalAcc)
+            .filter(StringUtils::isNotEmpty)
+            .map(acc -> clientAccountDataService
+                    .getClientAccount(cusNum, acc, filNum)
+                    .getSmr()
+                    .getFilialName())
+            .or(() -> postDepositService.getBankName(externalBik))
+            .orElse("Неизвестный банк");
+}
