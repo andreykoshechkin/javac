@@ -1,0 +1,32 @@
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+public class DepoValidator {
+
+    public String validate(DepoRequest request) {
+        Integer filial = request.getFilial(); // допустим Integer, если null возможен — учти это
+
+        List<SimpleEntry<Boolean, String>> validations = List.of(
+            checkField(request.getAccount(), "Account", filial, val -> val == null, "не может быть null"),
+            checkField(request.getAge(), "Age", filial, val -> val == null, "не может быть null"),
+            checkField(request.getAmount(), "Amount", filial, val -> val != null && val < 0, "не может быть отрицательным")
+        );
+
+        return validations.stream()
+            .filter(SimpleEntry::getKey)
+            .map(SimpleEntry::getValue)
+            .collect(Collectors.joining(". "));
+    }
+
+    private <T> SimpleEntry<Boolean, String> checkField(T value, String fieldName, Integer filial,
+                                                        java.util.function.Predicate<T> condition,
+                                                        String failMessage) {
+        if (Objects.equals(filial, 11)) {
+            return new SimpleEntry<>(true, "Поле " + fieldName + " не доступно на данном филиале");
+        }
+        boolean invalid = condition.test(value);
+        return new SimpleEntry<>(invalid, fieldName + " " + failMessage);
+    }
+}
